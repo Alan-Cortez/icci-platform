@@ -6,7 +6,10 @@ export const SITE = {
   address: "Calle Benito Juárez #1705 Norte",
   phone: "+52 862 101 3598",
   email: "contacto@icci.org.mx",
-  facebook: "https://facebook.com",
+  facebook: "https://www.facebook.com/share/1eUnmRAFef/",
+  youtube: "https://youtube.com/@icctv-101?si=kp51y50RG4r6icuu",
+  spotify: "https://open.spotify.com/intl-es/artist/2E4z1JBFkgPCmW1r6ygv9q?si=d9-NlfrwRCqw64bYKUOrVw",
+  tiktok: "https://www.tiktok.com/@iglesiacomunidaddecristo",
 } as const;
 
 export const ROLES = {
