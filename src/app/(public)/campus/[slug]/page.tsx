@@ -73,7 +73,7 @@ export default async function CampusDetailPage({ params }: Props) {
             {displayName}
           </h1>
           <p className="font-serif text-white/60 italic font-light mt-2 text-lg">
-            {campus.state} · {campus.location ?? "Allende, Coahuila"}
+            {campus.state}
           </p>
           <p className="text-white/70 mt-4 max-w-2xl leading-relaxed font-light">
             {campus.description}
