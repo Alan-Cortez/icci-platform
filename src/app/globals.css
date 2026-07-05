@@ -1,0 +1,198 @@
+@import "tailwindcss";
+
+/* ═══════════════════════════════════════════════════════════
+   ICCI — Design System
+   Colores: Azul Marino (primario) · Dorado (secundario)
+            Blanco (apoyo) · Gris oscuro (texto)
+   Tipografía: Bebas Neue (display) · Cormorant (serif) · Inter (body)
+═══════════════════════════════════════════════════════════ */
+
+:root {
+  /* ── Brand colours ─────────────────────────────────── */
+  --navy:        #0a1628;
+  --navy-light:  #152444;
+  --navy-muted:  #1e3a5f;
+
+  --gold:        #c9a227;
+  --gold-light:  #e4c65a;
+  --gold-dark:   #a07c10;
+
+  --white:       #ffffff;
+  --off-white:   #f8f6f1;
+
+  --gray-50:  #f8f9fa;
+  --gray-100: #f1f3f5;
+  --gray-200: #e9ecef;
+  --gray-300: #dee2e6;
+  --gray-400: #adb5bd;
+  --gray-500: #868e96;
+  --gray-600: #6c757d;
+  --gray-700: #495057;
+  --gray-800: #343a40;
+  --gray-900: #212529;
+
+  /* ── Typography ────────────────────────────────────── */
+  --font-display: var(--font-display);   /* Bebas Neue  — heroes, big numbers */
+  --font-serif:   var(--font-serif);     /* Cormorant   — elegant subheadings  */
+  --font-sans:    var(--font-inter);     /* Inter       — body, UI            */
+
+  /* ── Spacing / Radius ──────────────────────────────── */
+  --radius-sm:  0.5rem;
+  --radius-md:  0.75rem;
+  --radius-lg:  1rem;
+  --radius-xl:  1.5rem;
+  --radius-2xl: 2rem;
+  --radius-full: 9999px;
+
+  /* ── Shadows ───────────────────────────────────────── */
+  --shadow-sm:  0 1px 3px rgba(10,22,40,.08), 0 1px 2px rgba(10,22,40,.06);
+  --shadow-md:  0 4px 16px rgba(10,22,40,.10), 0 2px 4px rgba(10,22,40,.06);
+  --shadow-lg:  0 12px 40px rgba(10,22,40,.14), 0 4px 8px rgba(10,22,40,.08);
+  --shadow-gold: 0 8px 32px rgba(201,162,39,.25);
+}
+
+/* ── Tailwind theme bridge ─────────────────────────── */
+@theme inline {
+  --color-navy:       var(--navy);
+  --color-navy-light: var(--navy-light);
+  --color-navy-muted: var(--navy-muted);
+  --color-gold:       var(--gold);
+  --color-gold-light: var(--gold-light);
+  --color-gold-dark:  var(--gold-dark);
+  --color-off-white:  var(--off-white);
+
+  --font-sans:    var(--font-inter);
+  --font-display: var(--font-display);
+  --font-serif:   var(--font-serif);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   BASE
+═══════════════════════════════════════════════════════════ */
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--white);
+  color: var(--gray-800);
+  font-family: var(--font-inter), system-ui, sans-serif;
+  font-size: 1rem;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--gold);
+  color: var(--navy);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   TYPOGRAPHY UTILITIES
+═══════════════════════════════════════════════════════════ */
+
+/* Display — Bebas Neue: heroes, section banners, big numbers */
+.font-display {
+  font-family: var(--font-display), "Impact", sans-serif;
+  font-weight: 400;          /* Bebas Neue has only one weight */
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  line-height: 0.95;
+}
+
+/* Serif — Cormorant Garamond: elegant subheadings, quotes */
+.font-serif {
+  font-family: var(--font-serif), "Georgia", serif;
+}
+
+/* Preset scales */
+.text-hero {
+  font-family: var(--font-display), sans-serif;
+  font-size: clamp(3.5rem, 10vw, 8rem);
+  line-height: 0.92;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+}
+
+.text-display {
+  font-family: var(--font-display), sans-serif;
+  font-size: clamp(2.5rem, 6vw, 5rem);
+  line-height: 0.95;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.text-serif-xl {
+  font-family: var(--font-serif), serif;
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+
+.text-serif-lg {
+  font-family: var(--font-serif), serif;
+  font-size: clamp(1.5rem, 3vw, 2.5rem);
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   GLOBAL COMPONENT OVERRIDES
+═══════════════════════════════════════════════════════════ */
+
+/* Section labels (eyebrows above headings) */
+.label-eyebrow {
+  font-family: var(--font-inter), sans-serif;
+  font-size: 0.6875rem;       /* 11px */
+  font-weight: 700;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+/* Gold divider line */
+.divider-gold {
+  display: inline-block;
+  width: 3rem;
+  height: 2px;
+  background: var(--gold);
+  border-radius: 9999px;
+}
+
+/* Scrollbar hide utility */
+.scrollbar-hide {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   ANIMATIONS
+═══════════════════════════════════════════════════════════ */
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position:  200% center; }
+}
+
+.animate-fade-up  { animation: fade-up  0.6s ease both; }
+.animate-fade-in  { animation: fade-in  0.5s ease both; }
+.animate-shimmer  {
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,.15) 50%, transparent 100%);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
