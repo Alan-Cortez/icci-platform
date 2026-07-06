@@ -49,7 +49,7 @@ export function HomeSections() {
   return (
     <>
       {/* ── Un lugar para conectar ──────────────────────────────────────── */}
-      <section className="bg-white py-20">
+      <section className="bg-off-white py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col sm:flex-row items-center gap-12">
 
@@ -87,7 +87,7 @@ export function HomeSections() {
       </section>
 
       {/* ── Cuéntanos tu historia ───────────────────────────────────────── */}
-      <section className="bg-gray-50 py-20 overflow-hidden">
+      <section className="bg-navy py-20 overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
           {/* Header */}
@@ -95,20 +95,20 @@ export function HomeSections() {
             <div>
               <p className="label-eyebrow mb-3">Testimonios</p>
               <div className="divider-gold mb-4" />
-              <h2 className="font-display text-display text-navy leading-none">
+              <h2 className="font-display text-display text-white leading-none">
                 Cuéntanos<br />
                 <span className="text-gold">Tu Historia</span>
               </h2>
             </div>
             <div className="max-w-sm">
-              <p className="text-gray-600 text-sm leading-relaxed mb-5 font-light">
+              <p className="text-white/60 text-sm leading-relaxed mb-5 font-light">
                 Sé parte de nuestra casa, haz amigos y conéctate con personas
                 que aman a Jesús. Nos encantaría escuchar tu historia.
               </p>
               <div className="flex flex-wrap gap-3">
                 <Link
                   href="/contacto"
-                  className="text-sm border-2 border-navy text-navy px-5 py-2 rounded-full hover:bg-navy hover:text-white transition-colors font-medium"
+                  className="text-sm border-2 border-white/40 text-white px-5 py-2 rounded-full hover:bg-white hover:text-navy transition-colors font-medium"
                 >
                   Ver historias
                 </Link>
@@ -127,7 +127,7 @@ export function HomeSections() {
             {TESTIMONIES.map((t, i) => (
               <div
                 key={t.id}
-                className={`w-52 bg-white rounded-2xl p-5 shadow-sm border border-gray-200 ${t.rotate} transition-all hover:rotate-0 hover:scale-105 hover:shadow-xl hover:border-gold/30 duration-300`}
+                className={`w-52 bg-white rounded-2xl p-5 shadow-md border border-white/10 ${t.rotate} transition-all hover:rotate-0 hover:scale-105 hover:shadow-2xl hover:border-gold/30 duration-300`}
                 style={{ marginTop: i % 2 === 0 ? "0px" : "40px" }}
               >
                 <p className="text-xs font-bold text-navy">{t.name}</p>
@@ -147,7 +147,7 @@ export function HomeSections() {
             {TESTIMONIES.map((t) => (
               <div
                 key={t.id}
-                className="flex-shrink-0 w-60 snap-start bg-white rounded-2xl p-5 shadow-sm border border-gray-200"
+                className="flex-shrink-0 w-60 snap-start bg-white rounded-2xl p-5 shadow-md border border-white/10"
               >
                 <p className="text-xs font-bold text-navy">{t.name}</p>
                 <p className="text-xs text-gold mb-3 font-semibold">{t.role}</p>

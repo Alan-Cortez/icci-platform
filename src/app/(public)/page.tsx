@@ -50,7 +50,7 @@ export default function HomePage() {
       <HomeSections />
 
       {/* ── TikTok Embed ── */}
-      <section className="py-20 bg-white">
+      <section className="bg-off-white py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center flex flex-col items-center">
           <p className="label-eyebrow mb-3">Síguenos en TikTok</p>
           <div className="divider-gold mx-auto mb-10" />

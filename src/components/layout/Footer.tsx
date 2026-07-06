@@ -25,6 +25,8 @@ const schedulePreview = SCHEDULES.slice(0, 4);
 export function Footer() {
   return (
     <footer className="bg-navy text-white">
+      {/* Thin gold separator line */}
+      <div className="h-px w-full bg-gold opacity-30" />
       {/* Main footer */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
