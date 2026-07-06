@@ -133,7 +133,7 @@ export function ConocenosClient() {
               <div className="rounded-2xl overflow-hidden shadow-2xl aspect-video bg-navy-light border border-navy/10">
                 <iframe
                   className="w-full h-full"
-                  src="https://www.youtube.com/embed/dQw4w9WgXcQ?controls=1&rel=0"
+                  src="https://www.youtube.com/embed/6t1sApLp0ro?controls=1&rel=0"
                   title="Video de la iglesia"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
