@@ -97,11 +97,12 @@ export function Card({
   children,
   className,
   hover = false,
+  ...props
 }: {
   children: React.ReactNode;
   className?: string;
   hover?: boolean;
-}) {
+} & React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div
       className={cn(
@@ -109,6 +110,7 @@ export function Card({
         hover && "transition-all duration-300 hover:shadow-xl hover:-translate-y-1.5 cursor-pointer",
         className
       )}
+      {...props}
     >
       {children}
     </div>
