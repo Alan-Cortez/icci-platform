@@ -1,9 +1,8 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
-import { MapPin, ChevronRight, X } from "lucide-react";
-import { CAMPUSES } from "@/lib/constants";
+import { ChevronRight } from "lucide-react";
 
 // ─── Pastors data ─────────────────────────────────────────────────────────────
 
@@ -28,30 +27,18 @@ const PASTORS = [
   },
 ];
 
-// ─── Campus map pins (normalized 0-1 for a simple visual map) ─────────────────
-
-const MAP_PINS = [
-  { id: "allende", label: "Allende, Coah.", x: 32, y: 34, main: true },
-  { id: "sabinas", label: "Sabinas, Coah.", x: 31, y: 30 },
-  { id: "muzquiz", label: "Múzquiz, Coah.", x: 29, y: 29 },
-  { id: "nueva-rosita", label: "Nueva Rosita, Coah.", x: 33, y: 31 },
-  { id: "monclova", label: "Monclova, Coah.", x: 34, y: 33 },
-  { id: "acuna", label: "Acuña, Coah.", x: 28, y: 35 },
-];
-
 // ─── Component ────────────────────────────────────────────────────────────────
 
 export function ConocenosClient() {
   const [activePastor, setActivePastor] = useState<string | null>(null);
-  const [activePin, setActivePin] = useState<string | null>(null);
-  const sectionRef = useRef<HTMLDivElement>(null);
 
   return (
-    <div className="bg-[#111] text-white min-h-screen">
-      {/* ── Hero ──────────────────────────────────────────────────────────── */}
-      <section className="relative flex items-center justify-center py-32 overflow-hidden bg-gradient-to-b from-[#0a0a0a] to-[#111]">
-        <div className="absolute inset-0 opacity-5 pointer-events-none select-none overflow-hidden">
-          <span className="absolute text-[25vw] font-black text-white/10 -bottom-8 -left-4 tracking-tighter leading-none select-none">
+    <div className="min-h-screen">
+
+      {/* ── 1. Hero — NAVY ─────────────────────────────────────────────────── */}
+      <section className="relative flex items-center justify-center py-36 overflow-hidden bg-navy text-white">
+        <div className="absolute inset-0 overflow-hidden pointer-events-none select-none">
+          <span className="absolute text-[28vw] font-black text-white/[0.04] -bottom-6 -left-4 tracking-tighter leading-none">
             ICCI
           </span>
         </div>
@@ -69,68 +56,74 @@ export function ConocenosClient() {
         </div>
       </section>
 
-      {/* ── Historia + Video ───────────────────────────────────────────────── */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
-        <div className="grid lg:grid-cols-2 gap-16 items-start">
-          {/* Text */}
-          <div>
-            <h2 className="text-4xl sm:text-5xl font-black mb-10 leading-tight">
-              Nuestra historia
-            </h2>
-            <div className="space-y-5 text-white/70 leading-relaxed text-base">
-              <p>
-                ICCI nació del corazón de Dios y del deseo de edificar
-                comunidades de fe sólidas en el noreste de México. Desde
-                Allende, Coahuila, la iglesia ha crecido con raíces
-                profundas en la Biblia y un corazón misionero.
+      {/* ── 2. Historia + Video — OFF-WHITE ────────────────────────────────── */}
+      <section className="bg-off-white py-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-2 gap-16 items-start">
+            {/* Text */}
+            <div>
+              <p className="text-gold tracking-[0.3em] uppercase text-xs font-semibold mb-3">
+                Nuestra historia
               </p>
-              <p>
-                A lo largo de los años, Dios ha levantado campus en múltiples
-                ciudades de Coahuila, unidas por la misma visión: llevar el
-                evangelio con excelencia y transformar vidas con el poder de
-                Cristo.
-              </p>
-              <p>
-                Hoy, Iglesias Comunidad De Cristo Internacional es una red de
-                campus comprometidos con la Gran Comisión — plantando fe,
-                restaurando familias y edificando comunidad.
-              </p>
+              <div className="h-0.5 w-10 bg-gold mb-8" />
+              <h2 className="text-4xl sm:text-5xl font-black mb-10 leading-tight text-navy">
+                Nuestra historia
+              </h2>
+              <div className="space-y-5 text-gray-600 leading-relaxed text-base">
+                <p>
+                  ICCI nació del corazón de Dios y del deseo de edificar
+                  comunidades de fe sólidas en el noreste de México. Desde
+                  Allende, Coahuila, la iglesia ha crecido con raíces
+                  profundas en la Biblia y un corazón misionero.
+                </p>
+                <p>
+                  A lo largo de los años, Dios ha levantado campus en múltiples
+                  ciudades de Coahuila, unidas por la misma visión: llevar el
+                  evangelio con excelencia y transformar vidas con el poder de
+                  Cristo.
+                </p>
+                <p>
+                  Hoy, Iglesias Comunidad De Cristo Internacional es una red de
+                  campus comprometidos con la Gran Comisión — plantando fe,
+                  restaurando familias y edificando comunidad.
+                </p>
+              </div>
+
+              {/* Sub-section: Propósito */}
+              <div className="mt-14">
+                <h3 className="text-2xl font-black mb-4 text-navy">Propósito</h3>
+                <p className="text-gray-600 leading-relaxed">
+                  Ayudamos a las personas a{" "}
+                  <strong className="text-navy">conocer a Dios</strong>,
+                  encontrar libertad, descubrir su propósito y hacer la
+                  diferencia.
+                </p>
+              </div>
             </div>
 
-            {/* Sub-section: Propósito */}
-            <div className="mt-14">
-              <h3 className="text-2xl font-black mb-4">Propósito</h3>
-              <p className="text-white/70 leading-relaxed">
-                Ayudamos a las personas a{" "}
-                <strong className="text-white">conocer a Dios</strong>,
-                encontrar libertad, descubrir su propósito y hacer la
-                diferencia.
-              </p>
+            {/* YouTube embed */}
+            <div className="sticky top-24">
+              <div className="rounded-2xl overflow-hidden shadow-2xl aspect-video bg-navy-light border border-navy/10">
+                <iframe
+                  className="w-full h-full"
+                  src="https://www.youtube.com/embed/dQw4w9WgXcQ?controls=1&rel=0"
+                  title="Video de la iglesia"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                />
+              </div>
             </div>
-          </div>
-
-          {/* YouTube embed */}
-          <div className="sticky top-24">
-            <div className="rounded-2xl overflow-hidden border border-white/10 shadow-2xl aspect-video bg-black">
-              <iframe
-                className="w-full h-full"
-                src="https://www.youtube.com/embed/dQw4w9WgXcQ?controls=1&rel=0"
-                title="Video de la iglesia"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              />
-            </div>
-            <p className="text-white/30 text-xs mt-3 text-center">
-              Coloca el ID de tu video de YouTube en{" "}
-              <code className="text-gold">src/app/(public)/conocenos/ConocenosClient.tsx</code>
-            </p>
           </div>
         </div>
       </section>
 
-      {/* ── Pastores ──────────────────────────────────────────────────────── */}
-      <section className="py-24 border-t border-white/5">
+      {/* ── 3. Pastores — NAVY ─────────────────────────────────────────────── */}
+      <section className="bg-navy text-white py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <p className="text-gold tracking-[0.3em] uppercase text-xs font-semibold mb-3">
+            Liderazgo
+          </p>
+          <div className="h-0.5 w-10 bg-gold mb-8" />
           <h2 className="text-4xl sm:text-5xl font-black mb-14">
             Pastores principales
           </h2>
@@ -141,7 +134,7 @@ export function ConocenosClient() {
             {PASTORS.map((pastor) => (
               <div
                 key={pastor.id}
-                className="relative group rounded-2xl overflow-hidden cursor-pointer border border-white/10 hover:border-gold/30 transition-all duration-500"
+                className="relative group rounded-2xl overflow-hidden cursor-pointer border border-white/10 hover:border-gold/40 transition-all duration-500"
                 style={{ height: "420px" }}
                 onClick={() =>
                   setActivePastor(activePastor === pastor.id ? null : pastor.id)
@@ -158,7 +151,7 @@ export function ConocenosClient() {
                   )}
                 </div>
 
-                {/* Dark gradient overlay at bottom always visible */}
+                {/* Dark gradient overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
 
                 {/* Name bar — always visible at bottom */}
@@ -196,22 +189,20 @@ export function ConocenosClient() {
         </div>
       </section>
 
-
-      {/* ── Visión & Misión ───────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden border-t border-white/5">
-        {/* Background image placeholder */}
-        <div className="absolute inset-0 bg-gradient-to-br from-navy via-[#0a0a2a] to-black opacity-95" />
-
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32">
+      {/* ── 4. Visión & Misión — OFF-WHITE ─────────────────────────────────── */}
+      <section className="bg-off-white py-28">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-20">
+            {/* Visión */}
             <div>
-              <p className="text-white/30 tracking-[0.3em] uppercase text-xs mb-4">
+              <p className="text-gold tracking-[0.3em] uppercase text-xs font-semibold mb-3">
                 Hacia dónde vamos
               </p>
-              <h2 className="text-5xl sm:text-6xl font-black mb-6 leading-none">
+              <div className="h-0.5 w-10 bg-gold mb-8" />
+              <h2 className="text-5xl sm:text-6xl font-black mb-6 leading-none text-navy">
                 VISIÓN
               </h2>
-              <p className="text-white/70 leading-relaxed max-w-lg">
+              <p className="text-gray-600 leading-relaxed max-w-lg">
                 Edificar una iglesia grande, Cristocéntrica, basada en la
                 Biblia, con un mover fresco de Dios, que equipa a las personas
                 para liderar en cada área de la vida, planta nuevas iglesias y
@@ -219,61 +210,59 @@ export function ConocenosClient() {
               </p>
               <Link
                 href="/conocenos/vision"
-                className="inline-flex items-center gap-2 mt-8 border border-gold/40 text-gold px-5 py-2 rounded-full text-sm hover:bg-gold hover:text-navy transition-all"
+                className="inline-flex items-center gap-2 mt-8 bg-navy text-white px-6 py-3 rounded-full text-sm font-semibold hover:bg-navy-light transition-all"
               >
                 Conoce la Visión <ChevronRight className="w-4 h-4" />
               </Link>
             </div>
 
+            {/* Misión */}
             <div>
-              <p className="text-white/30 tracking-[0.3em] uppercase text-xs mb-4">
+              <p className="text-gold tracking-[0.3em] uppercase text-xs font-semibold mb-3">
                 Por qué existimos
               </p>
-              <h2 className="text-5xl sm:text-6xl font-black mb-6 leading-none">
+              <div className="h-0.5 w-10 bg-gold mb-8" />
+              <h2 className="text-5xl sm:text-6xl font-black mb-6 leading-none text-navy">
                 MISIÓN
               </h2>
-              <p className="text-white/70 leading-relaxed max-w-lg">
+              <p className="text-gray-600 leading-relaxed max-w-lg">
                 Glorificar y disfrutar a Dios cumpliendo el Gran Mandamiento y
                 la Gran Comisión: amar a Dios, amar al prójimo y hacer
                 discípulos en todas las naciones.
               </p>
               <Link
                 href="/conocenos/mision"
-                className="inline-flex items-center gap-2 mt-8 border border-white/20 text-white/60 px-5 py-2 rounded-full text-sm hover:border-gold hover:text-gold transition-all"
+                className="inline-flex items-center gap-2 mt-8 border-2 border-navy text-navy px-6 py-3 rounded-full text-sm font-semibold hover:bg-navy hover:text-white transition-all"
               >
                 Nuestra misión <ChevronRight className="w-4 h-4" />
               </Link>
             </div>
           </div>
         </div>
-
-        {/* Huge watermark text */}
-        <div className="relative overflow-hidden pb-6">
-          <p className="text-[15vw] font-black text-white/[0.03] tracking-tight leading-none select-none whitespace-nowrap px-4">
-            MISIÓN · VISIÓN · MISIÓN · VISIÓN
-          </p>
-        </div>
       </section>
 
-      {/* ── Qué Creemos CTA ──────────────────────────────────────────────── */}
-      <section className="py-24 border-t border-white/5 text-center">
+      {/* ── 5. ¿Qué Creemos? CTA — NAVY ────────────────────────────────────── */}
+      <section className="bg-navy text-white py-28 text-center">
         <div className="max-w-2xl mx-auto px-4">
-          <p className="text-gold tracking-widest uppercase text-xs mb-4">
+          <p className="text-gold tracking-widest uppercase text-xs font-semibold mb-3">
             Nuestros fundamentos
           </p>
-          <h2 className="text-4xl font-black mb-6">¿Qué Creemos?</h2>
-          <p className="text-white/50 leading-relaxed mb-10">
+          <div className="h-0.5 w-10 bg-gold mx-auto mb-8" />
+          <h2 className="text-4xl sm:text-5xl font-black mb-6">¿Qué Creemos?</h2>
+          <p className="text-white/60 leading-relaxed mb-10 max-w-lg mx-auto">
             Conoce los pilares bíblicos que guían nuestra fe, nuestra doctrina
             y nuestra forma de vivir como comunidad cristiana.
           </p>
           <Link
             href="/conocenos/que-creemos"
-            className="inline-flex items-center gap-2 bg-gold text-navy font-bold px-8 py-4 rounded-full hover:bg-gold/90 transition-colors"
+            className="inline-flex items-center gap-2 bg-gold text-navy font-bold px-8 py-4 rounded-full hover:bg-gold-light transition-colors"
           >
             Ver nuestras creencias <ChevronRight className="w-5 h-5" />
           </Link>
         </div>
       </section>
+
     </div>
   );
 }
+
