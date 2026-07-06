@@ -197,50 +197,6 @@ export function ConocenosClient() {
       </section>
 
 
-      {/* ── Campus Map ────────────────────────────────────────────────────── */}
-      <section className="py-24 border-t border-white/5 bg-[#0e0e0e]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <p className="text-white/40 text-sm mb-2">
-              Tenemos campus en varias ubicaciones en Coahuila, México.
-            </p>
-            <h2 className="text-4xl sm:text-5xl font-black">
-              Nuestros campus
-            </h2>
-          </div>
-
-          {/* Simple visual campus list — replace with map SVG if desired */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 max-w-3xl mx-auto">
-            {CAMPUSES.map((campus, i) => (
-              <Link
-                key={campus.id}
-                href={`/campus/${campus.id}`}
-                className="group flex items-center gap-3 p-4 rounded-xl border border-white/10 hover:border-gold/40 hover:bg-white/5 transition-all"
-              >
-                <span className="w-7 h-7 rounded-full bg-gold text-navy text-xs font-black flex items-center justify-center flex-shrink-0">
-                  {i + 1}
-                </span>
-                <div>
-                  <p className="font-semibold text-sm leading-tight">
-                    {campus.name}
-                  </p>
-                  <p className="text-white/40 text-xs">{campus.state}</p>
-                </div>
-              </Link>
-            ))}
-          </div>
-
-          <div className="text-center mt-10">
-            <Link
-              href="/campus"
-              className="inline-flex items-center gap-2 text-gold font-semibold hover:underline"
-            >
-              Ver todos los campus <ChevronRight className="w-4 h-4" />
-            </Link>
-          </div>
-        </div>
-      </section>
-
       {/* ── Visión & Misión ───────────────────────────────────────────────── */}
       <section className="relative overflow-hidden border-t border-white/5">
         {/* Background image placeholder */}
