@@ -156,13 +156,19 @@ export function ConocenosClient() {
           </h2>
         </div>
 
-        <div className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* ── Carousel ── */}
+        <div className="relative">
+          {/* Scroll container */}
+          <div
+            className="flex gap-5 overflow-x-auto pb-4 px-4 sm:px-6 lg:px-8 snap-x snap-mandatory scroll-smooth"
+            style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+            id="pastors-carousel"
+          >
             {PASTORS.map((pastor) => (
               <div
                 key={pastor.id}
-                className="relative group rounded-2xl overflow-hidden cursor-pointer border border-white/10 hover:border-gold/40 transition-all duration-500"
-                style={{ height: "420px" }}
+                className="relative group rounded-2xl overflow-hidden cursor-pointer border border-white/10 hover:border-gold/40 transition-all duration-500 flex-shrink-0 snap-start"
+                style={{ height: "420px", width: "300px" }}
                 onClick={() =>
                   setActivePastor(activePastor === pastor.id ? null : pastor.id)
                 }
@@ -213,8 +219,13 @@ export function ConocenosClient() {
               </div>
             ))}
           </div>
+
+          {/* Gradient fades on sides */}
+          <div className="pointer-events-none absolute left-0 top-0 bottom-4 w-8 bg-gradient-to-r from-navy to-transparent" />
+          <div className="pointer-events-none absolute right-0 top-0 bottom-4 w-8 bg-gradient-to-l from-navy to-transparent" />
         </div>
       </section>
+
 
       {/* ── 4. Visión & Misión — OFF-WHITE ─────────────────────────────────── */}
       <section className="bg-off-white py-28">
