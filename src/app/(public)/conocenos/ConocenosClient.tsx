@@ -9,22 +9,13 @@ import { CAMPUSES } from "@/lib/constants";
 
 const PASTORS = [
   {
-    id: "pastor-general",
-    name: "Pastor General",
-    role: "Pastor Principal",
+    id: "pastores-generales",
+    name: "Pastores Oscar y Raquel Sosa",
+    role: "Pastores Principales",
     desc:
-      "Fundador y visionario de Iglesias Comunidad De Cristo Internacional. Su liderazgo ha guiado la red de campus hacia un crecimiento sostenido y profundo.",
-    img: null,
+      "Fundadores y visionarios de Iglesias Comunidad De Cristo Internacional. Su liderazgo y pasión por la adoración han guiado la red de campus hacia un crecimiento sostenido y profundo.",
+    img: "/pastores-sosa.png",
     color: "from-navy to-navy-light",
-  },
-  {
-    id: "pastora-general",
-    name: "Pastora",
-    role: "Co-Pastora y Líder de Adoración",
-    desc:
-      "Co-pastora y directora del ministerio de adoración. Su pasión es que cada persona experimente la presencia de Dios de manera auténtica.",
-    img: null,
-    color: "from-gold/80 to-gold/40",
   },
   {
     id: "pastor-campus",
@@ -156,11 +147,18 @@ export function ConocenosClient() {
                   setActivePastor(activePastor === pastor.id ? null : pastor.id)
                 }
               >
-                {/* Photo placeholder / gradient bg */}
+                {/* Photo or gradient bg */}
                 <div
-                  className={`h-72 bg-gradient-to-b ${pastor.color} flex items-end`}
+                  className={`relative h-72 bg-gradient-to-b ${pastor.color} flex items-end`}
                 >
-                  <div className="w-full p-4 bg-gradient-to-t from-black/80 to-transparent">
+                  {pastor.img && (
+                    <img
+                      src={pastor.img}
+                      alt={pastor.name}
+                      className="absolute inset-0 w-full h-full object-cover object-top mix-blend-overlay opacity-80"
+                    />
+                  )}
+                  <div className="relative z-10 w-full p-4 bg-gradient-to-t from-black/90 to-transparent">
                     <p className="font-bold text-lg">{pastor.name}</p>
                     <p className="text-white/60 text-sm">{pastor.role}</p>
                   </div>

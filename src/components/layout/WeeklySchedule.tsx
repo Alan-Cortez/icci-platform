@@ -23,6 +23,7 @@ const WEEKLY_SERVICES = [
     time: "7 PM",
     timeAlign: "left" as const,
     style: "accent",    // gold bg + navy text
+    image: "/servicio-femenil.jpg",
   },
   {
     id: "jueves",
@@ -113,11 +114,19 @@ export function WeeklySchedule() {
                   isLast ? "md:col-span-2" : ""
                 }`}
               >
+                {/* Optional Background Image */}
+                {svc.image && (
+                  <div 
+                    className="absolute inset-0 bg-cover bg-center opacity-20 group-hover:opacity-40 transition-opacity duration-500 mix-blend-multiply pointer-events-none"
+                    style={{ backgroundImage: `url(${svc.image})` }}
+                  />
+                )}
+
                 {/* Left accent stripe */}
-                <div className="absolute left-0 top-0 bottom-0 w-1 bg-gold/60 rounded-l-2xl" />
+                <div className="absolute left-0 top-0 bottom-0 w-1 bg-gold/60 rounded-l-2xl z-10" />
 
                 {/* Inner layout */}
-                <div className="flex items-center justify-between w-full px-6 sm:px-8">
+                <div className="relative flex items-center justify-between w-full px-6 sm:px-8 z-10">
 
                   {/* Time pill — left */}
                   {isLeft && <TimePill label={svc.time} pillClass={PILL_BG[svc.style]} />}

@@ -27,7 +27,7 @@ const posts = [
     title: "El valor de la comunidad cristiana",
     excerpt:
       "Dios nunca diseñó al ser humano para vivir en aislamiento. La iglesia no es solo un edificio o un servicio dominical — es una familia que se apoya, ora y camina junta.",
-    author: "Pastor General ICCI",
+    author: "Pastores Oscar y Raquel Sosa",
     date: "Mayo 2026",
     category: "Comunidad",
     readTime: "4 min",
