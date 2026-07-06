@@ -17,6 +17,33 @@ const PASTORS = [
     color: "from-navy to-navy-light",
   },
   {
+    id: "copastores-rojero",
+    name: "Co-pastores Tomás y Mary Rojero",
+    role: "Co-Pastores",
+    desc:
+      "Siervos fieles y pilares de la iglesia, Tomás y Mary Rojero co-pastorean con dedicación y amor, apoyando el crecimiento espiritual de cada familia en la comunidad.",
+    img: null,
+    color: "from-gold/60 to-gold/30",
+  },
+  {
+    id: "copastores-quistiano",
+    name: "Co-pastores Epitacio y Ana Quistiano",
+    role: "Co-Pastores",
+    desc:
+      "Epitacio y Ana Quistiano sirven con corazón pastoral, acompañando a la congregación con sabiduría, fe y un amor genuino por las personas.",
+    img: null,
+    color: "from-navy-muted to-navy",
+  },
+  {
+    id: "pastores-jovenes",
+    name: "Pastores Omar y Jacqueline Laborico",
+    role: "Pastores de Jóvenes",
+    desc:
+      "Omar y Jacqueline lideran el ministerio de jóvenes con pasión y visión, formando una generación de líderes comprometidos con Dios y con su propósito.",
+    img: null,
+    color: "from-gold/40 to-navy-light",
+  },
+  {
     id: "pastor-campus",
     name: "Pastores de Campus",
     role: "Red de Liderazgo ICCI",
