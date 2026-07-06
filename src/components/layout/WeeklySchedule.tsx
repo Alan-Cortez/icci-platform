@@ -23,7 +23,7 @@ const WEEKLY_SERVICES = [
     time: "7 PM",
     timeAlign: "left" as const,
     style: "accent",    // gold bg + navy text
-    image: "/servicio-femenil.jpg",
+    image: "/images/servicio-femenil.jpg",
   },
   {
     id: "jueves",

@@ -51,7 +51,7 @@ export default async function CampusDetailPage({ params }: Props) {
           <>
             <div
               className="absolute inset-0 bg-cover bg-center bg-navy"
-              style={{ backgroundImage: "url('/campus-allende.jpg')" }}
+              style={{ backgroundImage: "url('/images/campus-allende.jpg')" }}
             />
             {/* Overlays */}
             <div className="absolute inset-0 bg-gradient-to-r from-navy/85 via-navy/70 to-navy/40" />

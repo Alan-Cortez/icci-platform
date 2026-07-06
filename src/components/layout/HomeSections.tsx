@@ -56,7 +56,7 @@ export function HomeSections() {
             {/* Logo spinning */}
             <div className="relative flex-shrink-0 w-28 h-28">
               <img
-                src="/logo.png"
+                src="/images/logo.png"
                 alt="ICCI Logo"
                 className="w-full h-full object-contain animate-[spin_20s_linear_infinite]"
               />

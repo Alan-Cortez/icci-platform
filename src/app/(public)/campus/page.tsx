@@ -11,12 +11,12 @@ export const metadata: Metadata = {
 
 // Map each campus id to its background image
 const CAMPUS_IMAGES: Record<string, string> = {
-  allende:    "/campus-allende.jpg",
-  sabinas:    "/campus-sabinas.jpg",
-  muzquiz:    "/campus-muzquiz.jpg",
-  barroteran: "/campus-barroteran.jpg",
-  anahuac:    "/campus-anahuac.jpg",
-  durango:    "/campus-durango.jpg",
+  allende:    "/images/campus-allende.jpg",
+  sabinas:    "/images/campus-sabinas.jpg",
+  muzquiz:    "/images/campus-muzquiz.jpg",
+  barroteran: "/images/campus-barroteran.jpg",
+  anahuac:    "/images/campus-anahuac.jpg",
+  durango:    "/images/campus-durango.jpg",
 };
 
 export default function CampusListPage() {

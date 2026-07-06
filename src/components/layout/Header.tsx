@@ -47,7 +47,7 @@ export function Header() {
           {/* Logo only */}
           <Link href="/" className="flex items-center flex-shrink-0">
             <img
-              src="/logo.png"
+              src="/images/logo.png"
               alt="ICCI Logo"
               className="h-10 w-auto object-contain"
             />

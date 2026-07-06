@@ -13,7 +13,7 @@ const PASTORS = [
     role: "Pastores Principales",
     desc:
       "Fundadores y visionarios de Iglesias Comunidad De Cristo Internacional. Su liderazgo y pasión por la adoración han guiado la red de campus hacia un crecimiento sostenido y profundo.",
-    img: "/pastores-sosa.png",
+    img: "/images/pastores-sosa.jpg",
     color: "from-navy to-navy-light",
   },
   {

@@ -33,7 +33,7 @@ export function Footer() {
           {/* Brand */}
           <div className="lg:col-span-1">
             <div className="flex items-center gap-3 mb-4">
-              <img src="/logo.png" alt="ICCI Logo" className="w-10 h-10 object-contain" />
+              <img src="/images/logo.png" alt="ICCI Logo" className="w-10 h-10 object-contain" />
             </div>
             <p className="font-display text-display text-white leading-none mb-1">ICCI</p>
             <p className="font-serif text-white/50 text-sm italic font-light mb-5">

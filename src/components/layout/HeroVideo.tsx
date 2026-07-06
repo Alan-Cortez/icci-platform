@@ -71,7 +71,7 @@ export function HeroVideo() {
           >
             {/* Eyebrow */}
             <div className="flex items-center gap-3 mb-6">
-              <img src="/logo.png" alt="ICCI Logo" className="w-12 h-12 object-contain drop-shadow-lg" />
+              <img src="/images/logo.png" alt="ICCI Logo" className="w-12 h-12 object-contain drop-shadow-lg" />
               <div>
                 <p className="label-eyebrow">Iglesias Comunidad De Cristo</p>
                 <p className="text-white/50 text-xs tracking-wide mt-0.5">
