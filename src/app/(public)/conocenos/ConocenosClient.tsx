@@ -136,59 +136,66 @@ export function ConocenosClient() {
           </h2>
         </div>
 
-        {/* Horizontal scroll on mobile, grid on desktop */}
         <div className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {PASTORS.map((pastor) => (
               <div
                 key={pastor.id}
-                className="relative group rounded-2xl overflow-hidden cursor-pointer bg-white/5 border border-white/10 hover:border-gold/30 transition-all duration-500"
+                className="relative group rounded-2xl overflow-hidden cursor-pointer border border-white/10 hover:border-gold/30 transition-all duration-500"
+                style={{ height: "420px" }}
                 onClick={() =>
                   setActivePastor(activePastor === pastor.id ? null : pastor.id)
                 }
               >
-                {/* Photo or gradient bg */}
-                <div
-                  className={`relative h-72 bg-gradient-to-b ${pastor.color} flex items-end`}
-                >
+                {/* Full background photo or gradient */}
+                <div className={`absolute inset-0 bg-gradient-to-b ${pastor.color}`}>
                   {pastor.img && (
                     <img
                       src={pastor.img}
                       alt={pastor.name}
-                      className="absolute inset-0 w-full h-full object-cover object-top mix-blend-overlay opacity-80"
+                      className="w-full h-full object-cover object-top"
                     />
                   )}
-                  <div className="relative z-10 w-full p-4 bg-gradient-to-t from-black/90 to-transparent">
-                    <p className="font-bold text-lg">{pastor.name}</p>
-                    <p className="text-white/60 text-sm">{pastor.role}</p>
+                </div>
+
+                {/* Dark gradient overlay at bottom always visible */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+
+                {/* Name bar — always visible at bottom */}
+                <div
+                  className={`absolute bottom-0 left-0 right-0 transition-all duration-500 ${
+                    activePastor === pastor.id
+                      ? "opacity-0 translate-y-2"
+                      : "opacity-100 translate-y-0 group-hover:opacity-0 group-hover:translate-y-2"
+                  }`}
+                >
+                  <div className="m-4 px-4 py-3 bg-white/10 backdrop-blur-md rounded-xl border border-white/20">
+                    <p className="font-semibold text-white text-sm">{pastor.name}</p>
                   </div>
                 </div>
 
-                {/* Hover overlay with description */}
+                {/* Info panel — slides up on hover or click */}
                 <div
-                  className={`absolute inset-0 bg-black/90 backdrop-blur-sm flex flex-col justify-end p-6 transition-all duration-400 ${
+                  className={`absolute bottom-0 left-0 right-0 transition-all duration-500 ${
                     activePastor === pastor.id
-                      ? "opacity-100"
-                      : "opacity-0 group-hover:opacity-100"
+                      ? "opacity-100 translate-y-0"
+                      : "opacity-0 translate-y-6 group-hover:opacity-100 group-hover:translate-y-0"
                   }`}
                 >
-                  <p className="font-black text-xl mb-1">{pastor.name}</p>
-                  <p className="text-gold text-sm mb-3">{pastor.role}</p>
-                  <p className="text-white/70 text-sm leading-relaxed">
-                    {pastor.desc}
-                  </p>
-                  <button className="mt-4 w-fit text-sm border border-white/30 px-4 py-1.5 rounded-full hover:border-gold hover:text-gold transition-colors">
-                    Más información
-                  </button>
+                  <div className="m-4 p-5 bg-white rounded-2xl shadow-2xl">
+                    <p className="font-bold text-navy text-base mb-2">{pastor.name}</p>
+                    <p className="text-gray-600 text-sm leading-relaxed mb-4">{pastor.desc}</p>
+                    <button className="inline-flex items-center gap-1 text-sm border border-gray-300 text-gray-700 px-4 py-1.5 rounded-full hover:border-navy hover:text-navy transition-colors font-medium">
+                      Más información
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}
           </div>
-          <p className="text-white/30 text-sm mt-6 text-center">
-            Haz clic en una tarjeta para ver la descripción completa
-          </p>
         </div>
       </section>
+
 
       {/* ── Campus Map ────────────────────────────────────────────────────── */}
       <section className="py-24 border-t border-white/5 bg-[#0e0e0e]">
