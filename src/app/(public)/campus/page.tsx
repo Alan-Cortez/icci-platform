@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { MapPin, ChevronRight } from "lucide-react";
 import { SectionHeading } from "@/components/ui";
-import { CAMPUSES } from "@/lib/constants";
+import { db } from "@/db";
+import { campuses } from "@/db/schema";
+import { desc } from "drizzle-orm";
 
 export const metadata: Metadata = {
   title: "Campus",
@@ -19,7 +21,9 @@ const CAMPUS_IMAGES: Record<string, string> = {
   durango:    "/images/campus-durango.jpg",
 };
 
-export default function CampusListPage() {
+export default async function CampusListPage() {
+  const allCampuses = await db.select().from(campuses).orderBy(desc(campuses.isMain));
+
   return (
     <div className="py-16 bg-off-white min-h-screen">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -31,8 +35,8 @@ export default function CampusListPage() {
         />
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {CAMPUSES.map((campus) => {
-            const img = CAMPUS_IMAGES[campus.id];
+          {allCampuses.map((campus) => {
+            const img = campus.image || CAMPUS_IMAGES[campus.name.toLowerCase()] || CAMPUS_IMAGES.allende;
             return (
               <Link
                 key={campus.id}

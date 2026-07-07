@@ -2,58 +2,15 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Users, Clock, ChevronRight } from "lucide-react";
 import { Card, SectionHeading, Badge } from "@/components/ui";
+import { db } from "@/db";
+import { ministries } from "@/db/schema";
 
 export const metadata: Metadata = {
   title: "Ministerios – ICCI",
   description: "Ministerios de Iglesias Comunidad De Cristo Internacional.",
 };
 
-const ministeriosPrincipales = [
-  {
-    id: "varones",
-    name: "Varones",
-    emoji: "⚔️",
-    description:
-      "Hombres de fe que se fortalecen mutuamente para vivir con integridad, servir a sus familias y ser pilares de su comunidad. Un espacio de camaradería, crecimiento espiritual y propósito.",
-    schedule: "Sábado · 7:00 PM",
-    verse: '"El hombre de bien deja herencia a sus nietos." — Proverbios 13:22',
-    color: "bg-blue-50 border-blue-100",
-    badgeColor: "bg-blue-100 text-blue-700",
-  },
-  {
-    id: "femenil",
-    name: "Femenil",
-    emoji: "🌸",
-    description:
-      "Mujeres que descubren su identidad en Cristo, fortalecen su fe y se apoyan mutuamente en cada etapa de la vida. Un lugar de amistad genuina, sanidad y propósito divino.",
-    schedule: "Miércoles · 7:00 PM",
-    verse: '"Mujer virtuosa, ¿quién la hallará? Su estima sobrepasa largamente a la de las piedras preciosas." — Proverbios 31:10',
-    color: "bg-pink-50 border-pink-100",
-    badgeColor: "bg-pink-100 text-pink-700",
-  },
-  {
-    id: "jovenes",
-    name: "Jóvenes",
-    emoji: "🔥",
-    description:
-      "Una generación apasionada que adora sin vergüenza y vive su fe con autenticidad. Para jóvenes de 11 años en adelante que quieren conocer a Dios y vivir con propósito.",
-    schedule: "Sábado · 7:00 PM",
-    verse: '"Acuérdate de tu Creador en los días de tu juventud." — Eclesiastés 12:1',
-    color: "bg-orange-50 border-orange-100",
-    badgeColor: "bg-orange-100 text-orange-700",
-  },
-  {
-    id: "ninos",
-    name: "Niños",
-    emoji: "🌟",
-    description:
-      "Los más pequeños de la familia ICCI aprenden sobre el amor de Dios de una manera divertida, creativa y significativa. Formando los cimientos de una fe sólida desde la infancia.",
-    schedule: "Domingo · 10:00 AM",
-    verse: '"Jesús dijo: Dejad a los niños venir a mí." — Mateo 19:14',
-    color: "bg-yellow-50 border-yellow-100",
-    badgeColor: "bg-yellow-100 text-yellow-700",
-  },
-];
+// The dynamic ministries are fetched from the database
 
 const ministeriosFuturos = [
   { name: "Matrimonios", emoji: "💍", desc: "Fortaleciendo los hogares" },
@@ -64,7 +21,9 @@ const ministeriosFuturos = [
   { name: "Ujieres", emoji: "🤝", desc: "Servicio y hospitalidad" },
 ];
 
-export default function MinisteriosPage() {
+export default async function MinisteriosPage() {
+  const allMinistries = await db.select().from(ministries);
+
   return (
     <div className="py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -76,21 +35,30 @@ export default function MinisteriosPage() {
 
         {/* Ministerios principales */}
         <div className="grid md:grid-cols-2 gap-8 mb-20">
-          {ministeriosPrincipales.map((m) => (
-            <Card key={m.id} className={`p-8 border ${m.color}`}>
-              <div className="text-5xl mb-5">{m.emoji}</div>
+          {allMinistries.map((m) => (
+            <Card key={m.id} className="p-8 border bg-gray-50 border-gray-100 flex flex-col hover:border-gold/50 transition-colors">
               <div className="flex items-center gap-3 mb-4">
                 <h2 className="text-2xl font-bold text-navy">{m.name}</h2>
-                <span className={`px-3 py-1 rounded-full text-xs font-semibold ${m.badgeColor}`}>
-                  {m.schedule}
-                </span>
+                {m.schedule && (
+                  <span className="px-3 py-1 rounded-full text-xs font-semibold bg-navy/5 text-navy border border-navy/10">
+                    {m.schedule}
+                  </span>
+                )}
               </div>
-              <p className="text-gray-600 leading-relaxed mb-5">{m.description}</p>
-              <blockquote className="border-l-4 border-gold pl-4 text-sm text-gray-500 italic">
-                {m.verse}
-              </blockquote>
+              <p className="text-gray-600 leading-relaxed mb-5 flex-1">{m.description}</p>
+              {m.leader && (
+                <div className="mt-4 pt-4 border-t border-gray-200">
+                  <p className="text-sm font-semibold text-navy">Líder / Encargado</p>
+                  <p className="text-sm text-gray-500">{m.leader}</p>
+                </div>
+              )}
             </Card>
           ))}
+          {allMinistries.length === 0 && (
+            <div className="col-span-full text-center py-10 text-gray-400">
+              Pronto anunciaremos nuestros ministerios activos.
+            </div>
+          )}
         </div>
 
         {/* Próximos ministerios */}

@@ -135,3 +135,28 @@ export const donations = sqliteTable("donation", {
   name: text("name"),
   createdAt: integer("createdAt", { mode: "timestamp_ms" }).$defaultFn(() => new Date()),
 });
+
+// --- CHURCH STRUCTURE SCHEMAS ---
+
+export const campuses = sqliteTable("campus", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  name: text("name").notNull(),
+  state: text("state").notNull(),
+  isMain: integer("isMain", { mode: "boolean" }).default(false),
+  pastor: text("pastor").notNull(),
+  address: text("address").notNull(),
+  phone: text("phone").notNull(),
+  description: text("description").notNull(),
+  image: text("image"), // Cover photo for the campus
+  createdAt: integer("createdAt", { mode: "timestamp_ms" }).$defaultFn(() => new Date()),
+});
+
+export const ministries = sqliteTable("ministry", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  name: text("name").notNull(),
+  description: text("description").notNull(),
+  schedule: text("schedule"),
+  leader: text("leader"),
+  image: text("image"), // Cover photo for the ministry
+  createdAt: integer("createdAt", { mode: "timestamp_ms" }).$defaultFn(() => new Date()),
+});
