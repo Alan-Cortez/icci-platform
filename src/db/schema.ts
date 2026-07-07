@@ -128,6 +128,14 @@ export const prayerRequests = sqliteTable("prayer_request", {
   createdAt: integer("createdAt", { mode: "timestamp_ms" }).$defaultFn(() => new Date()),
 });
 
+export const testimonies = sqliteTable("testimony", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  userId: text("userId").notNull().references(() => users.id, { onDelete: "cascade" }),
+  content: text("content").notNull(),
+  status: text("status").notNull().default("pending"), // 'pending', 'approved', 'rejected'
+  createdAt: integer("createdAt", { mode: "timestamp_ms" }).$defaultFn(() => new Date()),
+});
+
 export const donations = sqliteTable("donation", {
   id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
   amount: integer("amount").notNull(), // stored in cents

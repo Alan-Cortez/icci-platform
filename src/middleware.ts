@@ -16,6 +16,16 @@ export default auth((req) => {
     if (!isLoggedIn) {
       return Response.redirect(new URL("/admin/login", req.nextUrl));
     }
+    
+    const role = (req.auth?.user as any)?.role || "user";
+    if (role !== "admin" && role !== "superadmin") {
+      return Response.redirect(new URL("/", req.nextUrl));
+    }
+
+    if (req.nextUrl.pathname.startsWith("/admin/usuarios") && role !== "superadmin") {
+       return Response.redirect(new URL("/admin", req.nextUrl));
+    }
+
     return null;
   }
 });

