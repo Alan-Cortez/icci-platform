@@ -154,7 +154,7 @@ export function CampusClient({ campus, pastorName, googleMapsUrl }: CampusClient
       {/* Modal for Interactive Schedules */}
       {activeModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-navy/80 backdrop-blur-sm">
-          <div className="bg-white rounded-3xl w-full max-w-lg p-8 relative shadow-2xl animate-in fade-in zoom-in duration-200">
+          <div className="bg-white rounded-3xl w-full max-w-4xl p-8 relative shadow-2xl animate-in fade-in zoom-in duration-200 flex flex-col max-h-[90vh]">
             <button 
               onClick={() => setActiveModal(null)}
               className="absolute top-6 right-6 text-gray-400 hover:text-navy transition-colors"
