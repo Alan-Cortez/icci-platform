@@ -87,10 +87,12 @@ export const devotionals = sqliteTable("devotional", {
 export const blogPosts = sqliteTable("blog_post", {
   id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
   title: text("title").notNull(),
+  slug: text("slug").notNull().unique(),
+  excerpt: text("excerpt").notNull(),
   content: text("content").notNull(),
   author: text("author").notNull(),
-  date: integer("date", { mode: "timestamp_ms" }).notNull(),
-  image: text("image"),
+  coverImage: text("coverImage"),
+  publishedAt: integer("publishedAt", { mode: "timestamp_ms" }).notNull(),
   createdAt: integer("createdAt", { mode: "timestamp_ms" }).$defaultFn(() => new Date()),
 });
 
@@ -98,6 +100,7 @@ export const gallery = sqliteTable("gallery", {
   id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
   title: text("title").notNull(),
   url: text("url").notNull(),
+  description: text("description"),
   category: text("category").notNull(), // 'events', 'youth', 'kids', 'campus'
   createdAt: integer("createdAt", { mode: "timestamp_ms" }).$defaultFn(() => new Date()),
 });

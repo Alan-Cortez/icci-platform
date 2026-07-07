@@ -185,7 +185,7 @@ export async function createGalleryImage(formData: FormData) {
 
   await db.insert(gallery).values({
     title,
-    imageUrl,
+    url: imageUrl,
     description: description || null,
     category,
   });
@@ -202,7 +202,7 @@ export async function updateGalleryImage(id: string, formData: FormData) {
 
   await db.update(gallery).set({
     title,
-    imageUrl,
+    url: imageUrl,
     description: description || null,
     category,
   }).where(eq(gallery.id, id));
