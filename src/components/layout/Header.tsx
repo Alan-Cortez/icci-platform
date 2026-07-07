@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { useState, useRef, useEffect } from "react";
-import { Menu, X, ChevronDown, LogIn, Calendar, Church } from "lucide-react";
+import { Menu, X, ChevronDown, LogIn, Calendar, Church, LogOut } from "lucide-react";
+import { signOut } from "next-auth/react";
 import { cn } from "@/lib/utils";
 
 // ─── Nav structure ───────────────────────────────────────────────────────────
@@ -23,7 +24,7 @@ const NAV = [
 
 // ─── Component ───────────────────────────────────────────────────────────────
 
-export function Header() {
+export function Header({ session }: { session?: any }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -112,15 +113,30 @@ export function Header() {
             )}
           </nav>
 
-          {/* CTA — Iniciar sesión */}
-          <div className="hidden lg:flex items-center">
-            <Link
-              href="/admin"
-              className="flex items-center gap-2 bg-navy text-white text-sm font-semibold px-5 py-2.5 rounded-full hover:bg-navy-light transition-colors duration-200"
-            >
-              <LogIn className="w-4 h-4" />
-              Iniciar sesión
-            </Link>
+          {/* CTA — Iniciar sesión o Perfil */}
+          <div className="hidden lg:flex items-center gap-4">
+            {session?.user ? (
+              <div className="flex items-center gap-3">
+                <span className="text-sm font-medium text-gray-700">
+                  Hola, <span className="font-bold text-navy">{session.user.name?.split(" ")[0]}</span>
+                </span>
+                <button
+                  onClick={() => signOut({ callbackUrl: "/" })}
+                  className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-full transition-colors"
+                  title="Cerrar sesión"
+                >
+                  <LogOut className="w-5 h-5" />
+                </button>
+              </div>
+            ) : (
+              <Link
+                href="/admin"
+                className="flex items-center gap-2 bg-navy text-white text-sm font-semibold px-5 py-2.5 rounded-full hover:bg-navy-light transition-colors duration-200"
+              >
+                <LogIn className="w-4 h-4" />
+                Iniciar sesión
+              </Link>
+            )}
           </div>
 
           {/* Mobile hamburger */}
@@ -174,16 +190,31 @@ export function Header() {
             )
           )}
 
-          {/* Login CTA */}
-          <div className="pt-3 px-4">
-            <Link
-              href="/admin"
-              onClick={() => setMobileOpen(false)}
-              className="flex items-center justify-center gap-2 w-full bg-navy text-white text-sm font-semibold px-5 py-3 rounded-full hover:bg-navy-light transition-colors"
-            >
-              <LogIn className="w-4 h-4" />
-              Iniciar sesión
-            </Link>
+          {/* Login CTA or User Info */}
+          <div className="pt-3 px-4 pb-2">
+            {session?.user ? (
+              <div className="flex items-center justify-between bg-gray-50 p-4 rounded-xl border border-gray-100">
+                <span className="text-sm font-medium text-gray-700">
+                  Hola, <span className="font-bold text-navy">{session.user.name?.split(" ")[0]}</span>
+                </span>
+                <button
+                  onClick={() => signOut({ callbackUrl: "/" })}
+                  className="flex items-center gap-2 text-sm text-red-600 hover:text-red-700 font-medium"
+                >
+                  <LogOut className="w-4 h-4" />
+                  Salir
+                </button>
+              </div>
+            ) : (
+              <Link
+                href="/admin"
+                onClick={() => setMobileOpen(false)}
+                className="flex items-center justify-center gap-2 w-full bg-navy text-white text-sm font-semibold px-5 py-3 rounded-full hover:bg-navy-light transition-colors"
+              >
+                <LogIn className="w-4 h-4" />
+                Iniciar sesión
+              </Link>
+            )}
           </div>
         </nav>
       </div>
