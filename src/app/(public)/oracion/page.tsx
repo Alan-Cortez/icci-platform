@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { CheckCircle, ChevronRight } from "lucide-react";
 import { CAMPUSES } from "@/lib/constants";
+import { createPrayerRequest } from "@/actions/prayers";
 
 // ─── Marquee ticker ────────────────────────────────────────────────────────────
 
@@ -80,18 +81,25 @@ export default function OracionPage() {
     setLoading(true);
     const form = new FormData(e.currentTarget);
     try {
-      const res = await fetch("/api/oracion", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: `${form.get("nombre")} ${form.get("apellidos")}`,
-          phone: form.get("celular"),
-          message: form.get("message"),
-          campusId: form.get("campusId") || null,
-          type: form.get("tipo"),
-        }),
-      });
-      if (res.ok) setSubmitted(true);
+      const nombre = form.get("nombre") as string;
+      const apellidos = form.get("apellidos") as string;
+      const tipo = form.get("tipo") as string;
+      const campusId = form.get("campusId") as string;
+      const message = form.get("message") as string;
+      
+      const combinedMessage = `Tipo: ${tipo}\nCampus: ${campusId}\n\nMensaje: ${message}`;
+      
+      const serverFormData = new FormData();
+      serverFormData.append("name", `${nombre} ${apellidos}`);
+      serverFormData.append("phone", form.get("celular") as string);
+      serverFormData.append("request", combinedMessage);
+      serverFormData.append("isPublic", "false"); // Can be toggled if we add a checkbox
+
+      await createPrayerRequest(serverFormData);
+      setSubmitted(true);
+    } catch (error) {
+      console.error(error);
+      alert("Hubo un error al enviar tu petición. Por favor, intenta de nuevo.");
     } finally {
       setLoading(false);
     }
