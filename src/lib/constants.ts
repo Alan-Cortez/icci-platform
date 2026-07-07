@@ -117,17 +117,9 @@ export const NAV_LINKS = [
 
 export const ADMIN_MODULES = [
   { href: "/admin", label: "Dashboard", icon: "LayoutDashboard" },
-  { href: "/admin/campus", label: "Campus", icon: "MapPin" },
   { href: "/admin/usuarios", label: "Usuarios", icon: "Users" },
   { href: "/admin/eventos", label: "Eventos", icon: "Calendar" },
-  { href: "/admin/ministerios", label: "Ministerios", icon: "Heart" },
-  { href: "/admin/predicaciones", label: "Predicaciones", icon: "Video" },
-  { href: "/admin/devocionales", label: "Devocionales", icon: "BookOpen" },
-  { href: "/admin/blog", label: "Blog", icon: "FileText" },
-  { href: "/admin/galeria", label: "Galería", icon: "Image" },
-  { href: "/admin/bautizos", label: "Bautizos", icon: "Droplets" },
   { href: "/admin/donaciones", label: "Donaciones", icon: "HandCoins" },
   { href: "/admin/oracion", label: "Solicitudes de oración", icon: "MessageCircle" },
-  { href: "/admin/testimonios", label: "Testimonios", icon: "MessageCircle" },
-  { href: "/admin/configuracion", label: "Configuración", icon: "Settings" },
+  { href: "/admin/devocionales", label: "Devocionales", icon: "BookOpen" },
 ] as const;

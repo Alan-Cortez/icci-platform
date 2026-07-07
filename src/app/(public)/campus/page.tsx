@@ -2,9 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { MapPin, ChevronRight } from "lucide-react";
 import { SectionHeading } from "@/components/ui";
-import { db } from "@/db";
-import { campuses } from "@/db/schema";
-import { desc } from "drizzle-orm";
+import { CAMPUSES } from "@/lib/constants";
 
 export const metadata: Metadata = {
   title: "Campus",
@@ -23,7 +21,7 @@ const CAMPUS_IMAGES: Record<string, string> = {
 };
 
 export default async function CampusListPage() {
-  const allCampuses = await db.select().from(campuses).orderBy(desc(campuses.isMain));
+  const allCampuses = [...CAMPUSES].sort((a, b) => (a.isMain === b.isMain ? 0 : a.isMain ? -1 : 1));
 
   return (
     <div className="py-16 bg-off-white min-h-screen">

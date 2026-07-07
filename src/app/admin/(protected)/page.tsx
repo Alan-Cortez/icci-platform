@@ -11,12 +11,10 @@ export default async function AdminDashboardPage() {
   }
 
   const stats = [
-    { label: "Campus activos", value: CAMPUSES.length, icon: MapPin, color: "text-blue-600" },
-    { label: "Ministerios", value: MINISTRIES.length, icon: Heart, color: "text-pink-600" },
-    { label: "Eventos", value: 1, icon: Calendar, color: "text-purple-600" },
-    { label: "Predicaciones", value: 1, icon: Video, color: "text-red-600" },
     { label: "Usuarios", value: 1, icon: Users, color: "text-green-600" },
+    { label: "Eventos", value: 1, icon: Calendar, color: "text-purple-600" },
     { label: "Oraciones pendientes", value: 0, icon: MessageCircle, color: "text-gold" },
+    { label: "Devocionales", value: 1, icon: Heart, color: "text-pink-600" },
   ];
 
   return (
@@ -44,10 +42,10 @@ export default async function AdminDashboardPage() {
         <h2 className="font-bold text-navy mb-4">Acciones rápidas</h2>
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
           {[
-            { href: "/admin/eventos", label: "Nuevo evento" },
-            { href: "/admin/predicaciones", label: "Nueva predicación" },
+            { href: "/admin/eventos", label: "Eventos" },
             { href: "/admin/devocionales", label: "Nuevo devocional" },
-            { href: "/admin/campus", label: "Gestionar campus" },
+            { href: "/admin/oracion", label: "Revisar oraciones" },
+            { href: "/admin/usuarios", label: "Gestionar usuarios" },
           ].map((action) => (
             <a
               key={action.href}

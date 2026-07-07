@@ -2,11 +2,8 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Calendar, Clock, Mail, MapPin, Phone, User } from "lucide-react";
 import { Button, Card, SectionHeading } from "@/components/ui";
-import { SCHEDULES } from "@/lib/constants";
+import { SCHEDULES, CAMPUSES } from "@/lib/constants";
 import { CampusClient } from "./CampusClient";
-import { db } from "@/db";
-import { campuses } from "@/db/schema";
-import { eq } from "drizzle-orm";
 
 // Google Maps link for the real address
 const GOOGLE_MAPS_URL =
@@ -17,14 +14,12 @@ interface Props {
 }
 
 export async function generateStaticParams() {
-  const allCampuses = await db.select({ id: campuses.id }).from(campuses);
-  return allCampuses.map((c) => ({ slug: c.id }));
+  return CAMPUSES.map((c) => ({ slug: c.id }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const campusRes = await db.select().from(campuses).where(eq(campuses.id, slug));
-  const campus = campusRes[0];
+  const campus = CAMPUSES.find((c) => c.id === slug);
   if (!campus) return { title: "Campus no encontrado" };
   return {
     title: campus.isMain
@@ -36,8 +31,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function CampusDetailPage({ params }: Props) {
   const { slug } = await params;
-  const campusRes = await db.select().from(campuses).where(eq(campuses.id, slug));
-  const campus = campusRes[0];
+  const campus = CAMPUSES.find((c) => c.id === slug);
   if (!campus) notFound();
 
   // For the main campus use the real church name and photo header
@@ -58,7 +52,7 @@ export default async function CampusDetailPage({ params }: Props) {
           <>
             <div
               className="absolute inset-0 bg-cover bg-center bg-navy"
-              style={{ backgroundImage: campus.image ? `url('${campus.image}')` : "url('/images/campus-allende.jpg')" }}
+              style={{ backgroundImage: (campus as any).image ? `url('${(campus as any).image}')` : "url('/images/campus-allende.jpg')" }}
             />
             {/* Overlays */}
             <div className="absolute inset-0 bg-gradient-to-r from-navy/85 via-navy/70 to-navy/40" />
