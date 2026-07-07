@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { Calendar, Clock, Mail, MapPin, Phone, User, X, ChevronRight } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Calendar, Clock, Mail, MapPin, Phone, User, X, ChevronRight, Instagram, Facebook, Video } from "lucide-react";
 import { Button, Card, SectionHeading } from "@/components/ui";
 import { SCHEDULES } from "@/lib/constants";
 
@@ -25,6 +25,24 @@ export function CampusClient({ campus, pastorName, googleMapsUrl }: CampusClient
     pastorImg = "/images/pastores-sosa.jpg";
     pastorColor = "from-navy to-navy-light";
   }
+
+  // Load TikTok script when modal is Jóvenes
+  useEffect(() => {
+    if (activeModal === "Jóvenes") {
+      const script = document.createElement("script");
+      script.src = "https://www.tiktok.com/embed.js";
+      script.async = true;
+      document.body.appendChild(script);
+      
+      return () => {
+        // We don't necessarily need to remove it, but it's good practice.
+        // However, TikTok's script might leave some global variables.
+        if (document.body.contains(script)) {
+          document.body.removeChild(script);
+        }
+      };
+    }
+  }, [activeModal]);
 
   return (
     <>
@@ -146,9 +164,76 @@ export function CampusClient({ campus, pastorName, googleMapsUrl }: CampusClient
             <p className="text-gold font-bold text-xs uppercase tracking-widest mb-2">Más información</p>
             <h3 className="text-3xl font-black text-navy mb-4">{activeModal}</h3>
             <div className="h-0.5 w-10 bg-gold mb-6" />
-            <p className="text-gray-600 leading-relaxed mb-8">
-              La información detallada sobre {activeModal} estará disponible próximamente.
-            </p>
+            
+            <div className="max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
+              {activeModal === "Jóvenes" ? (
+                <div className="space-y-8 text-gray-700">
+                  <p className="text-lg leading-relaxed">
+                    ¡Bienvenidos a la red de Jóvenes Con Todo! Somos una generación apasionada por Dios, listos para marcar la diferencia en nuestra ciudad y nuestro entorno.
+                  </p>
+                  
+                  {/* Info de Liderazgo */}
+                  <div className="bg-off-white p-6 rounded-2xl border border-gray-100">
+                    <h4 className="font-bold text-navy text-lg mb-3 flex items-center gap-2">
+                      <User className="w-5 h-5 text-gold" /> Liderazgo
+                    </h4>
+                    <p className="mb-2"><strong>Pastores de Jóvenes:</strong> Omar y Jacqueline Laborico</p>
+                    <p>Contamos con un equipo de líderes apasionados por guiar a cada joven a su máximo potencial en Cristo, creando una atmósfera de amistad, respeto y crecimiento espiritual.</p>
+                  </div>
+
+                  {/* Redes Sociales */}
+                  <div>
+                    <h4 className="font-bold text-navy text-lg mb-4">Síguenos en nuestras redes</h4>
+                    <div className="flex flex-wrap gap-4">
+                      <a href="https://www.instagram.com/jovenescontodoicc?igsh=azk1NzducHQydzFi" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-500 text-white px-4 py-2 rounded-full font-semibold hover:shadow-lg transition-all hover:-translate-y-0.5">
+                        <Instagram className="w-5 h-5" /> Instagram
+                      </a>
+                      <a href="https://www.facebook.com/share/14jAxX7pjUE/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 bg-[#1877F2] text-white px-4 py-2 rounded-full font-semibold hover:shadow-lg transition-all hover:-translate-y-0.5">
+                        <Facebook className="w-5 h-5" /> Facebook
+                      </a>
+                    </div>
+                  </div>
+
+                  {/* Galería / Media */}
+                  <div className="grid md:grid-cols-2 gap-6 items-start pt-4 border-t border-gray-100">
+                    <div>
+                      <h4 className="font-bold text-navy text-lg mb-4 flex items-center gap-2">
+                        <Video className="w-5 h-5 text-gold" /> Lo más reciente
+                      </h4>
+                      <p className="text-sm text-gray-500 mb-4">Conoce un poco de lo que vivimos cada fin de semana en nuestras reuniones.</p>
+                      
+                      <div className="grid grid-cols-2 gap-2">
+                        <img src="/images/jovenes.jpg" alt="Jóvenes" className="rounded-xl w-full h-32 object-cover" />
+                        <div className="rounded-xl w-full h-32 bg-navy-light flex items-center justify-center">
+                          <span className="text-gold/50 text-xs text-center px-2">Más fotos próximamente</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* TikTok Embed */}
+                    <div className="w-full flex justify-center bg-gray-50 rounded-2xl overflow-hidden min-h-[400px]">
+                      <blockquote 
+                        className="tiktok-embed w-full m-0" 
+                        cite="https://www.tiktok.com/@jovenes.con.todo" 
+                        data-unique-id="jovenes.con.todo" 
+                        data-embed-type="creator" 
+                        style={{ maxWidth: "780px", minWidth: "288px" }}
+                      >
+                        <section>
+                          <a target="_blank" href="https://www.tiktok.com/@jovenes.con.todo?refer=creator_embed" rel="noreferrer">
+                            @jovenes.con.todo
+                          </a>
+                        </section>
+                      </blockquote>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <p className="text-gray-600 leading-relaxed mb-8">
+                  La información detallada sobre {activeModal} estará disponible próximamente.
+                </p>
+              )}
+            </div>
             <button 
               onClick={() => setActiveModal(null)}
               className="w-full bg-navy text-white font-semibold py-3 rounded-xl hover:bg-navy-light transition-colors"
