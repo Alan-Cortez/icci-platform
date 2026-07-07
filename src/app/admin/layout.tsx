@@ -37,6 +37,14 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const session = await auth();
+  
+  const role = (session?.user as any)?.role || "user";
+  if (!session) {
+    redirect("/admin/login");
+  }
+  if (role !== "admin" && role !== "superadmin") {
+    redirect("/");
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 flex">
