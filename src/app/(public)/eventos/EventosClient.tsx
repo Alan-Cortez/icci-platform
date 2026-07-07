@@ -25,102 +25,21 @@ interface EventData {
   price?: string;
 }
 
-const EVENTS: EventData[] = [
-  {
-    id: "evt-001",
-    title: "Conferencia de Avivamiento",
-    category: "General",
-    month: "Julio",
-    description: "Tres días de adoración, enseñanza y renovación espiritual para toda la familia. Ven y experimenta la presencia de Dios de una manera fresca.",
-    dateStr: "Viernes 14 al Domingo 16 de Julio de 2026",
-    timeStr: "7:00 PM",
-    location: "Auditorio Principal - Allende",
-    campus: "Allende",
-    capacity: 500,
-    featured: true,
-    image: "/images/campus-allende.jpg",
-    price: "Entrada libre",
-  },
-  {
-    id: "evt-002",
-    title: "Campamento de Jóvenes 'Sin Límites'",
-    category: "Jóvenes",
-    month: "Agosto",
-    description: "Un tiempo diseñado para la nueva generación. Juegos, talleres, fogatas y tiempos profundos de adoración.",
-    dateStr: "Jueves 5 de Agosto de 2026",
-    timeStr: "4:00 PM (Salida)",
-    location: "Quinta Los Pinos",
-    campus: "Regional",
-    image: "/images/jovenes.jpg",
-    price: "$500 MXN",
-  },
-  {
-    id: "evt-003",
-    title: "Té de Damas",
-    category: "Femenil",
-    month: "Julio",
-    description: "Una tarde especial para conectar, compartir la palabra y fortalecer amistades. Incluye merienda y materiales.",
-    dateStr: "Sábado 24 de Julio de 2026",
-    timeStr: "5:30 PM",
-    location: "Salón Anexo",
-    campus: "Allende",
-    image: "/images/servicio-femenil.jpg",
-    price: "$100 MXN",
-  },
-  {
-    id: "evt-004",
-    title: "Congreso de Niños 'Héroes de la Fe'",
-    category: "Niños",
-    month: "Agosto",
-    description: "Tres días de diversión, música y enseñanzas bíblicas adaptadas para los más pequeños del hogar.",
-    dateStr: "Sábado 14 de Agosto de 2026",
-    timeStr: "10:00 AM",
-    location: "Área Infantil",
-    campus: "Múzquiz",
-    image: "/images/pastores-sosa.jpg", // placeholder
-    price: "Entrada libre",
-  },
-  {
-    id: "evt-005",
-    title: "Desayuno de Varones",
-    category: "Varones",
-    month: "Septiembre",
-    description: "Tiempo de compañerismo, un buen desayuno y una palabra de desafío para los hombres de la casa.",
-    dateStr: "Sábado 4 de Septiembre de 2026",
-    timeStr: "8:30 AM",
-    location: "Auditorio Principal - Allende",
-    campus: "Allende",
-    image: "/images/campus-allende.jpg", // placeholder
-    price: "$150 MXN",
-  },
-  {
-    id: "evt-006",
-    title: "Noche de Adoración Extrema",
-    category: "Jóvenes",
-    month: "Septiembre",
-    description: "Venimos juntos a levantar el nombre de Jesús. Habrá invitados especiales y tiempo de ministración.",
-    dateStr: "Viernes 17 de Septiembre de 2026",
-    timeStr: "8:00 PM",
-    location: "Auditorio Principal - Sabinas",
-    campus: "Sabinas",
-    image: "/images/jovenes.jpg",
-    price: "Entrada libre",
-  },
-];
+// Using dynamic data from DB instead of hardcoded array
 
-export function EventosClient() {
+export function EventosClient({ initialEvents }: { initialEvents: any[] }) {
   const [activeCategory, setActiveCategory] = useState("Todo");
   const [activeMonth, setActiveMonth] = useState("Todos los meses");
   const [selectedEvent, setSelectedEvent] = useState<EventData | null>(null);
 
   // Filter events
-  const filteredEvents = EVENTS.filter((evt) => {
+  const filteredEvents = initialEvents.filter((evt) => {
     const matchCategory = activeCategory === "Todo" || evt.category === activeCategory;
     const matchMonth = activeMonth === "Todos los meses" || evt.month === activeMonth;
     return matchCategory && matchMonth;
   });
 
-  const featuredEvent = EVENTS.find((e) => e.featured);
+  const featuredEvent = initialEvents.find((e) => e.featured);
 
   return (
     <div className="py-8 sm:py-16 bg-off-white min-h-screen relative">

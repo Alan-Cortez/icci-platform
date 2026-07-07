@@ -60,3 +60,76 @@ export const events = sqliteTable("event", {
   price: text("price"),
   createdAt: integer("createdAt", { mode: "timestamp_ms" }).$defaultFn(() => new Date()),
 });
+
+export const sermons = sqliteTable("sermon", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  title: text("title").notNull(),
+  description: text("description"),
+  youtubeUrl: text("youtubeUrl").notNull(),
+  speaker: text("speaker").notNull(),
+  date: integer("date", { mode: "timestamp_ms" }).notNull(),
+  image: text("image"),
+  createdAt: integer("createdAt", { mode: "timestamp_ms" }).$defaultFn(() => new Date()),
+});
+
+export const devotionals = sqliteTable("devotional", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  title: text("title").notNull(),
+  content: text("content").notNull(),
+  author: text("author").notNull(),
+  date: integer("date", { mode: "timestamp_ms" }).notNull(),
+  image: text("image"),
+  createdAt: integer("createdAt", { mode: "timestamp_ms" }).$defaultFn(() => new Date()),
+});
+
+export const blogPosts = sqliteTable("blog_post", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  title: text("title").notNull(),
+  content: text("content").notNull(),
+  author: text("author").notNull(),
+  date: integer("date", { mode: "timestamp_ms" }).notNull(),
+  image: text("image"),
+  createdAt: integer("createdAt", { mode: "timestamp_ms" }).$defaultFn(() => new Date()),
+});
+
+export const gallery = sqliteTable("gallery", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  title: text("title").notNull(),
+  url: text("url").notNull(),
+  category: text("category").notNull(), // 'events', 'youth', 'kids', 'campus'
+  createdAt: integer("createdAt", { mode: "timestamp_ms" }).$defaultFn(() => new Date()),
+});
+
+export const baptisms = sqliteTable("baptism", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  fullName: text("fullName").notNull(),
+  email: text("email").notNull(),
+  phone: text("phone").notNull(),
+  age: integer("age").notNull(),
+  campus: text("campus").notNull(),
+  status: text("status").notNull().default("pending"), // 'pending', 'approved', 'completed'
+  notes: text("notes"),
+  createdAt: integer("createdAt", { mode: "timestamp_ms" }).$defaultFn(() => new Date()),
+});
+
+export const prayerRequests = sqliteTable("prayer_request", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  name: text("name").notNull(),
+  email: text("email"),
+  phone: text("phone"),
+  request: text("request").notNull(),
+  isPublic: integer("isPublic", { mode: "boolean" }).default(false),
+  status: text("status").notNull().default("pending"), // 'pending', 'prayed'
+  createdAt: integer("createdAt", { mode: "timestamp_ms" }).$defaultFn(() => new Date()),
+});
+
+export const donations = sqliteTable("donation", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  amount: integer("amount").notNull(), // stored in cents
+  currency: text("currency").notNull().default("MXN"),
+  status: text("status").notNull().default("pending"), // 'pending', 'completed', 'failed'
+  paymentMethod: text("paymentMethod"),
+  email: text("email"),
+  name: text("name"),
+  createdAt: integer("createdAt", { mode: "timestamp_ms" }).$defaultFn(() => new Date()),
+});
