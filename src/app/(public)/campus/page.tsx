@@ -10,6 +10,7 @@ export const metadata: Metadata = {
   title: "Campus",
   description: "Ubicaciones de ICCI en Allende, Sabinas, Múzquiz, Barroterán, Anáhuac y Durango.",
 };
+export const revalidate = 0;
 
 // Map each campus id to its background image
 const CAMPUS_IMAGES: Record<string, string> = {

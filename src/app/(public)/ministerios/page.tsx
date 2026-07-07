@@ -9,6 +9,7 @@ export const metadata: Metadata = {
   title: "Ministerios – ICCI",
   description: "Ministerios de Iglesias Comunidad De Cristo Internacional.",
 };
+export const revalidate = 0;
 
 // The dynamic ministries are fetched from the database
 

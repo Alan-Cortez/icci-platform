@@ -5,6 +5,7 @@ import { desc } from "drizzle-orm";
 import { GaleriaClient } from "./GaleriaClient";
 
 export const metadata: Metadata = { title: "Galería | ICCI" };
+export const revalidate = 0;
 
 export default async function GaleriaPage() {
   const allPhotos = await db.select().from(gallery).orderBy(desc(gallery.createdAt));
