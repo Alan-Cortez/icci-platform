@@ -2,8 +2,8 @@ import { auth } from "@/auth";
 
 export default auth((req) => {
   const isLoggedIn = !!req.auth;
-  const isAuthRoute = req.nextUrl.pathname.startsWith("/login");
-  const isAdminRoute = req.nextUrl.pathname.startsWith("/admin");
+  const isAuthRoute = req.nextUrl.pathname.startsWith("/admin/login");
+  const isAdminRoute = req.nextUrl.pathname.startsWith("/admin") && !isAuthRoute;
 
   if (isAuthRoute) {
     if (isLoggedIn) {
@@ -14,7 +14,7 @@ export default auth((req) => {
 
   if (isAdminRoute) {
     if (!isLoggedIn) {
-      return Response.redirect(new URL("/login", req.nextUrl));
+      return Response.redirect(new URL("/admin/login", req.nextUrl));
     }
     return null;
   }
