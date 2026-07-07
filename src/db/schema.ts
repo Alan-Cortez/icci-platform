@@ -52,6 +52,8 @@ export const events = sqliteTable("event", {
   description: text("description").notNull(),
   dateStr: text("dateStr").notNull(),
   timeStr: text("timeStr").notNull(),
+  startDate: integer("startDate", { mode: "timestamp_ms" }),
+  endDate: integer("endDate", { mode: "timestamp_ms" }),
   location: text("location").notNull(),
   campus: text("campus").notNull(),
   capacity: integer("capacity"),

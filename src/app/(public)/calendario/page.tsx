@@ -3,44 +3,16 @@ import { Calendar, Clock, MapPin, Users, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { Badge, Button, Card, SectionHeading } from "@/components/ui";
 import { SCHEDULES } from "@/lib/constants";
+import { db } from "@/db";
+import { events } from "@/db/schema";
+import { gte } from "drizzle-orm";
 
 export const metadata: Metadata = {
   title: "Calendario – ICCI",
   description: "Horarios y eventos de Iglesias Comunidad De Cristo Internacional.",
 };
 
-const upcomingEvents = [
-  {
-    id: "e1",
-    title: "Conferencia de Avivamiento",
-    date: "Próximamente",
-    time: "7:00 PM",
-    location: "Auditorio Principal – Allende",
-    campus: "Allende",
-    category: "Conferencia",
-    featured: true,
-  },
-  {
-    id: "e2",
-    title: "Retiro de Jóvenes",
-    date: "Próximamente",
-    time: "Todo el día",
-    location: "Allende, Coahuila",
-    campus: "Allende",
-    category: "Retiro",
-    featured: false,
-  },
-  {
-    id: "e3",
-    title: "Evangelización último domingo",
-    date: "Último domingo del mes",
-    time: "7:00 PM",
-    location: "Comunidad local",
-    campus: "Todos los campus",
-    category: "Evangelismo",
-    featured: false,
-  },
-];
+// Removed hardcoded events
 
 const dayOrder = ["Lunes a viernes", "Miércoles", "Jueves", "Último viernes de cada mes", "Sábado", "Domingo", "Último domingo del mes"];
 
@@ -50,7 +22,24 @@ const categoryColors: Record<string, string> = {
   Evangelismo: "bg-green-100 text-green-700",
 };
 
-export default function CalendarioPage() {
+export const revalidate = 0; // Ensure fresh events
+
+export default async function CalendarioPage() {
+  const now = new Date();
+  now.setHours(0, 0, 0, 0); // start of today
+  
+  // Fetch events from DB that have a startDate >= today (or just all events if we want to show past as well, but usually calendar shows upcoming)
+  // Let's just fetch all and sort them by startDate ascending. Or fetch only upcoming:
+  const dbEvents = await db.select().from(events).orderBy(events.startDate);
+  
+  // Filter for upcoming (events where startDate or endDate is >= today)
+  // If startDate is null, we can still show them at the end, or filter them out if they don't have dates.
+  const upcomingEvents = dbEvents.filter(e => {
+    if (!e.startDate) return true; // Show those without dates just in case
+    const end = e.endDate ? new Date(e.endDate) : new Date(e.startDate);
+    return end >= now;
+  }).slice(0, 10); // Show max 10 upcoming events here
+  
   return (
     <div className="py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -98,9 +87,18 @@ export default function CalendarioPage() {
             {upcomingEvents.map((event) => (
               <Card key={event.id} className="overflow-hidden hover:shadow-md transition-shadow">
                 <div className="flex flex-col sm:flex-row">
-                  <div className="bg-navy sm:w-24 flex items-center justify-center p-4 sm:flex-col gap-1 shrink-0">
-                    <Calendar className="w-6 h-6 text-gold" />
-                    <span className="text-white/60 text-xs text-center">{event.date.split(" ")[0]}</span>
+                  <div className="bg-navy sm:w-28 flex items-center justify-center p-4 sm:flex-col gap-1 shrink-0 text-center">
+                    <Calendar className="w-6 h-6 text-gold mb-1" />
+                    {event.startDate ? (
+                      <span className="text-white/80 text-xs font-semibold uppercase leading-tight">
+                        {new Date(event.startDate).toLocaleDateString("es-MX", { month: "short", day: "numeric" })}
+                        {event.endDate && event.endDate !== event.startDate && (
+                          <> - <br/> {new Date(event.endDate).toLocaleDateString("es-MX", { month: "short", day: "numeric" })}</>
+                        )}
+                      </span>
+                    ) : (
+                      <span className="text-white/60 text-xs text-center">{event.dateStr}</span>
+                    )}
                   </div>
                   <div className="p-6 flex-1">
                     <div className="flex items-center gap-2 mb-2 flex-wrap">
@@ -111,7 +109,8 @@ export default function CalendarioPage() {
                     </div>
                     <h3 className="font-bold text-navy text-lg">{event.title}</h3>
                     <div className="flex flex-wrap gap-4 mt-3 text-sm text-gray-500">
-                      <span className="flex items-center gap-1"><Clock className="w-4 h-4" />{event.time}</span>
+                      <span className="flex items-center gap-1"><Calendar className="w-4 h-4" />{event.dateStr}</span>
+                      <span className="flex items-center gap-1"><Clock className="w-4 h-4" />{event.timeStr}</span>
                       <span className="flex items-center gap-1"><MapPin className="w-4 h-4" />{event.location}</span>
                       <span className="flex items-center gap-1"><Users className="w-4 h-4" />{event.campus}</span>
                     </div>
@@ -127,6 +126,11 @@ export default function CalendarioPage() {
                 </div>
               </Card>
             ))}
+            {upcomingEvents.length === 0 && (
+              <div className="text-center py-12">
+                <p className="text-gray-500">No hay eventos próximos agendados por el momento.</p>
+              </div>
+            )}
           </div>
 
           <div className="text-center mt-10">

@@ -20,6 +20,13 @@ export async function createEvent(formData: FormData) {
   const capacity = formData.get("capacity") ? parseInt(formData.get("capacity") as string) : null;
   const featured = formData.get("featured") === "on";
 
+  // Parse dates (they come as YYYY-MM-DD from <input type="date">)
+  const startDateStr = formData.get("startDate") as string;
+  const endDateStr = formData.get("endDate") as string;
+  
+  const startDate = startDateStr ? new Date(startDateStr + "T00:00:00") : null;
+  const endDate = endDateStr ? new Date(endDateStr + "T00:00:00") : null;
+
   await db.insert(events).values({
     title,
     category,
@@ -27,6 +34,8 @@ export async function createEvent(formData: FormData) {
     description,
     dateStr,
     timeStr,
+    startDate,
+    endDate,
     location,
     campus,
     image: (await uploadImage(imageFile)) || "",
@@ -59,6 +68,15 @@ export async function updateEvent(id: string, formData: FormData) {
   const capacity = formData.get("capacity") ? parseInt(formData.get("capacity") as string) : null;
   const featured = formData.get("featured") === "on";
 
+  // Parse dates (they come as YYYY-MM-DD from <input type="date">)
+  const startDateStr = formData.get("startDate") as string;
+  const endDateStr = formData.get("endDate") as string;
+  
+  // Create Dates keeping them in local time (or UTC depending on how we parse). 
+  // Appending "T00:00:00" ensures it parses as local midnight instead of UTC midnight offset issues.
+  const startDate = startDateStr ? new Date(startDateStr + "T00:00:00") : null;
+  const endDate = endDateStr ? new Date(endDateStr + "T00:00:00") : null;
+
   await db.update(events).set({
     title,
     category,
@@ -66,6 +84,8 @@ export async function updateEvent(id: string, formData: FormData) {
     description,
     dateStr,
     timeStr,
+    startDate,
+    endDate,
     location,
     campus,
     ...(imageFile && imageFile !== "undefined" && { image: await uploadImage(imageFile) as string }),

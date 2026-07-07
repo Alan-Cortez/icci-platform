@@ -70,7 +70,23 @@ export function EventForm({ event, onCancel }: { event?: any, onCancel: () => vo
           </div>
 
           <div className="grid grid-cols-2 gap-4">
-            <Input label="Fecha (Ej: 15 de Julio)" name="dateStr" defaultValue={event?.dateStr} required />
+            <Input 
+              label="Fecha de Inicio (Calendario)" 
+              type="date" 
+              name="startDate" 
+              defaultValue={event?.startDate ? new Date(event.startDate).toISOString().split('T')[0] : ""} 
+              required 
+            />
+            <Input 
+              label="Fecha de Fin (Opcional)" 
+              type="date" 
+              name="endDate" 
+              defaultValue={event?.endDate ? new Date(event.endDate).toISOString().split('T')[0] : ""} 
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <Input label="Fecha en Texto (Ej: 15 al 20 de Julio)" name="dateStr" defaultValue={event?.dateStr} required />
             <Input label="Hora (Ej: 7:00 PM)" name="timeStr" defaultValue={event?.timeStr} required />
           </div>
 
