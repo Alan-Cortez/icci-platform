@@ -89,7 +89,21 @@ export function EventForm({ event, onCancel }: { event?: any, onCancel: () => vo
             </div>
           </div>
 
-          <Input label="URL de la Imagen (Póster)" name="image" defaultValue={event?.image} type="url" required />
+          <div>
+            <label className="block text-sm font-semibold text-navy mb-2">
+              Imagen del Evento (Póster) {event ? "(Opcional si no la cambias)" : ""}
+            </label>
+            <input 
+              type="file" 
+              name="image" 
+              accept="image/*"
+              required={!event}
+              className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white transition-colors"
+            />
+            {event?.image && (
+              <p className="mt-2 text-xs text-gray-500">Ya hay una imagen subida. Selecciona otra solo si deseas cambiarla.</p>
+            )}
+          </div>
 
           <div className="grid grid-cols-2 gap-4">
             <Input label="Precio (Opcional, ej: $150)" name="price" defaultValue={event?.price || ""} />

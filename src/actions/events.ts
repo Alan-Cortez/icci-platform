@@ -4,6 +4,7 @@ import { db } from "@/db";
 import { events } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
+import { uploadImage } from "@/lib/upload";
 
 export async function createEvent(formData: FormData) {
   const title = formData.get("title") as string;
@@ -14,7 +15,7 @@ export async function createEvent(formData: FormData) {
   const timeStr = formData.get("timeStr") as string;
   const location = formData.get("location") as string;
   const campus = formData.get("campus") as string;
-  const image = formData.get("image") as string;
+  const imageFile = formData.get("image") as File | string | null;
   const price = formData.get("price") as string;
   const capacity = formData.get("capacity") ? parseInt(formData.get("capacity") as string) : null;
   const featured = formData.get("featured") === "on";
@@ -28,7 +29,7 @@ export async function createEvent(formData: FormData) {
     timeStr,
     location,
     campus,
-    image,
+    image: (await uploadImage(imageFile)) || "",
     price: price || null,
     capacity,
     featured,
@@ -53,7 +54,7 @@ export async function updateEvent(id: string, formData: FormData) {
   const timeStr = formData.get("timeStr") as string;
   const location = formData.get("location") as string;
   const campus = formData.get("campus") as string;
-  const image = formData.get("image") as string;
+  const imageFile = formData.get("image") as File | string | null;
   const price = formData.get("price") as string;
   const capacity = formData.get("capacity") ? parseInt(formData.get("capacity") as string) : null;
   const featured = formData.get("featured") === "on";
@@ -67,7 +68,7 @@ export async function updateEvent(id: string, formData: FormData) {
     timeStr,
     location,
     campus,
-    image,
+    ...(imageFile && imageFile !== "undefined" && { image: await uploadImage(imageFile) as string }),
     price: price || null,
     capacity,
     featured,

@@ -4,6 +4,7 @@ import { db } from "@/db";
 import { sermons, devotionals, blogPosts, gallery } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
+import { uploadImage } from "@/lib/upload";
 
 // --- SERMONS (Predicaciones) ---
 export async function createSermon(formData: FormData) {
@@ -11,7 +12,7 @@ export async function createSermon(formData: FormData) {
   const description = formData.get("description") as string;
   const youtubeUrl = formData.get("youtubeUrl") as string;
   const speaker = formData.get("speaker") as string;
-  const image = formData.get("image") as string;
+  const imageFile = formData.get("image") as File | string | null;
   const date = new Date(formData.get("date") as string);
 
   await db.insert(sermons).values({
@@ -19,7 +20,7 @@ export async function createSermon(formData: FormData) {
     description: description || null,
     youtubeUrl,
     speaker,
-    image: image || null,
+    image: await uploadImage(imageFile),
     date,
   });
 
@@ -32,7 +33,7 @@ export async function updateSermon(id: string, formData: FormData) {
   const description = formData.get("description") as string;
   const youtubeUrl = formData.get("youtubeUrl") as string;
   const speaker = formData.get("speaker") as string;
-  const image = formData.get("image") as string;
+  const imageFile = formData.get("image") as File | string | null;
   const dateStr = formData.get("date") as string;
 
   const dataToUpdate: any = {
@@ -40,7 +41,7 @@ export async function updateSermon(id: string, formData: FormData) {
     description: description || null,
     youtubeUrl,
     speaker,
-    image: image || null,
+    ...(imageFile && imageFile !== "undefined" && { image: await uploadImage(imageFile) }),
   };
 
   if (dateStr) {
@@ -65,7 +66,7 @@ export async function createDevotional(formData: FormData) {
   const verseText = formData.get("verseText") as string;
   const content = formData.get("content") as string;
   const author = formData.get("author") as string;
-  const image = formData.get("image") as string;
+  const imageFile = formData.get("image") as File | string | null;
   const date = new Date(formData.get("date") as string);
 
   await db.insert(devotionals).values({
@@ -74,7 +75,7 @@ export async function createDevotional(formData: FormData) {
     verseText: verseText || null,
     content,
     author,
-    image: image || null,
+    image: await uploadImage(imageFile),
     date,
   });
 
@@ -88,7 +89,7 @@ export async function updateDevotional(id: string, formData: FormData) {
   const verseText = formData.get("verseText") as string;
   const content = formData.get("content") as string;
   const author = formData.get("author") as string;
-  const image = formData.get("image") as string;
+  const imageFile = formData.get("image") as File | string | null;
   const dateStr = formData.get("date") as string;
 
   const dataToUpdate: any = {
@@ -97,7 +98,7 @@ export async function updateDevotional(id: string, formData: FormData) {
     verseText: verseText || null,
     content,
     author,
-    image: image || null,
+    ...(imageFile && imageFile !== "undefined" && { image: await uploadImage(imageFile) }),
   };
 
   if (dateStr) {
@@ -122,7 +123,7 @@ export async function createBlogPost(formData: FormData) {
   const excerpt = formData.get("excerpt") as string;
   const content = formData.get("content") as string;
   const author = formData.get("author") as string;
-  const coverImage = formData.get("coverImage") as string;
+  const coverImageFile = formData.get("coverImage") as File | string | null;
   const publishedAt = new Date(formData.get("publishedAt") as string);
 
   // Simple slug duplicate prevention (could be improved)
@@ -137,7 +138,7 @@ export async function createBlogPost(formData: FormData) {
     excerpt,
     content,
     author,
-    coverImage: coverImage || null,
+    coverImage: await uploadImage(coverImageFile),
     publishedAt,
   });
 
@@ -150,7 +151,7 @@ export async function updateBlogPost(id: string, formData: FormData) {
   const excerpt = formData.get("excerpt") as string;
   const content = formData.get("content") as string;
   const author = formData.get("author") as string;
-  const coverImage = formData.get("coverImage") as string;
+  const coverImageFile = formData.get("coverImage") as File | string | null;
   const publishedAtStr = formData.get("publishedAt") as string;
 
   const dataToUpdate: any = {
@@ -158,7 +159,7 @@ export async function updateBlogPost(id: string, formData: FormData) {
     excerpt,
     content,
     author,
-    coverImage: coverImage || null,
+    ...(coverImageFile && coverImageFile !== "undefined" && { coverImage: await uploadImage(coverImageFile) }),
   };
 
   if (publishedAtStr) {
@@ -179,13 +180,13 @@ export async function deleteBlogPost(id: string) {
 // --- GALLERY (Galería) ---
 export async function createGalleryImage(formData: FormData) {
   const title = formData.get("title") as string;
-  const imageUrl = formData.get("imageUrl") as string;
+  const imageFile = formData.get("imageUrl") as File | string | null;
   const description = formData.get("description") as string;
   const category = formData.get("category") as string;
 
   await db.insert(gallery).values({
     title,
-    url: imageUrl,
+    url: (await uploadImage(imageFile)) || "",
     description: description || null,
     category,
   });
@@ -196,13 +197,13 @@ export async function createGalleryImage(formData: FormData) {
 
 export async function updateGalleryImage(id: string, formData: FormData) {
   const title = formData.get("title") as string;
-  const imageUrl = formData.get("imageUrl") as string;
+  const imageFile = formData.get("imageUrl") as File | string | null;
   const description = formData.get("description") as string;
   const category = formData.get("category") as string;
 
   await db.update(gallery).set({
     title,
-    url: imageUrl,
+    ...(imageFile && imageFile !== "undefined" && { url: await uploadImage(imageFile) as string }),
     description: description || null,
     category,
   }).where(eq(gallery.id, id));

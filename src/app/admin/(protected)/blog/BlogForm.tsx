@@ -64,6 +64,21 @@ export function BlogForm({ post, onCancel }: { post?: any, onCancel: () => void 
           </div>
 
           <div>
+            <label className="block text-sm font-semibold text-navy mb-2">
+              Imagen de Portada {post ? "(Opcional si no la cambias)" : ""}
+            </label>
+            <input 
+              type="file" 
+              name="coverImage" 
+              accept="image/*"
+              className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white transition-colors"
+            />
+            {post?.coverImage && (
+              <p className="mt-2 text-xs text-gray-500">Ya hay una imagen subida. Selecciona otra solo si deseas cambiarla.</p>
+            )}
+          </div>
+
+          <div>
             <label className="block text-sm font-semibold text-navy mb-2">Contenido</label>
             <textarea 
               name="content" 

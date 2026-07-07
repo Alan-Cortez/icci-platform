@@ -44,7 +44,21 @@ export function GaleriaForm({ photo, onCancel }: { photo?: any, onCancel: () => 
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
           <Input label="Título Corto (Ej. Retiro 2025)" name="title" defaultValue={photo?.title} required />
           
-          <Input label="Enlace de la imagen (URL)" name="imageUrl" defaultValue={photo?.imageUrl} required placeholder="https://ejemplo.com/imagen.jpg" />
+          <div>
+            <label className="block text-sm font-semibold text-navy mb-2">
+              Fotografía {photo ? "(Opcional si no la cambias)" : ""}
+            </label>
+            <input 
+              type="file" 
+              name="imageUrl" 
+              accept="image/*"
+              required={!photo}
+              className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white transition-colors"
+            />
+            {photo?.url && (
+              <p className="mt-2 text-xs text-gray-500">Ya hay una imagen subida. Selecciona otra solo si deseas cambiarla.</p>
+            )}
+          </div>
 
           <div>
             <label className="block text-sm font-semibold text-navy mb-2">Categoría</label>

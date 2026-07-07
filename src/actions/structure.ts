@@ -4,6 +4,7 @@ import { db } from "@/db";
 import { campuses, ministries } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
+import { uploadImage } from "@/lib/upload";
 
 // --- CAMPUS ---
 export async function createCampus(formData: FormData) {
@@ -13,7 +14,7 @@ export async function createCampus(formData: FormData) {
   const address = formData.get("address") as string;
   const phone = formData.get("phone") as string;
   const description = formData.get("description") as string;
-  const image = formData.get("image") as string;
+  const imageFile = formData.get("image") as File | string | null;
   const isMain = formData.get("isMain") === "on";
 
   await db.insert(campuses).values({
@@ -23,7 +24,7 @@ export async function createCampus(formData: FormData) {
     address,
     phone,
     description,
-    image: image || null,
+    image: await uploadImage(imageFile),
     isMain,
   });
 
@@ -38,7 +39,7 @@ export async function updateCampus(id: string, formData: FormData) {
   const address = formData.get("address") as string;
   const phone = formData.get("phone") as string;
   const description = formData.get("description") as string;
-  const image = formData.get("image") as string;
+  const imageFile = formData.get("image") as File | string | null;
   const isMain = formData.get("isMain") === "on";
 
   await db.update(campuses).set({
@@ -48,7 +49,7 @@ export async function updateCampus(id: string, formData: FormData) {
     address,
     phone,
     description,
-    image: image || null,
+    ...(imageFile && imageFile !== "undefined" && { image: await uploadImage(imageFile) }),
     isMain,
   }).where(eq(campuses.id, id));
   
@@ -68,14 +69,14 @@ export async function createMinistry(formData: FormData) {
   const description = formData.get("description") as string;
   const schedule = formData.get("schedule") as string;
   const leader = formData.get("leader") as string;
-  const image = formData.get("image") as string;
+  const imageFile = formData.get("image") as File | string | null;
 
   await db.insert(ministries).values({
     name,
     description,
     schedule: schedule || null,
     leader: leader || null,
-    image: image || null,
+    image: await uploadImage(imageFile),
   });
 
   revalidatePath("/admin/ministerios");
@@ -87,14 +88,14 @@ export async function updateMinistry(id: string, formData: FormData) {
   const description = formData.get("description") as string;
   const schedule = formData.get("schedule") as string;
   const leader = formData.get("leader") as string;
-  const image = formData.get("image") as string;
+  const imageFile = formData.get("image") as File | string | null;
 
   await db.update(ministries).set({
     name,
     description,
     schedule: schedule || null,
     leader: leader || null,
-    image: image || null,
+    ...(imageFile && imageFile !== "undefined" && { image: await uploadImage(imageFile) }),
   }).where(eq(ministries.id, id));
   
   revalidatePath("/admin/ministerios");

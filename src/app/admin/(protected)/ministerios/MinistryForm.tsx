@@ -60,7 +60,20 @@ export function MinistryForm({ ministry, onCancel }: { ministry?: any, onCancel:
             />
           </div>
 
-          <Input label="URL de Imagen (Opcional)" name="image" defaultValue={ministry?.image} placeholder="https://ejemplo.com/foto.jpg" />
+          <div>
+            <label className="block text-sm font-semibold text-navy mb-2">
+              Fotografía del Ministerio (Opcional)
+            </label>
+            <input 
+              type="file" 
+              name="image" 
+              accept="image/*"
+              className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white transition-colors"
+            />
+            {ministry?.image && (
+              <p className="mt-2 text-xs text-gray-500">Ya hay una imagen subida. Selecciona otra solo si deseas cambiarla.</p>
+            )}
+          </div>
 
           <div className="flex gap-3 pt-4">
             <Button type="button" onClick={onCancel} className="flex-1 bg-gray-200 text-gray-700 hover:bg-gray-300">
