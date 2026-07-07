@@ -44,7 +44,6 @@ export function EventForm({ event, onCancel }: { event?: any, onCancel: () => vo
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
           <Input label="Título del Evento" name="title" defaultValue={event?.title} required />
           
-          <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-semibold text-navy mb-2">Categoría</label>
               <select name="category" defaultValue={event?.category || "Jóvenes"} className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white transition-colors" required>
@@ -55,8 +54,6 @@ export function EventForm({ event, onCancel }: { event?: any, onCancel: () => vo
                 <option value="General">General</option>
               </select>
             </div>
-            <Input label="Mes (Ej: Julio)" name="month" defaultValue={event?.month} required />
-          </div>
 
           <div>
             <label className="block text-sm font-semibold text-navy mb-2">Descripción</label>
@@ -85,8 +82,7 @@ export function EventForm({ event, onCancel }: { event?: any, onCancel: () => vo
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <Input label="Fecha en Texto (Ej: 15 al 20 de Julio)" name="dateStr" defaultValue={event?.dateStr} required />
+          <div>
             <Input label="Hora (Ej: 7:00 PM)" name="timeStr" defaultValue={event?.timeStr} required />
           </div>
 

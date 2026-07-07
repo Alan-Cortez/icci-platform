@@ -9,9 +9,7 @@ import { uploadImage } from "@/lib/upload";
 export async function createEvent(formData: FormData) {
   const title = formData.get("title") as string;
   const category = formData.get("category") as string;
-  const month = formData.get("month") as string;
   const description = formData.get("description") as string;
-  const dateStr = formData.get("dateStr") as string;
   const timeStr = formData.get("timeStr") as string;
   const location = formData.get("location") as string;
   const campus = formData.get("campus") as string;
@@ -26,6 +24,30 @@ export async function createEvent(formData: FormData) {
   
   const startDate = startDateStr ? new Date(startDateStr + "T00:00:00") : null;
   const endDate = endDateStr ? new Date(endDateStr + "T00:00:00") : null;
+
+  // Derive month and dateStr automatically
+  const monthNames = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+  
+  let month = "";
+  let dateStr = "";
+
+  if (startDate) {
+    month = monthNames[startDate.getMonth()];
+    const startDay = startDate.getDate();
+    const startMonth = month;
+    
+    if (endDate && endDate > startDate) {
+      const endDay = endDate.getDate();
+      const endMonth = monthNames[endDate.getMonth()];
+      if (startMonth === endMonth) {
+        dateStr = `${startDay} al ${endDay} de ${startMonth}`;
+      } else {
+        dateStr = `${startDay} de ${startMonth} al ${endDay} de ${endMonth}`;
+      }
+    } else {
+      dateStr = `${startDay} de ${startMonth}`;
+    }
+  }
 
   await db.insert(events).values({
     title,
@@ -57,9 +79,7 @@ export async function deleteEvent(id: string) {
 export async function updateEvent(id: string, formData: FormData) {
   const title = formData.get("title") as string;
   const category = formData.get("category") as string;
-  const month = formData.get("month") as string;
   const description = formData.get("description") as string;
-  const dateStr = formData.get("dateStr") as string;
   const timeStr = formData.get("timeStr") as string;
   const location = formData.get("location") as string;
   const campus = formData.get("campus") as string;
@@ -76,6 +96,30 @@ export async function updateEvent(id: string, formData: FormData) {
   // Appending "T00:00:00" ensures it parses as local midnight instead of UTC midnight offset issues.
   const startDate = startDateStr ? new Date(startDateStr + "T00:00:00") : null;
   const endDate = endDateStr ? new Date(endDateStr + "T00:00:00") : null;
+
+  // Derive month and dateStr automatically
+  const monthNames = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+  
+  let month = "";
+  let dateStr = "";
+
+  if (startDate) {
+    month = monthNames[startDate.getMonth()];
+    const startDay = startDate.getDate();
+    const startMonth = month;
+    
+    if (endDate && endDate > startDate) {
+      const endDay = endDate.getDate();
+      const endMonth = monthNames[endDate.getMonth()];
+      if (startMonth === endMonth) {
+        dateStr = `${startDay} al ${endDay} de ${startMonth}`;
+      } else {
+        dateStr = `${startDay} de ${startMonth} al ${endDay} de ${endMonth}`;
+      }
+    } else {
+      dateStr = `${startDay} de ${startMonth}`;
+    }
+  }
 
   await db.update(events).set({
     title,
