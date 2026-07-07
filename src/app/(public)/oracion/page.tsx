@@ -2,35 +2,10 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { CheckCircle, ChevronRight, MessageCircleHeart } from "lucide-react";
+import { CheckCircle, ChevronRight } from "lucide-react";
 import { CAMPUSES } from "@/lib/constants";
 import { createPrayerRequest } from "@/actions/prayers";
 import { Button, Input, Select, Textarea, SectionHeading, Card, Badge } from "@/components/ui";
-
-// ─── Marquee ticker ────────────────────────────────────────────────────────────
-
-function Marquee() {
-  const items = Array(8).fill("COMPARTE TU HISTORIA");
-  return (
-    <div className="overflow-hidden bg-gold/10 border-y border-gold/20 py-5 select-none mt-24">
-      <div className="flex gap-8 animate-[marquee_18s_linear_infinite] whitespace-nowrap w-max">
-        {items.map((text, i) => (
-          <span key={i} className="flex items-center gap-5 text-2xl font-black tracking-tight text-navy uppercase">
-            <MessageCircleHeart className="w-7 h-7 flex-shrink-0 text-gold" />
-            {text}
-          </span>
-        ))}
-      </div>
-
-      <style>{`
-        @keyframes marquee {
-          0%   { transform: translateX(0); }
-          100% { transform: translateX(-50%); }
-        }
-      `}</style>
-    </div>
-  );
-}
 
 // ─── Success screen ────────────────────────────────────────────────────────────
 
@@ -218,9 +193,6 @@ export default function OracionPage() {
           </form>
         </Card>
       </section>
-
-      {/* ── Marquee ticker ────────────────────────────────────────────── */}
-      <Marquee />
     </div>
   );
 }
