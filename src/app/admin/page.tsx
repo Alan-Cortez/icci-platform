@@ -1,12 +1,12 @@
 import { redirect } from "next/navigation";
 import { Calendar, Heart, MapPin, MessageCircle, Users, Video } from "lucide-react";
-import { getSession, canAccessAdmin } from "@/lib/auth/session";
+import { auth } from "@/auth";
 import { Card } from "@/components/ui";
 import { CAMPUSES, MINISTRIES } from "@/lib/constants";
 
 export default async function AdminDashboardPage() {
-  const session = await getSession();
-  if (!session || !canAccessAdmin(session.role)) {
+  const session = await auth();
+  if (!session) {
     redirect("/admin/login");
   }
 
@@ -23,7 +23,7 @@ export default async function AdminDashboardPage() {
     <div>
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-navy">Dashboard</h1>
-        <p className="text-gray-500 mt-1">Bienvenido, {session.name}</p>
+        <p className="text-gray-500 mt-1">Bienvenido, {session.user?.name}</p>
       </div>
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-10">

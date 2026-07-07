@@ -15,7 +15,7 @@ import {
   Droplets,
   HandCoins,
 } from "lucide-react";
-import { getSession, canAccessAdmin } from "@/lib/auth/session";
+import { auth } from "@/auth";
 import { ADMIN_MODULES, SITE } from "@/lib/constants";
 import { AdminLogoutButton } from "@/components/admin/AdminLogoutButton";
 
@@ -36,11 +36,11 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
 };
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
-  const session = await getSession();
+  const session = await auth();
 
   return (
     <div className="min-h-screen bg-gray-50 flex">
-      {session && canAccessAdmin(session.role) && (
+      {session && (
         <aside className="w-64 bg-navy text-white shrink-0 hidden lg:flex flex-col">
           <div className="p-6 border-b border-white/10">
             <div className="flex items-center gap-3">
@@ -69,14 +69,14 @@ export default async function AdminLayout({ children }: { children: React.ReactN
             })}
           </nav>
           <div className="p-4 border-t border-white/10">
-            <p className="text-xs text-white/50 mb-2 truncate">{session.name}</p>
+            <p className="text-xs text-white/50 mb-2 truncate">{session.user?.name}</p>
             <AdminLogoutButton />
           </div>
         </aside>
       )}
 
       <div className="flex-1 flex flex-col min-w-0">
-        {session && canAccessAdmin(session.role) && (
+        {session && (
           <header className="bg-white border-b border-gray-100 px-6 py-4 flex items-center justify-between lg:hidden">
             <p className="font-bold text-navy text-sm">ICCI Admin</p>
             <AdminLogoutButton />
