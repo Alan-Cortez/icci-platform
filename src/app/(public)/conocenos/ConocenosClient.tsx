@@ -279,27 +279,6 @@ export function ConocenosClient() {
         </div>
       </section>
 
-      {/* ── 5. ¿Qué Creemos? CTA — NAVY ────────────────────────────────────── */}
-      <section className="bg-navy text-white py-28 text-center">
-        <div className="max-w-2xl mx-auto px-4">
-          <p className="text-gold tracking-widest uppercase text-xs font-semibold mb-3">
-            Nuestros fundamentos
-          </p>
-          <div className="h-0.5 w-10 bg-gold mx-auto mb-8" />
-          <h2 className="text-4xl sm:text-5xl font-black mb-6">¿Qué Creemos?</h2>
-          <p className="text-white/60 leading-relaxed mb-10 max-w-lg mx-auto">
-            Conoce los pilares bíblicos que guían nuestra fe, nuestra doctrina
-            y nuestra forma de vivir como comunidad cristiana.
-          </p>
-          <Link
-            href="/conocenos/que-creemos"
-            className="inline-flex items-center gap-2 bg-gold text-navy font-bold px-8 py-4 rounded-full hover:bg-gold-light transition-colors"
-          >
-            Ver nuestras creencias <ChevronRight className="w-5 h-5" />
-          </Link>
-        </div>
-      </section>
-
     </div>
   );
 }

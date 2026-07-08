@@ -10,28 +10,28 @@ export const metadata: Metadata = {
 
 const pillars = [
   {
-    number: "01",
-    title: "Iglesias locales fuertes",
+    number: "A",
+    title: "Alcanzar",
     description:
-      "Cada campus debe ser una iglesia saludable, con liderazgo sólido, ministerios activos y comunidades que crecen en número y en madurez espiritual.",
+      "Llevar el mensaje de salvación a cada persona, compartiendo el amor y la gracia de Jesucristo en nuestra comunidad y más allá.",
   },
   {
-    number: "02",
-    title: "Multiplicación regional",
+    number: "R",
+    title: "Restaurar",
     description:
-      "Nuestra visión es plantar nuevos campus en ciudades del norte de México donde el evangelio necesite ser proclamado con mayor fuerza.",
+      "Ser un lugar de sanidad donde las personas y familias encuentren la restauración integral que solo Dios puede dar a través de Su Espíritu.",
   },
   {
-    number: "03",
-    title: "Formación de líderes",
+    number: "D",
+    title: "Discipular",
     description:
-      "Levantamos y equipamos a la próxima generación de pastores, líderes y siervos para que multipliquen el impacto del reino de Dios.",
+      "Formar seguidores de Cristo maduros y arraigados en la Palabra, equipándolos para vivir una vida con propósito y principios bíblicos.",
   },
   {
-    number: "04",
-    title: "Familias transformadas",
+    number: "E",
+    title: "Enviar",
     description:
-      "Creemos que cuando una familia encuentra a Cristo, una comunidad entera puede ser transformada. Invertimos en las familias de cada campus.",
+      "Comisionar líderes y servidores empoderados para que impacten su entorno, planten nuevas obras y cumplan el propósito de Dios en el mundo.",
   },
 ];
 
@@ -49,8 +49,8 @@ export default function VisionPage() {
 
         <SectionHeading
           subtitle="Hacia dónde vamos"
-          title="Nuestra Visión"
-          description="Una red de iglesias unidas, sanas y en crecimiento constante, alcanzando a México para Cristo."
+          title="Nuestra Visión ARDE"
+          description="Nuestra visión es encender el fuego del evangelio a través de cuatro pilares fundamentales."
         />
 
         {/* Compass icon */}
@@ -63,7 +63,7 @@ export default function VisionPage() {
         {/* Vision statement */}
         <div className="text-center max-w-3xl mx-auto mb-16">
           <blockquote className="text-2xl md:text-3xl font-light text-navy leading-relaxed italic">
-            &ldquo;Ser una red de iglesias unidas por el evangelio de Jesucristo, que transforma familias, ciudades y naciones.&rdquo;
+            &ldquo;Hacer arder el corazón de nuestra ciudad con el amor de Cristo, para Alcanzar, Restaurar, Discipular y Enviar a cada persona a su propósito.&rdquo;
           </blockquote>
         </div>
 
