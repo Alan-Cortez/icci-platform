@@ -22,7 +22,7 @@ const PASTORS = [
     role: "Co-Pastores",
     desc:
       "Siervos fieles y pilares de la iglesia, Tomás y Mary Rojero co-pastorean con dedicación y amor, apoyando el crecimiento espiritual de cada familia en la comunidad.",
-    img: null,
+    img: "/images/pastores-rojero.jpg",
     color: "from-gold/60 to-gold/30",
   },
   {
@@ -31,7 +31,7 @@ const PASTORS = [
     role: "Co-Pastores",
     desc:
       "Epitacio y Ana Quistiano sirven con corazón pastoral, acompañando a la congregación con sabiduría, fe y un amor genuino por las personas.",
-    img: null,
+    img: "/images/pastores-quistiano.jpg",
     color: "from-navy-muted to-navy",
   },
   {
