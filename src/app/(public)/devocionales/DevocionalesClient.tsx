@@ -1,8 +1,12 @@
 "use client";
 
+import { useState } from "react";
 import type { Metadata } from "next";
 import { BookOpen, Quote as QuoteIcon, Trophy, BookOpenCheck } from "lucide-react";
 import { Card, SectionHeading } from "@/components/ui";
+import { cn } from "@/lib/utils";
+
+const CATEGORIES = ["Todo", "Devocionales", "Retos de lectura", "Pensamientos"];
 
 // Simple and robust Markdown to HTML renderer for devocionales
 function renderMarkdown(text: string) {
@@ -49,28 +53,67 @@ function renderMarkdown(text: string) {
 }
 
 export function DevocionalesClient({ initialDevotionals }: { initialDevotionals: any[] }) {
+  const [activeCategory, setActiveCategory] = useState("Todo");
+
+  const filteredDevotionals = initialDevotionals.filter((d) => {
+    if (activeCategory === "Todo") return true;
+    if (activeCategory === "Devocionales") return d.type === "classic" || !d.type;
+    if (activeCategory === "Retos de lectura") return d.type === "challenge";
+    if (activeCategory === "Pensamientos") return d.type === "quote";
+    return true;
+  });
+
   return (
-    <div className="py-16 bg-off-white min-h-screen">
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-center mb-6">
-          <div className="w-16 h-16 rounded-full bg-gold/10 flex items-center justify-center shadow-sm">
-            <BookOpenCheck className="w-8 h-8 text-gold" />
+    <div className="bg-off-white min-h-screen">
+      {/* ── 1. Hero — NAVY (Identical to Conocenos) ── */}
+      <section className="relative flex items-center justify-center py-28 md:py-36 overflow-hidden bg-navy text-white mb-12">
+        <div className="absolute inset-0 overflow-hidden pointer-events-none select-none">
+          <span className="absolute text-[28vw] font-black text-white/[0.04] -bottom-6 -left-4 tracking-tighter leading-none">
+            ICCI
+          </span>
+        </div>
+        <div className="relative z-10 text-center px-4">
+          <p className="text-gold tracking-[0.3em] uppercase text-xs font-semibold mb-4">
+            Iglesias Comunidad De Cristo Internacional
+          </p>
+          <h1 className="text-5xl sm:text-7xl font-black leading-none tracking-tight">
+            Devocionales
+          </h1>
+          <p className="mt-6 text-white/50 max-w-xl mx-auto leading-relaxed text-sm sm:text-base">
+            Reflexiones, lecturas bíblicas y frases diarias de nuestros pastores para fortalecer tu caminar con Dios.
+          </p>
+        </div>
+      </section>
+
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+
+        {/* ── Filtros de Categorías (Similar a Eventos) ── */}
+        <div className="flex justify-center mb-10 mt-8">
+          <div className="flex items-center gap-1 bg-white p-1.5 rounded-full shadow-sm border border-gray-100 overflow-x-auto max-w-full scrollbar-hide">
+            {CATEGORIES.map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setActiveCategory(cat)}
+                className={cn(
+                  "px-5 py-2.5 rounded-full text-xs sm:text-sm font-semibold transition-all duration-300 cursor-pointer whitespace-nowrap",
+                  activeCategory === cat
+                    ? "bg-navy text-white shadow-md"
+                    : "text-gray-600 hover:bg-gray-100 hover:text-navy"
+                )}
+              >
+                {cat}
+              </button>
+            ))}
           </div>
         </div>
-        
-        <SectionHeading
-          subtitle="Alimento espiritual diario"
-          title="Devocionales y Pensamientos"
-          description="Reflexiones, lecturas bíblicas y frases diarias de nuestros pastores para fortalecer tu caminar con Dios."
-        />
 
-        <div className="space-y-12 mt-10">
-          {initialDevotionals.length === 0 ? (
+        <div className="space-y-12 mt-6">
+          {filteredDevotionals.length === 0 ? (
             <div className="text-center py-20 bg-white rounded-3xl border border-gray-100 shadow-sm text-gray-400">
-              No hay publicaciones disponibles en este momento.
+              No hay publicaciones en esta categoría.
             </div>
           ) : (
-            initialDevotionals.map((d, i) => {
+            filteredDevotionals.map((d, i) => {
               const dateStr = new Date(d.date).toLocaleDateString("es-MX", {
                 year: "numeric",
                 month: "long",

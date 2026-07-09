@@ -74,11 +74,11 @@ export function DevocionalForm({ devotional, onCancel }: { devotional?: any, onC
               name="type"
               value={type}
               onChange={(e) => setType(e.target.value)}
-              className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white transition-colors focus:outline-none focus:ring-2 focus:ring-gold/50 text-navy font-medium"
+              className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white transition-colors focus:outline-none focus:ring-2 focus:ring-gold/50 text-navy font-medium cursor-pointer"
             >
-              <option value="classic">📖 Devocional Clásico</option>
-              <option value="quote">💬 Frase o Pensamiento corto</option>
-              <option value="challenge">🏆 Reto de Lectura Bíblica</option>
+              <option value="classic">Devocional Clásico</option>
+              <option value="quote">Frase o Pensamiento corto</option>
+              <option value="challenge">Reto de Lectura Bíblica</option>
             </select>
           </div>
 
