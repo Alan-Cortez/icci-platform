@@ -19,7 +19,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     async jwt({ token, user }) {
       if (user) {
         let role = (user as any).role || "user";
-        if (user.email === "alancortez9966@gmail.com") {
+        if (user.email && (user.email === process.env.SUPER_ADMIN_EMAIL || user.email === "alancortez9966@gmail.com")) {
           role = "superadmin";
         }
         token.role = role;
