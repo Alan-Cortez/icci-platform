@@ -21,7 +21,7 @@ export default function HomePage() {
             <div>
               <p className="label-eyebrow mb-3">Predicación destacada</p>
               <div className="divider-gold mb-5" />
-              <h2 className="font-display text-display text-white leading-none mb-3">
+              <h2 className="font-display text-3xl sm:text-4xl lg:text-[3.25rem] text-white leading-none mb-3">
                 La Aguja Que
                 <span className="block text-gold">Desinfla Mi Ego</span>
               </h2>
