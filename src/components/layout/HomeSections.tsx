@@ -45,7 +45,21 @@ const TESTIMONIES = [
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
-export function HomeSections() {
+interface HomeSectionsProps {
+  featuredTestimonies?: any[];
+}
+
+export function HomeSections({ featuredTestimonies = [] }: HomeSectionsProps) {
+  const testimoniesToShow = featuredTestimonies.length > 0
+    ? featuredTestimonies.map((t, idx) => ({
+        id: t.id,
+        name: t.user.name,
+        role: "Miembro ICCI",
+        text: t.content,
+        rotate: idx % 5 === 0 ? "-rotate-2" : idx % 5 === 1 ? "rotate-1" : idx % 5 === 2 ? "-rotate-1" : idx % 5 === 3 ? "rotate-2" : "-rotate-3",
+      }))
+    : TESTIMONIES;
+
   return (
     <>
       {/* ── Un lugar para conectar ──────────────────────────────────────── */}
@@ -124,7 +138,7 @@ export function HomeSections() {
 
           {/* Desktop: scattered cards */}
           <div className="hidden md:flex flex-wrap gap-4 justify-center">
-            {TESTIMONIES.map((t, i) => (
+            {testimoniesToShow.map((t, i) => (
               <div
                 key={t.id}
                 className={`w-52 bg-white rounded-2xl p-5 shadow-md border border-white/10 ${t.rotate} transition-all hover:rotate-0 hover:scale-105 hover:shadow-2xl hover:border-gold/30 duration-300`}
@@ -144,7 +158,7 @@ export function HomeSections() {
             className="md:hidden flex gap-4 overflow-x-auto pb-4 snap-x scrollbar-hide"
             style={{ scrollbarWidth: "none" }}
           >
-            {TESTIMONIES.map((t) => (
+            {testimoniesToShow.map((t) => (
               <div
                 key={t.id}
                 className="flex-shrink-0 w-60 snap-start bg-white rounded-2xl p-5 shadow-md border border-white/10"

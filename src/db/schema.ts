@@ -136,6 +136,7 @@ export const testimonies = sqliteTable("testimony", {
   userId: text("userId").notNull().references(() => users.id, { onDelete: "cascade" }),
   content: text("content").notNull(),
   status: text("status").notNull().default("pending"), // 'pending', 'approved', 'rejected'
+  featured: integer("featured", { mode: "boolean" }).default(false),
   createdAt: integer("createdAt", { mode: "timestamp_ms" }).$defaultFn(() => new Date()),
 });
 

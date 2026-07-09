@@ -4,8 +4,10 @@ import { Button } from "@/components/ui";
 import { HeroVideo } from "@/components/layout/HeroVideo";
 import { HomeSections } from "@/components/layout/HomeSections";
 import { WeeklySchedule } from "@/components/layout/WeeklySchedule";
+import { getFeaturedTestimonies } from "@/actions/testimonies";
 
-export default function HomePage() {
+export default async function HomePage() {
+  const featuredTestimonies = await getFeaturedTestimonies();
   return (
     <>
       <HeroVideo />
@@ -50,7 +52,7 @@ export default function HomePage() {
       </section>
 
       {/* ── Conectar + Testimonios ── */}
-      <HomeSections />
+      <HomeSections featuredTestimonies={featuredTestimonies} />
 
       {/* ── TikTok Embed ── */}
       <section className="bg-off-white py-20">

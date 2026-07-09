@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { updateTestimonyStatus, deleteTestimony } from "@/actions/testimonies";
+import { updateTestimonyStatus, deleteTestimony, toggleTestimonyFeatured } from "@/actions/testimonies";
 import { Card, Badge, Button } from "@/components/ui";
-import { Check, X as XIcon, Trash2, User, Loader2, Heart } from "lucide-react";
+import { Check, X as XIcon, Trash2, User, Loader2, Heart, Star } from "lucide-react";
 
 interface TestimoniosListClientProps {
   initialTestimonies: any[];
@@ -23,6 +23,20 @@ export function TestimoniosListClient({ initialTestimonies }: TestimoniosListCli
       );
     } catch (err: any) {
       alert(err.message || "Error al actualizar estado del testimonio.");
+    } finally {
+      setUpdatingId(null);
+    }
+  }
+
+  async function handleToggleFeatured(id: string, featured: boolean) {
+    setUpdatingId(id);
+    try {
+      await toggleTestimonyFeatured(id, featured);
+      setTestimonies((prev) =>
+        prev.map((t) => (t.id === id ? { ...t, featured } : t))
+      );
+    } catch (err: any) {
+      alert(err.message || "Error al actualizar el estado destacado.");
     } finally {
       setUpdatingId(null);
     }
@@ -151,6 +165,19 @@ export function TestimoniosListClient({ initialTestimonies }: TestimoniosListCli
                         <Loader2 className="w-5 h-5 animate-spin text-navy" />
                       ) : (
                         <>
+                          {t.status === "approved" && (
+                            <button
+                              onClick={() => handleToggleFeatured(t.id, !t.featured)}
+                              className={`p-2 rounded-lg transition-colors cursor-pointer ${
+                                t.featured 
+                                  ? "text-gold hover:bg-gold/10" 
+                                  : "text-gray-300 hover:text-gold hover:bg-gold/5"
+                              }`}
+                              title={t.featured ? "Quitar de la página de inicio" : "Mostrar en la página de inicio (Destacado)"}
+                            >
+                              <Star className={`w-4 h-4 ${t.featured ? "fill-gold" : ""}`} />
+                            </button>
+                          )}
                           {t.status !== "approved" && (
                             <button
                               onClick={() => handleStatusChange(t.id, "approved")}
