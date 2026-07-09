@@ -5,6 +5,7 @@ import { Button, Input } from "@/components/ui";
 import { createDevotional, updateDevotional } from "@/actions/content";
 import { useRouter } from "next/navigation";
 import { Loader2, X, Bold, Italic, Heading3, List, Quote } from "lucide-react";
+import { compressImage } from "@/lib/compress";
 
 export function DevocionalForm({ devotional, onCancel }: { devotional?: any, onCancel: () => void }) {
   const [loading, setLoading] = useState(false);
@@ -24,6 +25,17 @@ export function DevocionalForm({ devotional, onCancel }: { devotional?: any, onC
     
     // Set the rich text content from our ref
     formData.set("content", contentRef.current);
+    
+    // Compress the image client-side if a file was selected
+    const imageFile = formData.get("image");
+    if (imageFile instanceof File && imageFile.size > 0) {
+      try {
+        const compressed = await compressImage(imageFile);
+        formData.set("image", compressed);
+      } catch (err) {
+        console.error("Failed to compress image:", err);
+      }
+    }
     
     try {
       if (devotional) {

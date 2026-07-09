@@ -5,6 +5,7 @@ import { Button, Input } from "@/components/ui";
 import { createEvent, updateEvent } from "@/actions/events";
 import { useRouter } from "next/navigation";
 import { Loader2, X } from "lucide-react";
+import { compressImage } from "@/lib/compress";
 
 export function EventForm({ event, onCancel }: { event?: any, onCancel: () => void }) {
   const [loading, setLoading] = useState(false);
@@ -15,6 +16,17 @@ export function EventForm({ event, onCancel }: { event?: any, onCancel: () => vo
     setLoading(true);
     const formData = new FormData(e.currentTarget);
     
+    // Compress the image client-side if a file was selected
+    const imageFile = formData.get("image");
+    if (imageFile instanceof File && imageFile.size > 0) {
+      try {
+        const compressed = await compressImage(imageFile);
+        formData.set("image", compressed);
+      } catch (err) {
+        console.error("Failed to compress image:", err);
+      }
+    }
+
     try {
       if (event) {
         await updateEvent(event.id, formData);
