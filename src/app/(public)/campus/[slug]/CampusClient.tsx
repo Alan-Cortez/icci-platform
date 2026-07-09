@@ -51,8 +51,7 @@ export function CampusClient({ campus, pastorName, googleMapsUrl }: CampusClient
         <div className="grid md:grid-cols-2 gap-6">
           {/* Pastor Visual Card */}
           <div 
-            className="relative group rounded-3xl overflow-hidden shadow-md border border-gray-100" 
-            style={{ height: "300px" }}
+            className="relative group rounded-3xl overflow-hidden shadow-md border border-gray-100 h-[300px] sm:h-[360px] md:h-[400px] lg:h-[460px]"
           >
             <div className={`absolute inset-0 bg-gradient-to-b ${pastorColor}`}>
               {pastorImg && (
