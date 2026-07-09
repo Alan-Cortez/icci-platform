@@ -37,10 +37,14 @@ export default function HomePage() {
                 Ver predicaciones
               </Button>
             </div>
-            <div className="aspect-video rounded-2xl bg-navy-light overflow-hidden border border-white/10 flex items-center justify-center">
-              <div className="w-16 h-16 rounded-full bg-gold flex items-center justify-center cursor-pointer hover:scale-110 transition-transform duration-300">
-                <Play className="w-7 h-7 text-navy ml-1" />
-              </div>
+            <div className="aspect-video rounded-2xl bg-navy-light overflow-hidden border border-white/10 shadow-2xl relative">
+              <iframe
+                className="w-full h-full"
+                src="https://www.youtube.com/embed/MuLpLancL80?autoplay=0&rel=0"
+                title="Predicación destacada: Fe Que Mueve Montañas"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowFullScreen
+              />
             </div>
           </div>
         </div>
