@@ -22,15 +22,14 @@ export default function HomePage() {
               <p className="label-eyebrow mb-3">Predicación destacada</p>
               <div className="divider-gold mb-5" />
               <h2 className="font-display text-display text-white leading-none mb-3">
-                Fe Que Mueve
-                <span className="block text-gold">Montañas</span>
+                La Aguja Que
+                <span className="block text-gold">Desinfla Mi Ego</span>
               </h2>
               <p className="font-serif text-serif-lg text-white/60 italic font-light mb-4">
-                Serie de Fe · Pastor Principal
+                Compartiendo con · Pastor Oscar Sosa (Parte 2)
               </p>
               <p className="text-white/55 leading-relaxed mb-8 font-light max-w-md">
-                Descubre cómo una fe genuina puede transformar cada área de tu vida y abrir
-                caminos donde parecía no haberlos.
+                Escucha esta edificante y honesta conversación en el podcast de Producciones Buenas Nuevas Internacional junto al Pastor Oscar Sosa.
               </p>
               <Button href="https://youtube.com/@icctv-101?si=kp51y50RG4r6icuu" target="_blank" variant="secondary" className="group">
                 <Play className="w-4 h-4 mr-2" />
