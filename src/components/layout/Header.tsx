@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState, useRef, useEffect } from "react";
-import { Menu, X, ChevronDown, LogIn, Calendar, Church, LogOut } from "lucide-react";
+import { Menu, X, ChevronDown, LogIn, Calendar, Church, LogOut, BookOpen } from "lucide-react";
 import { signOut } from "next-auth/react";
 import { cn } from "@/lib/utils";
 
@@ -16,6 +16,7 @@ const NAV = [
     children: [
       { label: "Servicios", href: "/campus/allende", icon: Church   },
       { label: "Eventos",   href: "/eventos",        icon: Calendar },
+      { label: "Devocionales", href: "/devocionales", icon: BookOpen },
     ],
   },
   { label: "Oraciones", href: "/oracion"    },
