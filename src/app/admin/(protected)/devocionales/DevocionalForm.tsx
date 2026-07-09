@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Button, Input } from "@/components/ui";
 import { createDevotional, updateDevotional } from "@/actions/content";
 import { useRouter } from "next/navigation";
@@ -9,7 +9,7 @@ import { Loader2, X, Bold, Italic, Heading3, List, Quote } from "lucide-react";
 export function DevocionalForm({ devotional, onCancel }: { devotional?: any, onCancel: () => void }) {
   const [loading, setLoading] = useState(false);
   const [type, setType] = useState(devotional?.type || "classic");
-  const [editorContent, setEditorContent] = useState(devotional?.content || "");
+  const contentRef = useRef(devotional?.content || "");
   const router = useRouter();
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -22,8 +22,8 @@ export function DevocionalForm({ devotional, onCancel }: { devotional?: any, onC
       formData.set("title", "Pensamiento");
     }
     
-    // Set the rich text content from our state
-    formData.set("content", editorContent);
+    // Set the rich text content from our ref
+    formData.set("content", contentRef.current);
     
     try {
       if (devotional) {
@@ -45,7 +45,7 @@ export function DevocionalForm({ devotional, onCancel }: { devotional?: any, onC
     document.execCommand(command, false, value);
     const editor = document.getElementById("rich-editor");
     if (editor) {
-      setEditorContent(editor.innerHTML);
+      contentRef.current = editor.innerHTML;
     }
   }
 
@@ -194,8 +194,8 @@ export function DevocionalForm({ devotional, onCancel }: { devotional?: any, onC
             <div 
               id="rich-editor"
               contentEditable
-              onInput={(e) => setEditorContent(e.currentTarget.innerHTML)}
-              dangerouslySetInnerHTML={{ __html: devotional?.content || "" }}
+              onInput={(e) => { contentRef.current = e.currentTarget.innerHTML; }}
+              dangerouslySetInnerHTML={{ __html: contentRef.current }}
               data-placeholder={
                 type === "quote" 
                   ? "Escribe aquí la frase o pensamiento edificante..." 
