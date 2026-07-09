@@ -9,6 +9,7 @@ import { Loader2, X, Bold, Italic, Heading3, List, Quote } from "lucide-react";
 export function DevocionalForm({ devotional, onCancel }: { devotional?: any, onCancel: () => void }) {
   const [loading, setLoading] = useState(false);
   const [type, setType] = useState(devotional?.type || "classic");
+  const [editorContent, setEditorContent] = useState(devotional?.content || "");
   const router = useRouter();
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -20,6 +21,9 @@ export function DevocionalForm({ devotional, onCancel }: { devotional?: any, onC
     if (type === "quote") {
       formData.set("title", "Pensamiento");
     }
+    
+    // Set the rich text content from our state
+    formData.set("content", editorContent);
     
     try {
       if (devotional) {
@@ -37,19 +41,12 @@ export function DevocionalForm({ devotional, onCancel }: { devotional?: any, onC
     }
   }
 
-  function insertFormatting(prefix: string, suffix: string = "") {
-    const textarea = document.getElementById("content-textarea") as HTMLTextAreaElement;
-    if (!textarea) return;
-    
-    const start = textarea.selectionStart;
-    const end = textarea.selectionEnd;
-    const text = textarea.value;
-    const selected = text.substring(start, end);
-    const replacement = prefix + selected + suffix;
-    
-    textarea.value = text.substring(0, start) + replacement + text.substring(end);
-    textarea.focus();
-    textarea.setSelectionRange(start + prefix.length, start + prefix.length + selected.length);
+  function handleFormat(command: string, value: string = "") {
+    document.execCommand(command, false, value);
+    const editor = document.getElementById("rich-editor");
+    if (editor) {
+      setEditorContent(editor.innerHTML);
+    }
   }
 
   const defaultDate = devotional ? new Date(devotional.date).toISOString().split('T')[0] : new Date().toISOString().split('T')[0];
@@ -57,6 +54,35 @@ export function DevocionalForm({ devotional, onCancel }: { devotional?: any, onC
   return (
     <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl">
+        
+        <style dangerouslySetInnerHTML={{ __html: `
+          #rich-editor:empty:before {
+            content: attr(data-placeholder);
+            color: #a1a1aa;
+            cursor: text;
+          }
+          #rich-editor blockquote {
+            border-left: 4px solid #d4af37;
+            padding-left: 1rem;
+            margin: 0.5rem 0;
+            font-style: italic;
+            color: #4b5563;
+          }
+          #rich-editor ul {
+            list-style-type: disc;
+            margin-left: 1.25rem;
+            margin-top: 0.5rem;
+            margin-bottom: 0.5rem;
+          }
+          #rich-editor h3 {
+            font-size: 1.125rem;
+            font-weight: bold;
+            margin-top: 0.75rem;
+            margin-bottom: 0.25rem;
+            color: #0f172a;
+          }
+        `}} />
+
         <div className="flex items-center justify-between p-6 border-b border-gray-100 sticky top-0 bg-white z-10">
           <h2 className="text-xl font-bold text-navy">
             {devotional ? "Editar Publicación" : "Nueva Publicación"}
@@ -110,7 +136,7 @@ export function DevocionalForm({ devotional, onCancel }: { devotional?: any, onC
             </div>
           )}
 
-          {/* Textarea con barra de herramientas de formato */}
+          {/* Editor enriquecido WYSIWYG */}
           <div>
             <div className="flex justify-between items-center mb-2">
               <label className="block text-sm font-semibold text-navy">
@@ -123,7 +149,7 @@ export function DevocionalForm({ devotional, onCancel }: { devotional?: any, onC
               <div className="flex items-center gap-1 bg-gray-100 p-1 rounded-lg border border-gray-200">
                 <button
                   type="button"
-                  onClick={() => insertFormatting("**", "**")}
+                  onClick={() => handleFormat("bold")}
                   className="p-1.5 text-gray-600 hover:text-navy hover:bg-white rounded transition-all cursor-pointer"
                   title="Negrita"
                 >
@@ -131,7 +157,7 @@ export function DevocionalForm({ devotional, onCancel }: { devotional?: any, onC
                 </button>
                 <button
                   type="button"
-                  onClick={() => insertFormatting("*", "*")}
+                  onClick={() => handleFormat("italic")}
                   className="p-1.5 text-gray-600 hover:text-navy hover:bg-white rounded transition-all cursor-pointer"
                   title="Cursiva"
                 >
@@ -139,7 +165,7 @@ export function DevocionalForm({ devotional, onCancel }: { devotional?: any, onC
                 </button>
                 <button
                   type="button"
-                  onClick={() => insertFormatting("### ", "")}
+                  onClick={() => handleFormat("formatBlock", "<h3>")}
                   className="p-1.5 text-gray-600 hover:text-navy hover:bg-white rounded transition-all cursor-pointer"
                   title="Subtítulo"
                 >
@@ -147,7 +173,7 @@ export function DevocionalForm({ devotional, onCancel }: { devotional?: any, onC
                 </button>
                 <button
                   type="button"
-                  onClick={() => insertFormatting("- ", "")}
+                  onClick={() => handleFormat("insertUnorderedList")}
                   className="p-1.5 text-gray-600 hover:text-navy hover:bg-white rounded transition-all cursor-pointer"
                   title="Lista"
                 >
@@ -155,7 +181,7 @@ export function DevocionalForm({ devotional, onCancel }: { devotional?: any, onC
                 </button>
                 <button
                   type="button"
-                  onClick={() => insertFormatting("> ", "")}
+                  onClick={() => handleFormat("formatBlock", "<blockquote>")}
                   className="p-1.5 text-gray-600 hover:text-navy hover:bg-white rounded transition-all cursor-pointer"
                   title="Cita"
                 >
@@ -164,18 +190,19 @@ export function DevocionalForm({ devotional, onCancel }: { devotional?: any, onC
               </div>
             </div>
 
-            <textarea 
-              id="content-textarea"
-              name="content" 
-              defaultValue={devotional?.content}
-              required
-              rows={type === "quote" ? 4 : 7}
-              placeholder={
+            {/* Editor div contentEditable */}
+            <div 
+              id="rich-editor"
+              contentEditable
+              onInput={(e) => setEditorContent(e.currentTarget.innerHTML)}
+              dangerouslySetInnerHTML={{ __html: devotional?.content || "" }}
+              data-placeholder={
                 type === "quote" 
                   ? "Escribe aquí la frase o pensamiento edificante..." 
-                  : "Escribe el contenido utilizando la barra de herramientas superior para dar formato (puntos, negrita, subtítulos...)"
+                  : "Escribe tu devocional y usa la barra de herramientas superior para darle formato directo."
               }
-              className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white transition-colors resize-y focus:outline-none focus:ring-2 focus:ring-gold/50 text-navy"
+              className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white transition-colors min-h-[220px] focus:outline-none focus:ring-2 focus:ring-gold/50 text-navy overflow-y-auto"
+              style={{ minHeight: type === "quote" ? "120px" : "220px" }}
             />
           </div>
 

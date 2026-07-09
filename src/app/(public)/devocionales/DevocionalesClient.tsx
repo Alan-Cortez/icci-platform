@@ -8,11 +8,25 @@ import { cn } from "@/lib/utils";
 
 const CATEGORIES = ["Todo", "Devocionales", "Retos de lectura", "Pensamientos"];
 
-// Simple and robust Markdown to HTML renderer for devocionales
-function renderMarkdown(text: string) {
+// Handles rendering WYSIWYG HTML or fallback Markdown parsing for devocionales
+function formatContent(text: string) {
   if (!text) return "";
   
-  // Escape basic HTML to prevent XSS
+  // If it's already HTML (contains standard tags from WYSIWYG editor), render directly
+  if (
+    text.includes("<p>") || 
+    text.includes("<strong>") || 
+    text.includes("<em>") || 
+    text.includes("<h3>") || 
+    text.includes("<ul>") || 
+    text.includes("<li>") || 
+    text.includes("<blockquote>") || 
+    text.includes("<br")
+  ) {
+    return text;
+  }
+  
+  // Escape basic HTML for safe fallback processing
   let html = text
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
@@ -52,6 +66,15 @@ function renderMarkdown(text: string) {
   }).join("");
 }
 
+// Strip HTML tags and markdown symbols for short text preview on cards
+function stripHtmlAndMarkdown(text: string) {
+  if (!text) return "";
+  return text
+    .replace(/<[^>]*>/g, "") // Strip HTML tags
+    .replace(/[#*`>_-]/g, "") // Strip markdown characters
+    .trim();
+}
+
 export function DevocionalesClient({ initialDevotionals }: { initialDevotionals: any[] }) {
   const [activeCategory, setActiveCategory] = useState("Todo");
   const [selectedDevotional, setSelectedDevotional] = useState<any>(null);
@@ -66,6 +89,36 @@ export function DevocionalesClient({ initialDevotionals }: { initialDevotionals:
 
   return (
     <div className="bg-[#fbfbfa] min-h-screen">
+      <style dangerouslySetInnerHTML={{ __html: `
+        .rich-text-content blockquote {
+          border-left: 4px solid #d4af37;
+          padding-left: 1.25rem;
+          margin: 1.25rem 0;
+          font-style: italic;
+          color: #4b5563;
+          font-family: Georgia, Cambria, "Times New Roman", Times, serif;
+        }
+        .rich-text-content ul {
+          list-style-type: disc;
+          margin-left: 1.5rem;
+          margin-top: 0.75rem;
+          margin-bottom: 0.75rem;
+          display: block;
+        }
+        .rich-text-content li {
+          margin-bottom: 0.5rem;
+          line-height: 1.625;
+        }
+        .rich-text-content h3 {
+          font-size: 1.25rem;
+          font-weight: 800;
+          margin-top: 1.5rem;
+          margin-bottom: 0.75rem;
+          color: #0f172a;
+          text-transform: uppercase;
+          letter-spacing: -0.025em;
+        }
+      `}} />
       {/* ── 1. Hero — NAVY (Identical to Conocenos) ── */}
       <section className="relative flex items-center justify-center py-28 md:py-36 overflow-hidden bg-navy text-white mb-12">
         <div className="absolute inset-0 overflow-hidden pointer-events-none select-none">
@@ -146,8 +199,8 @@ export function DevocionalesClient({ initialDevotionals }: { initialDevotionals:
                         </div>
                         
                         <div 
-                          className="font-serif text-base sm:text-lg text-navy italic leading-relaxed line-clamp-5 mb-4"
-                          dangerouslySetInnerHTML={{ __html: renderMarkdown(d.content) }}
+                          className="font-serif text-base sm:text-lg text-navy italic leading-relaxed line-clamp-5 mb-4 rich-text-content"
+                          dangerouslySetInnerHTML={{ __html: formatContent(d.content) }}
                         />
                       </div>
                       
@@ -210,7 +263,7 @@ export function DevocionalesClient({ initialDevotionals }: { initialDevotionals:
                           </h3>
                           
                           <p className="text-xs text-gray-500 line-clamp-3 mb-4 leading-relaxed">
-                            {d.content.replace(/[#*`>_-]/g, "").trim()}
+                            {stripHtmlAndMarkdown(d.content)}
                           </p>
                         </div>
                         
@@ -261,7 +314,7 @@ export function DevocionalesClient({ initialDevotionals }: { initialDevotionals:
                         )}
                         
                         <p className="text-xs text-gray-500 line-clamp-3 mb-4 leading-relaxed">
-                          {d.content.replace(/[#*`>_-]/g, "").trim()}
+                          {stripHtmlAndMarkdown(d.content)}
                         </p>
                       </div>
                       
@@ -281,7 +334,7 @@ export function DevocionalesClient({ initialDevotionals }: { initialDevotionals:
       {/* ── 4. Modal de Detalles de Devocional (Similar a Eventos) ── */}
       {selectedDevotional && (
         <div 
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-navy/80 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-navy/80 backdrop-blur-sm animate-in fade-in duration-200"
           onClick={(e) => e.target === e.currentTarget && setSelectedDevotional(null)}
         >
           <div className="bg-white rounded-3xl w-full max-w-4xl overflow-hidden relative shadow-2xl flex flex-col md:flex-row animate-in fade-in zoom-in duration-200 max-h-[90vh]">
@@ -344,9 +397,10 @@ export function DevocionalesClient({ initialDevotionals }: { initialDevotionals:
                 </blockquote>
               )}
 
+              {/* Styled rich text container */}
               <div 
-                className="prose max-w-none text-gray-700 leading-relaxed text-[15px] space-y-4"
-                dangerouslySetInnerHTML={{ __html: renderMarkdown(selectedDevotional.content) }}
+                className="prose max-w-none text-gray-700 leading-relaxed text-[15px] space-y-4 rich-text-content"
+                dangerouslySetInnerHTML={{ __html: formatContent(selectedDevotional.content) }}
               />
 
               <div className="mt-8 pt-4 border-t border-gray-100 flex items-center justify-between text-xs text-gray-400 font-medium">
