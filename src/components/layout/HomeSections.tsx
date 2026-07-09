@@ -107,13 +107,13 @@ export function HomeSections() {
               </p>
               <div className="flex flex-wrap gap-3">
                 <Link
-                  href="/contacto"
+                  href="/testimonios"
                   className="text-sm border-2 border-white/40 text-white px-5 py-2 rounded-full hover:bg-white hover:text-navy transition-colors font-medium"
                 >
                   Ver historias
                 </Link>
                 <Link
-                  href="/contacto"
+                  href="/testimonios"
                   className="text-sm bg-gold text-navy px-5 py-2 rounded-full hover:bg-gold-light transition-colors font-semibold"
                 >
                   Comparte la tuya
