@@ -62,6 +62,7 @@ export async function deleteSermon(id: string) {
 // --- DEVOTIONALS (Devocionales) ---
 export async function createDevotional(formData: FormData) {
   const title = formData.get("title") as string;
+  const type = formData.get("type") as string;
   const verse = formData.get("verse") as string;
   const verseText = formData.get("verseText") as string;
   const content = formData.get("content") as string;
@@ -71,6 +72,7 @@ export async function createDevotional(formData: FormData) {
 
   await db.insert(devotionals).values({
     title,
+    type: type || "classic",
     verse: verse || null,
     verseText: verseText || null,
     content,
@@ -85,6 +87,7 @@ export async function createDevotional(formData: FormData) {
 
 export async function updateDevotional(id: string, formData: FormData) {
   const title = formData.get("title") as string;
+  const type = formData.get("type") as string;
   const verse = formData.get("verse") as string;
   const verseText = formData.get("verseText") as string;
   const content = formData.get("content") as string;
@@ -94,6 +97,7 @@ export async function updateDevotional(id: string, formData: FormData) {
 
   const dataToUpdate: any = {
     title,
+    type: type || "classic",
     verse: verse || null,
     verseText: verseText || null,
     content,

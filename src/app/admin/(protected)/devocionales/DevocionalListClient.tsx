@@ -41,8 +41,15 @@ export function DevocionalListClient({ initialDevotionals }: { initialDevotional
           <Card key={devotional.id} className="p-6 bg-white flex flex-col">
             <div className="flex justify-between items-start mb-4">
               <div>
-                <p className="text-sm font-bold text-gold mb-1">{new Date(devotional.date).toLocaleDateString()}</p>
-                <h3 className="font-bold text-navy text-xl leading-snug">{devotional.title}</h3>
+                <div className="flex items-center gap-2 mb-1.5">
+                  <p className="text-xs font-bold text-gold">{new Date(devotional.date).toLocaleDateString()}</p>
+                  {devotional.type === "quote" && <span className="text-[9px] bg-navy/5 text-navy border border-navy/10 font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">Frase</span>}
+                  {devotional.type === "challenge" && <span className="text-[9px] bg-gold/15 text-gold-dark border border-gold/20 font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">Reto</span>}
+                  {(devotional.type === "classic" || !devotional.type) && <span className="text-[9px] bg-green-50 text-green-700 border border-green-100 font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">Devocional</span>}
+                </div>
+                <h3 className="font-bold text-navy text-xl leading-snug">
+                  {devotional.type === "quote" ? "Pensamiento / Frase" : devotional.title}
+                </h3>
                 <p className="text-sm text-gray-500 mt-1">Por {devotional.author}</p>
               </div>
               <div className="flex gap-2">

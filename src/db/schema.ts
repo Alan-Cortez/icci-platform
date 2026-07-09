@@ -77,6 +77,7 @@ export const sermons = sqliteTable("sermon", {
 export const devotionals = sqliteTable("devotional", {
   id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
   title: text("title").notNull(),
+  type: text("type").default("classic"), // 'classic', 'quote', 'challenge'
   verse: text("verse"),
   verseText: text("verseText"),
   content: text("content").notNull(),
