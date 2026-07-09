@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import { useState, useRef, useEffect } from "react";
-import { Menu, X, ChevronDown, LogIn, Calendar, Church, LogOut, BookOpen } from "lucide-react";
-import { signOut } from "next-auth/react";
+import { Menu, X, ChevronDown, LogIn, Calendar, Church, LogOut, BookOpen, Heart, Shield } from "lucide-react";
+import { signIn, signOut } from "next-auth/react";
 import { cn } from "@/lib/utils";
 
 // ─── Nav structure ───────────────────────────────────────────────────────────
@@ -17,6 +17,7 @@ const NAV = [
       { label: "Servicios", href: "/campus/allende", icon: Church   },
       { label: "Eventos",   href: "/eventos",        icon: Calendar },
       { label: "Devocionales", href: "/devocionales", icon: BookOpen },
+      { label: "Testimonios",  href: "/testimonios",   icon: Heart    },
     ],
   },
   { label: "Oraciones", href: "/oracion"    },
@@ -118,25 +119,34 @@ export function Header({ session }: { session?: any }) {
           <div className="hidden lg:flex items-center gap-4">
             {session?.user ? (
               <div className="flex items-center gap-3">
+                {((session.user as any).role === "admin" || (session.user as any).role === "superadmin") && (
+                  <Link
+                    href="/admin"
+                    className="flex items-center gap-1.5 px-3 py-1.5 bg-gold/15 text-gold-dark hover:bg-gold/25 transition-all text-xs font-bold rounded-xl border border-gold/20"
+                  >
+                    <Shield className="w-3.5 h-3.5" />
+                    Admin
+                  </Link>
+                )}
                 <span className="text-sm font-medium text-gray-700">
                   Hola, <span className="font-bold text-navy">{session.user.name?.split(" ")[0]}</span>
                 </span>
                 <button
                   onClick={() => signOut({ callbackUrl: "/" })}
-                  className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-full transition-colors"
+                  className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-full transition-colors cursor-pointer"
                   title="Cerrar sesión"
                 >
                   <LogOut className="w-5 h-5" />
                 </button>
               </div>
             ) : (
-              <Link
-                href="/admin"
-                className="flex items-center gap-2 bg-navy text-white text-sm font-semibold px-5 py-2.5 rounded-full hover:bg-navy-light transition-colors duration-200"
+              <button
+                onClick={() => signIn("google")}
+                className="flex items-center gap-2 bg-navy text-white text-sm font-semibold px-5 py-2.5 rounded-full hover:bg-navy-light transition-colors duration-200 cursor-pointer"
               >
                 <LogIn className="w-4 h-4" />
                 Iniciar sesión
-              </Link>
+              </button>
             )}
           </div>
 
@@ -194,27 +204,38 @@ export function Header({ session }: { session?: any }) {
           {/* Login CTA or User Info */}
           <div className="pt-3 px-4 pb-2">
             {session?.user ? (
-              <div className="flex items-center justify-between bg-gray-50 p-4 rounded-xl border border-gray-100">
-                <span className="text-sm font-medium text-gray-700">
-                  Hola, <span className="font-bold text-navy">{session.user.name?.split(" ")[0]}</span>
-                </span>
-                <button
-                  onClick={() => signOut({ callbackUrl: "/" })}
-                  className="flex items-center gap-2 text-sm text-red-600 hover:text-red-700 font-medium"
-                >
-                  <LogOut className="w-4 h-4" />
-                  Salir
-                </button>
+              <div className="flex flex-col gap-2 bg-gray-50 p-4 rounded-xl border border-gray-100">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium text-gray-700">
+                    Hola, <span className="font-bold text-navy">{session.user.name?.split(" ")[0]}</span>
+                  </span>
+                  <button
+                    onClick={() => signOut({ callbackUrl: "/" })}
+                    className="flex items-center gap-2 text-sm text-red-600 hover:text-red-700 font-medium cursor-pointer"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    Salir
+                  </button>
+                </div>
+                {((session.user as any).role === "admin" || (session.user as any).role === "superadmin") && (
+                  <Link
+                    href="/admin"
+                    onClick={() => setMobileOpen(false)}
+                    className="flex items-center justify-center gap-2 w-full mt-2 bg-gold/20 text-gold-dark text-xs font-bold py-2.5 rounded-xl border border-gold/25"
+                  >
+                    <Shield className="w-3.5 h-3.5" />
+                    Panel de Administración
+                  </Link>
+                )}
               </div>
             ) : (
-              <Link
-                href="/admin"
-                onClick={() => setMobileOpen(false)}
-                className="flex items-center justify-center gap-2 w-full bg-navy text-white text-sm font-semibold px-5 py-3 rounded-full hover:bg-navy-light transition-colors"
+              <button
+                onClick={() => { signIn("google"); setMobileOpen(false); }}
+                className="flex items-center justify-center gap-2 w-full bg-navy text-white text-sm font-semibold px-5 py-3 rounded-full hover:bg-navy-light transition-colors cursor-pointer"
               >
                 <LogIn className="w-4 h-4" />
-                Iniciar sesión
-              </Link>
+                Iniciar sesión con Google
+              </button>
             )}
           </div>
         </nav>

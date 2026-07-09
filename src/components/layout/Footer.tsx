@@ -16,6 +16,7 @@ const supportLinks = [
   { href: "/contacto", label: "Contacto" },
   { href: "/galeria", label: "Galería" },
   { href: "/devocionales", label: "Devocionales" },
+  { href: "/testimonios", label: "Testimonios" },
   { href: "/calendario", label: "Calendario" },
 ];
 

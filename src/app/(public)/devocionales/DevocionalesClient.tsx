@@ -5,6 +5,7 @@ import type { Metadata } from "next";
 import { BookOpen, Quote as QuoteIcon, Trophy, BookOpenCheck, X } from "lucide-react";
 import { Card, SectionHeading } from "@/components/ui";
 import { cn } from "@/lib/utils";
+import { CommentSection } from "@/components/layout/CommentSection";
 
 const CATEGORIES = ["Todo", "Devocionales", "Retos de lectura", "Pensamientos"];
 
@@ -407,8 +408,10 @@ export function DevocionalesClient({ initialDevotionals }: { initialDevotionals:
                 <span>Publicado por: <strong>{selectedDevotional.author}</strong></span>
                 <span>Comunidad ICCI</span>
               </div>
-            </div>
 
+              {/* Comments Section */}
+              <CommentSection devotionalId={selectedDevotional.id} />
+            </div>
           </div>
         </div>
       )}

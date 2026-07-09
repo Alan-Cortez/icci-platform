@@ -139,6 +139,15 @@ export const testimonies = sqliteTable("testimony", {
   createdAt: integer("createdAt", { mode: "timestamp_ms" }).$defaultFn(() => new Date()),
 });
 
+export const comments = sqliteTable("comment", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  userId: text("userId").notNull().references(() => users.id, { onDelete: "cascade" }),
+  devotionalId: text("devotionalId").references(() => devotionals.id, { onDelete: "cascade" }),
+  testimonyId: text("testimonyId").references(() => testimonies.id, { onDelete: "cascade" }),
+  content: text("content").notNull(),
+  createdAt: integer("createdAt", { mode: "timestamp_ms" }).$defaultFn(() => new Date()),
+});
+
 export const donations = sqliteTable("donation", {
   id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
   amount: integer("amount").notNull(), // stored in cents
