@@ -65,3 +65,24 @@ export async function getApprovedTestimonies() {
 
   return list;
 }
+
+export async function getAllTestimonies() {
+  const list = await db
+    .select({
+      id: testimonies.id,
+      content: testimonies.content,
+      status: testimonies.status,
+      createdAt: testimonies.createdAt,
+      userId: testimonies.userId,
+      user: {
+        name: users.name,
+        email: users.email,
+        image: users.image,
+      },
+    })
+    .from(testimonies)
+    .innerJoin(users, eq(testimonies.userId, users.id))
+    .orderBy(desc(testimonies.createdAt));
+
+  return list;
+}

@@ -122,4 +122,5 @@ export const ADMIN_MODULES = [
   { href: "/admin/donaciones", label: "Donaciones", icon: "HandCoins" },
   { href: "/admin/oracion", label: "Solicitudes de oración", icon: "MessageCircle" },
   { href: "/admin/devocionales", label: "Devocionales", icon: "BookOpen" },
+  { href: "/admin/testimonios", label: "Testimonios", icon: "Heart" },
 ] as const;
