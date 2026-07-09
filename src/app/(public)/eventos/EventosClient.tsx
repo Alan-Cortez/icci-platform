@@ -42,15 +42,28 @@ export function EventosClient({ initialEvents }: { initialEvents: any[] }) {
   const featuredEvent = initialEvents.find((e) => e.featured);
 
   return (
-    <div className="py-8 sm:py-16 bg-off-white min-h-screen relative">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
-        <SectionHeading
-          subtitle="Actividades"
-          title="EVENTOS"
-          description="Conferencias, retiros y actividades especiales en todos nuestros campus."
-          centered={true}
-        />
+    <div className="bg-off-white min-h-screen relative">
+      {/* ── 1. Hero — NAVY (Identical to Conocenos) ── */}
+      <section className="relative flex items-center justify-center py-28 md:py-36 overflow-hidden bg-navy text-white mb-12">
+        <div className="absolute inset-0 overflow-hidden pointer-events-none select-none">
+          <span className="absolute text-[28vw] font-black text-white/[0.04] -bottom-6 -left-4 tracking-tighter leading-none">
+            ICCI
+          </span>
+        </div>
+        <div className="relative z-10 text-center px-4">
+          <p className="text-gold tracking-[0.3em] uppercase text-xs font-semibold mb-4">
+            Iglesias Comunidad De Cristo Internacional
+          </p>
+          <h1 className="text-5xl sm:text-7xl font-black leading-none tracking-tight">
+            Eventos
+          </h1>
+          <p className="mt-6 text-white/50 max-w-xl mx-auto leading-relaxed text-sm sm:text-base">
+            Conferencias, retiros y actividades especiales en todos nuestros campus.
+          </p>
+        </div>
+      </section>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
 
         {/* ── 1. Filtros ── */}
         <div className="flex flex-col md:flex-row justify-between items-center gap-6 mb-12 bg-white p-2 rounded-full shadow-sm border border-gray-100 overflow-x-auto">

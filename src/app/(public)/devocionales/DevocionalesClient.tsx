@@ -65,7 +65,7 @@ export function DevocionalesClient({ initialDevotionals }: { initialDevotionals:
   });
 
   return (
-    <div className="py-16 bg-[#fbfbfa] min-h-screen">
+    <div className="bg-[#fbfbfa] min-h-screen">
       {/* ── 1. Hero — NAVY (Identical to Conocenos) ── */}
       <section className="relative flex items-center justify-center py-28 md:py-36 overflow-hidden bg-navy text-white mb-12">
         <div className="absolute inset-0 overflow-hidden pointer-events-none select-none">
