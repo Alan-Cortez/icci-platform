@@ -64,6 +64,14 @@ export default async function CampusListPage() {
                     </span>
                   </div>
                 )}
+
+                {/* Content pinned to bottom */}
+                <div className="absolute bottom-0 left-0 right-0 z-10 p-6 flex justify-start">
+                  {/* CTA */}
+                  <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-gold group-hover:gap-2.5 transition-all duration-200">
+                    Ver detalles <ChevronRight className="w-4 h-4" />
+                  </span>
+                </div>
               </Link>
             );
           })}
