@@ -47,20 +47,16 @@ export default async function CampusDetailPage({ params }: Props) {
     <div>
       {/* ── Hero header ── */}
       <section className="relative overflow-hidden min-h-[260px] flex items-end">
-        {/* Background: photo if main, navy otherwise */}
-        {campus.isMain ? (
-          <>
-            <div
-              className="absolute inset-0 bg-cover bg-center bg-navy"
-              style={{ backgroundImage: (campus as any).image ? `url('${(campus as any).image}')` : "url('/images/campus-allende.jpg')" }}
-            />
-            {/* Overlays */}
-            <div className="absolute inset-0 bg-gradient-to-r from-navy/85 via-navy/70 to-navy/40" />
-            <div className="absolute inset-0 bg-gradient-to-t from-navy/90 via-transparent to-transparent" />
-          </>
-        ) : (
-          <div className="absolute inset-0 bg-navy" />
-        )}
+        {/* Background: photo for all campuses */}
+        <>
+          <div
+            className="absolute inset-0 bg-cover bg-center bg-navy"
+            style={{ backgroundImage: `url('/images/banner-${campus.id}.jpg')` }}
+          />
+          {/* Overlays to ensure text readability */}
+          <div className="absolute inset-0 bg-gradient-to-r from-navy/85 via-navy/70 to-navy/40" />
+          <div className="absolute inset-0 bg-gradient-to-t from-navy/90 via-transparent to-transparent" />
+        </>
 
         {/* Text */}
         <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
