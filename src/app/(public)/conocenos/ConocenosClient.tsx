@@ -18,17 +18,17 @@ const PASTORS = [
   },
   {
     id: "copastores-rojero",
-    name: "Co-pastores Tomás y Mary Rojero",
-    role: "Co-Pastores",
+    name: "Pastores asociados Tomás y Mary Rojero",
+    role: "Pastores Asociados",
     desc:
-      "Siervos fieles y pilares de la iglesia, Tomás y Mary Rojero co-pastorean con dedicación y amor, apoyando el crecimiento espiritual de cada familia en la comunidad.",
+      "Siervos fieles y pilares de la iglesia, Tomás y Mary Rojero pastorean con dedicación y amor, apoyando el crecimiento espiritual de cada familia en la comunidad.",
     img: "/images/pastores-rojero.jpg",
     color: "from-gold/60 to-gold/30",
   },
   {
     id: "copastores-quistiano",
-    name: "Co-pastores Epitacio y Ana Quistiano",
-    role: "Co-Pastores",
+    name: "Pastores asociados Epitacio y Ana Quistiano",
+    role: "Pastores Asociados",
     desc:
       "Epitacio y Ana Quistiano sirven con corazón pastoral, acompañando a la congregación con sabiduría, fe y un amor genuino por las personas.",
     img: "/images/pastores-quistiano.jpg",
