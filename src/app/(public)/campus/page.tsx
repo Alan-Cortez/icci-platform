@@ -35,7 +35,7 @@ export default async function CampusListPage() {
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {allCampuses.map((campus) => {
-            const img = (campus as any).image || CAMPUS_IMAGES[campus.name.toLowerCase()] || CAMPUS_IMAGES.allende;
+            const img = (campus as any).image || CAMPUS_IMAGES[campus.id] || CAMPUS_IMAGES.allende;
             return (
               <Link
                 key={campus.id}
