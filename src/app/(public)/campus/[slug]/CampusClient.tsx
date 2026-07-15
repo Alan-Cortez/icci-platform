@@ -15,7 +15,7 @@ export function CampusClient({ campus, pastorName, googleMapsUrl }: CampusClient
   const [activeModal, setActiveModal] = useState<string | null>(null);
 
   // Schedules that should open a modal
-  const INTERACTIVE_SCHEDULES = ["Jóvenes", "Varones", "Servicio femenil"];
+  const INTERACTIVE_SCHEDULES = ["Jóvenes"];
 
   // Determine pastor details based on name
   let pastorImg = null;
