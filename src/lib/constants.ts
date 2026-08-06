@@ -108,7 +108,6 @@ export const NAV_LINKS = [
   { href: "/campus", label: "Campus" },
   { href: "/ministerios", label: "Ministerios" },
   { href: "/eventos", label: "Eventos" },
-  { href: "/predicaciones", label: "Predicaciones" },
   { href: "/devocionales", label: "Devocionales" },
   { href: "/oracion", label: "Oración" },
   { href: "/donaciones", label: "Donaciones" },

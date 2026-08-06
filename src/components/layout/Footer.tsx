@@ -6,15 +6,12 @@ const quickLinks = [
   { href: "/conocenos", label: "Conócenos" },
   { href: "/campus",   label: "Campus"    },
   { href: "/eventos",  label: "Eventos"   },
-  { href: "/predicaciones", label: "Predicaciones" },
-  { href: "/blog",     label: "Blog"      },
 ];
 
 const supportLinks = [
   { href: "/oracion", label: "Solicitud de Oración" },
   { href: "/donaciones", label: "Donaciones" },
   { href: "/contacto", label: "Contacto" },
-  { href: "/galeria", label: "Galería" },
   { href: "/devocionales", label: "Devocionales" },
   { href: "/testimonios", label: "Testimonios" },
   { href: "/calendario", label: "Calendario" },
