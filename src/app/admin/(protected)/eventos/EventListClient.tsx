@@ -6,6 +6,16 @@ import { Plus, Pencil, Trash2, Calendar, MapPin, Loader2 } from "lucide-react";
 import { EventForm } from "./EventForm";
 import { deleteEvent } from "@/actions/events";
 
+function formatDate(ts: number | Date | null): string {
+  if (!ts) return "";
+  return new Date(ts).toLocaleDateString("es-MX", { day: "numeric", month: "long", year: "numeric" });
+}
+
+function getMonthLabel(ts: number | Date | null): string {
+  if (!ts) return "";
+  return new Date(ts).toLocaleDateString("es-MX", { month: "long" });
+}
+
 export function EventListClient({ initialEvents }: { initialEvents: any[] }) {
   const [showForm, setShowForm] = useState(false);
   const [editingEvent, setEditingEvent] = useState<any>(null);
@@ -50,17 +60,17 @@ export function EventListClient({ initialEvents }: { initialEvents: any[] }) {
             <div className="p-5 flex-1 flex flex-col">
               <div className="flex justify-between items-start mb-2">
                 <span className="text-xs font-bold text-gold uppercase tracking-wider">{event.category}</span>
-                <span className="text-xs text-gray-500">{event.month}</span>
+                <span className="text-xs text-gray-500">{getMonthLabel(event.startDate)}</span>
               </div>
               <h3 className="text-lg font-bold text-navy mb-2">{event.title}</h3>
               <div className="space-y-2 mb-4">
                 <div className="flex items-center gap-2 text-sm text-gray-500">
                   <Calendar className="w-4 h-4 text-gray-400" />
-                  {event.dateStr} • {event.timeStr}
+                  {formatDate(event.startDate)} • {event.timeStr}
                 </div>
                 <div className="flex items-center gap-2 text-sm text-gray-500">
                   <MapPin className="w-4 h-4 text-gray-400" />
-                  {event.location} ({event.campus})
+                  {event.location}
                 </div>
               </div>
               <div className="mt-auto flex gap-2 pt-4 border-t border-gray-100">

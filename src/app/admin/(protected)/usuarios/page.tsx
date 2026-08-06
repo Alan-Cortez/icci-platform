@@ -8,7 +8,7 @@ export const metadata = { title: "Gestión de Usuarios | ICCI Admin" };
 
 export default async function AdminUsuariosPage() {
   const session = await auth();
-  const role = (session?.user as any)?.role;
+  const role = session?.user.role;
   
   if (role !== "superadmin") {
     redirect("/admin");

@@ -4,7 +4,9 @@ import { useState } from "react";
 import { Plus, Pencil, Trash2, Eye, EyeOff, Search, CheckCircle, Clock } from "lucide-react";
 import { Button, Input, Textarea, Select, Card, Badge } from "@/components/ui";
 import { CAMPUSES, MINISTRIES } from "@/lib/constants";
-import { createCampus, deleteCampus, createEvent, deleteEvent, createSermon, deleteSermon, createDevotional, deleteDevotional } from "@/app/actions/admin";
+import { createEvent, deleteEvent, updateEvent } from "@/actions/events";
+import { createSermon, deleteSermon, updateSermon, createDevotional, deleteDevotional, updateDevotional } from "@/actions/content";
+import { createCampus, deleteCampus } from "@/actions/campus";
 
 // ─── Shared types ─────────────────────────────────────────────────────────────
 
@@ -97,8 +99,7 @@ function CampusModule({ initialData = [] }: { initialData?: any[] }) {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    const data = Object.fromEntries(formData.entries());
-    await createCampus(data);
+    await createCampus(formData);
     setShowForm(false);
   };
 
@@ -223,8 +224,7 @@ function EventosModule({ initialData = [], allCampuses = [] }: { initialData?: a
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    const data = Object.fromEntries(formData.entries());
-    await createEvent(data);
+    await createEvent(formData);
     setShowForm(false);
   };
 
@@ -350,8 +350,7 @@ function PredicacionesModule({ initialData = [], allCampuses = [] }: { initialDa
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    const data = Object.fromEntries(formData.entries());
-    await createSermon(data);
+    await createSermon(formData);
     setShowForm(false);
   };
 
@@ -392,7 +391,7 @@ function PredicacionesModule({ initialData = [], allCampuses = [] }: { initialDa
           <form className="space-y-4" onSubmit={handleSubmit}>
             <Input label="Título *" name="title" required />
             <Input label="Serie" name="series" placeholder="Nombre de la serie" />
-            <Input label="Pastor *" name="pastor" required />
+            <Input label="Pastor / Predicador *" name="speaker" required />
             <Select label="Campus" name="campusId">
               <option value="">General</option>
               {allCampuses.map((c: any) => <option key={c.id} value={c.id}>{c.name}</option>)}
@@ -419,8 +418,7 @@ function DevocionalesModule({ initialData = [] }: { initialData?: any[] }) {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    const data = Object.fromEntries(formData.entries());
-    await createDevotional(data);
+    await createDevotional(formData);
     setShowForm(false);
   };
 

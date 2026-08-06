@@ -14,6 +14,11 @@ export const metadata: Metadata = {
 
 // Removed hardcoded events
 
+function formatDate(date: Date | null): string {
+  if (!date) return "";
+  return new Date(date).toLocaleDateString("es-MX", { day: "numeric", month: "long", year: "numeric" });
+}
+
 const dayOrder = ["Lunes a viernes", "Miércoles", "Jueves", "Último viernes de cada mes", "Sábado", "Domingo", "Último domingo del mes"];
 
 const categoryColors: Record<string, string> = {
@@ -97,7 +102,7 @@ export default async function CalendarioPage() {
                         )}
                       </span>
                     ) : (
-                      <span className="text-white/60 text-xs text-center">{event.dateStr}</span>
+                      <span className="text-white/60 text-xs text-center">Pronto</span>
                     )}
                   </div>
                   <div className="p-6 flex-1">
@@ -109,10 +114,10 @@ export default async function CalendarioPage() {
                     </div>
                     <h3 className="font-bold text-navy text-lg">{event.title}</h3>
                     <div className="flex flex-wrap gap-4 mt-3 text-sm text-gray-500">
-                      <span className="flex items-center gap-1"><Calendar className="w-4 h-4" />{event.dateStr}</span>
+                      <span className="flex items-center gap-1"><Calendar className="w-4 h-4" />{formatDate(event.startDate)}</span>
                       <span className="flex items-center gap-1"><Clock className="w-4 h-4" />{event.timeStr}</span>
                       <span className="flex items-center gap-1"><MapPin className="w-4 h-4" />{event.location}</span>
-                      <span className="flex items-center gap-1"><Users className="w-4 h-4" />{event.campus}</span>
+                      {event.campusId && <span className="flex items-center gap-1"><Users className="w-4 h-4" />{event.campusId}</span>}
                     </div>
                   </div>
                   <div className="p-6 flex items-center shrink-0">

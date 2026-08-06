@@ -11,9 +11,11 @@
     "db:seed": "tsx scripts/seed.ts"
   },
   "dependencies": {
+    "@ai-sdk/openai": "^4.0.14",
     "@auth/drizzle-adapter": "^1.11.2",
     "@libsql/client": "^0.14.0",
     "@vercel/blob": "^2.5.0",
+    "ai": "^7.0.28",
     "bcryptjs": "^2.4.3",
     "clsx": "^2.1.1",
     "drizzle-orm": "^0.38.4",

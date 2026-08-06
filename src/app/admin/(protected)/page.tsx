@@ -1,20 +1,31 @@
 import { redirect } from "next/navigation";
-import { Calendar, Heart, MapPin, MessageCircle, Users, Video } from "lucide-react";
+import { Calendar, Heart, MessageCircle, Users } from "lucide-react";
 import { auth } from "@/auth";
 import { Card } from "@/components/ui";
-import { CAMPUSES, MINISTRIES } from "@/lib/constants";
+import { db } from "@/db";
+import { users, events, prayerRequests, devotionals } from "@/db/schema";
+import { eq, count } from "drizzle-orm";
+
+export const metadata = { title: "Dashboard | ICCI Admin" };
 
 export default async function AdminDashboardPage() {
   const session = await auth();
-  if (!session) {
+  if (!session || (session.user.role !== "admin" && session.user.role !== "superadmin")) {
     redirect("/admin/login");
   }
 
+  const [[totalUsers], [totalEvents], [pendingPrayers], [totalDevotionals]] = await Promise.all([
+    db.select({ count: count() }).from(users),
+    db.select({ count: count() }).from(events),
+    db.select({ count: count() }).from(prayerRequests).where(eq(prayerRequests.status, "pending")),
+    db.select({ count: count() }).from(devotionals),
+  ]);
+
   const stats = [
-    { label: "Usuarios", value: 1, icon: Users, color: "text-green-600" },
-    { label: "Eventos", value: 1, icon: Calendar, color: "text-purple-600" },
-    { label: "Oraciones pendientes", value: 0, icon: MessageCircle, color: "text-gold" },
-    { label: "Devocionales", value: 1, icon: Heart, color: "text-pink-600" },
+    { label: "Usuarios registrados", value: totalUsers.count, icon: Users, color: "text-green-600" },
+    { label: "Eventos", value: totalEvents.count, icon: Calendar, color: "text-purple-600" },
+    { label: "Oraciones pendientes", value: pendingPrayers.count, icon: MessageCircle, color: "text-gold" },
+    { label: "Devocionales", value: totalDevotionals.count, icon: Heart, color: "text-pink-600" },
   ];
 
   return (

@@ -5,24 +5,32 @@ import { Calendar, Clock, MapPin, Users, X, ChevronRight, Ticket } from "lucide-
 import { Badge, Button, Card, SectionHeading } from "@/components/ui";
 import { cn } from "@/lib/utils";
 
-// --- DUMMY DATA ---
 const CATEGORIES = ["Todo", "Jóvenes", "Niños", "Femenil", "Varones", "General"];
-const MONTHS = ["Todos los meses", "Julio", "Agosto", "Septiembre", "Octubre"];
+const MONTHS_ES = ["Todos los meses", "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+
+function formatDate(ts: number | Date | null): string {
+  if (!ts) return "";
+  return new Date(ts).toLocaleDateString("es-MX", { day: "numeric", month: "long", year: "numeric" });
+}
+
+function getMonthLabel(ts: number | Date | null): string {
+  if (!ts) return "";
+  return new Date(ts).toLocaleDateString("es-MX", { month: "long" });
+}
 
 interface EventData {
   id: string;
   title: string;
   category: string;
-  month: string;
   description: string;
-  dateStr: string;
+  startDate: number | null;
   timeStr: string;
   location: string;
-  campus: string;
-  capacity?: number;
+  campusId?: string | null;
+  capacity?: number | null;
   featured?: boolean;
-  image: string;
-  price?: string;
+  image?: string | null;
+  price?: string | null;
 }
 
 // Using dynamic data from DB instead of hardcoded array
@@ -35,7 +43,8 @@ export function EventosClient({ initialEvents }: { initialEvents: any[] }) {
   // Filter events
   const filteredEvents = initialEvents.filter((evt) => {
     const matchCategory = activeCategory === "Todo" || evt.category === activeCategory;
-    const matchMonth = activeMonth === "Todos los meses" || evt.month === activeMonth;
+    const eventMonth = getMonthLabel(evt.startDate);
+    const matchMonth = activeMonth === "Todos los meses" || eventMonth.toLowerCase() === activeMonth.toLowerCase();
     return matchCategory && matchMonth;
   });
 
@@ -93,7 +102,7 @@ export function EventosClient({ initialEvents }: { initialEvents: any[] }) {
               value={activeMonth}
               onChange={(e) => setActiveMonth(e.target.value)}
             >
-              {MONTHS.map(m => (
+              {MONTHS_ES.map(m => (
                 <option key={m} value={m}>{m}</option>
               ))}
             </select>
@@ -106,7 +115,7 @@ export function EventosClient({ initialEvents }: { initialEvents: any[] }) {
             <Card className="overflow-hidden p-0 grid md:grid-cols-5 bg-white border border-gray-100 shadow-lg cursor-pointer" onClick={() => setSelectedEvent(featuredEvent)}>
               <div className="md:col-span-2 relative h-64 md:h-auto bg-navy">
                 <img 
-                  src={featuredEvent.image} 
+                  src={featuredEvent.image || ""} 
                   alt={featuredEvent.title} 
                   className="w-full h-full object-cover opacity-80 mix-blend-overlay"
                 />
@@ -119,13 +128,13 @@ export function EventosClient({ initialEvents }: { initialEvents: any[] }) {
               <div className="md:col-span-3 p-8 md:p-12 flex flex-col justify-center">
                 <div className="flex items-center gap-3 mb-4">
                   <span className="text-xs font-bold uppercase tracking-widest text-gold bg-gold/10 px-3 py-1 rounded-full">Destacado</span>
-                  <Badge variant="navy">{featuredEvent.campus}</Badge>
+                  <Badge variant="navy">{featuredEvent.campusId ?? "General"}</Badge>
                 </div>
                 <h3 className="text-3xl md:text-4xl font-black text-navy mb-4">{featuredEvent.title}</h3>
                 <p className="text-gray-600 mb-6 text-lg leading-relaxed">{featuredEvent.description}</p>
                 
                 <div className="flex flex-wrap gap-x-6 gap-y-3 text-sm text-gray-500 font-medium mb-8">
-                  <span className="flex items-center gap-1.5"><Calendar className="w-4 h-4 text-navy" /> {featuredEvent.dateStr}</span>
+                  <span className="flex items-center gap-1.5"><Calendar className="w-4 h-4 text-navy" /> {formatDate(featuredEvent.startDate)}</span>
                   <span className="flex items-center gap-1.5"><Clock className="w-4 h-4 text-navy" /> {featuredEvent.timeStr}</span>
                   <span className="flex items-center gap-1.5"><MapPin className="w-4 h-4 text-navy" /> {featuredEvent.location}</span>
                   {featuredEvent.capacity && (
@@ -151,7 +160,7 @@ export function EventosClient({ initialEvents }: { initialEvents: any[] }) {
             >
               <div className="relative h-56 overflow-hidden bg-navy">
                 <img 
-                  src={evt.image} 
+                  src={evt.image || ""} 
                   alt={evt.title} 
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-90"
                 />
@@ -172,11 +181,11 @@ export function EventosClient({ initialEvents }: { initialEvents: any[] }) {
                 <div className="space-y-3 pt-4 border-t border-gray-100">
                   <div className="flex items-center gap-2 text-sm text-gray-700 font-medium">
                     <MapPin className="w-4 h-4 text-gold shrink-0" /> 
-                    <span className="truncate">{evt.location} ({evt.campus})</span>
+                    <span className="truncate">{evt.location}</span>
                   </div>
                   <div className="flex items-center gap-2 text-sm text-gray-700 font-medium">
                     <Calendar className="w-4 h-4 text-gold shrink-0" /> 
-                    <span className="truncate">{evt.dateStr}</span>
+                    <span className="truncate">{formatDate(evt.startDate)}</span>
                   </div>
                 </div>
               </div>
@@ -211,7 +220,7 @@ export function EventosClient({ initialEvents }: { initialEvents: any[] }) {
             {/* Modal Left Image */}
             <div className="w-full md:w-2/5 h-64 md:h-auto relative bg-navy flex-shrink-0">
                <img 
-                  src={selectedEvent.image} 
+                  src={selectedEvent.image || ""} 
                   alt={selectedEvent.title} 
                   className="w-full h-full object-cover"
                 />
@@ -248,7 +257,7 @@ export function EventosClient({ initialEvents }: { initialEvents: any[] }) {
                    <div className="space-y-4 text-sm text-gray-700">
                      <div className="flex gap-3">
                        <Calendar className="w-5 h-5 text-gray-400 shrink-0" />
-                       <span className="font-medium">{selectedEvent.dateStr}</span>
+                       <span className="font-medium">{formatDate(selectedEvent.startDate)}</span>
                      </div>
                      <div className="flex gap-3">
                        <Clock className="w-5 h-5 text-gray-400 shrink-0" />
@@ -256,7 +265,7 @@ export function EventosClient({ initialEvents }: { initialEvents: any[] }) {
                      </div>
                      <div className="flex gap-3">
                        <MapPin className="w-5 h-5 text-gray-400 shrink-0" />
-                       <span className="font-medium">{selectedEvent.location}, {selectedEvent.campus}</span>
+                       <span className="font-medium">{selectedEvent.location}</span>
                      </div>
                    </div>
                  </div>
