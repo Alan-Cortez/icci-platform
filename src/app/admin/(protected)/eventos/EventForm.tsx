@@ -1,20 +1,50 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Button, Input } from "@/components/ui";
 import { createEvent, updateEvent } from "@/actions/events";
 import { useRouter } from "next/navigation";
 import { Loader2, X } from "lucide-react";
 import { compressImage } from "@/lib/compress";
 
+/** Convert "HH:MM" (24h) to "H:MM AM/PM" */
+function to12h(value: string): string {
+  if (!value) return "";
+  const [hStr, mStr] = value.split(":");
+  let h = parseInt(hStr, 10);
+  const m = mStr ?? "00";
+  const period = h >= 12 ? "PM" : "AM";
+  if (h === 0) h = 12;
+  else if (h > 12) h -= 12;
+  return `${h}:${m} ${period}`;
+}
+
+/** Convert "H:MM AM/PM" back to "HH:MM" for the time input default */
+function to24h(value: string): string {
+  if (!value) return "";
+  const match = value.match(/(\d+):(\d+)\s*(AM|PM)/i);
+  if (!match) return "";
+  let h = parseInt(match[1], 10);
+  const m = match[2];
+  const period = match[3].toUpperCase();
+  if (period === "AM" && h === 12) h = 0;
+  else if (period === "PM" && h !== 12) h += 12;
+  return `${String(h).padStart(2, "0")}:${m}`;
+}
+
 export function EventForm({ event, onCancel }: { event?: any, onCancel: () => void }) {
   const [loading, setLoading] = useState(false);
+  const timeRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setLoading(true);
     const formData = new FormData(e.currentTarget);
+    // Convert 24h time input to "H:MM AM/PM" string for timeStr
+    if (timeRef.current?.value) {
+      formData.set("timeStr", to12h(timeRef.current.value));
+    }
     
     // Compress the image client-side if a file was selected
     const imageFile = formData.get("image");
@@ -95,22 +125,20 @@ export function EventForm({ event, onCancel }: { event?: any, onCancel: () => vo
           </div>
 
           <div>
-            <Input label="Hora (Ej: 7:00 PM)" name="timeStr" defaultValue={event?.timeStr} required />
+            <label className="block text-sm font-semibold text-navy mb-2">Hora del evento</label>
+            <input
+              ref={timeRef}
+              type="time"
+              name="timeStr"
+              defaultValue={event?.timeStr ? to24h(event.timeStr) : "19:00"}
+              required
+              className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white transition-colors text-navy"
+            />
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div>
             <Input label="Ubicación (Ej: Auditorio Principal)" name="location" defaultValue={event?.location} required />
-            <div>
-              <label className="block text-sm font-semibold text-navy mb-2">Campus</label>
-              <select name="campus" defaultValue={event?.campus || "Allende"} className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white transition-colors" required>
-                <option value="Allende">Allende</option>
-                <option value="Sabinas">Sabinas</option>
-                <option value="Múzquiz">Múzquiz</option>
-                <option value="Barroterán">Barroterán</option>
-                <option value="Anáhuac">Anáhuac</option>
-                <option value="Durango">Durango</option>
-              </select>
-            </div>
+            <input type="hidden" name="campus" value="allende" />
           </div>
 
           <div>

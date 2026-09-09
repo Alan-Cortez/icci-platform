@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Calendar, Clock, MapPin, Users, X, ChevronRight, Ticket } from "lucide-react";
+import { Calendar, Clock, MapPin, Users, X, ChevronRight } from "lucide-react";
 import { Badge, Button, Card, SectionHeading } from "@/components/ui";
 import { cn } from "@/lib/utils";
 
@@ -232,56 +232,37 @@ export function EventosClient({ initialEvents }: { initialEvents: any[] }) {
             </div>
 
             {/* Modal Right Content */}
-            <div className="p-8 md:p-12 w-full md:w-3/5 overflow-y-auto">
-               
-               <div className="grid sm:grid-cols-2 gap-8 mb-10">
-                 {/* Col 1 */}
-                 <div>
-                   <h4 className="font-bold text-navy text-lg mb-4 flex items-center gap-2 border-b border-gray-100 pb-2">
-                     <Ticket className="w-5 h-5 text-gold" /> Localidades
-                   </h4>
-                   <div className="flex justify-between items-center text-gray-700 py-1">
-                     <span>Entrada</span>
-                     <span className="font-bold">{selectedEvent.price}</span>
-                   </div>
-                   <p className="text-xs text-gray-500 mt-4 italic">
-                     * Información sujeta a disponibilidad. Si requiere registro previo, por favor contacte al campus.
-                   </p>
-                 </div>
+            <div className="p-8 md:p-12 w-full md:w-3/5 overflow-y-auto flex flex-col">
 
-                 {/* Col 2 */}
-                 <div>
-                   <h4 className="font-bold text-navy text-lg mb-4 flex items-center gap-2 border-b border-gray-100 pb-2">
-                     <Clock className="w-5 h-5 text-gold" /> Detalles del evento
-                   </h4>
-                   <div className="space-y-4 text-sm text-gray-700">
-                     <div className="flex gap-3">
-                       <Calendar className="w-5 h-5 text-gray-400 shrink-0" />
-                       <span className="font-medium">{formatDate(selectedEvent.startDate)}</span>
-                     </div>
-                     <div className="flex gap-3">
-                       <Clock className="w-5 h-5 text-gray-400 shrink-0" />
-                       <span className="font-medium">{selectedEvent.timeStr}</span>
-                     </div>
-                     <div className="flex gap-3">
-                       <MapPin className="w-5 h-5 text-gray-400 shrink-0" />
-                       <span className="font-medium">{selectedEvent.location}</span>
-                     </div>
+               {/* Detalles */}
+               <div className="mb-8">
+                 <h4 className="font-bold text-navy text-lg mb-4 flex items-center gap-2 border-b border-gray-100 pb-2">
+                   <Clock className="w-5 h-5 text-gold" /> Detalles del evento
+                 </h4>
+                 <div className="space-y-4 text-sm text-gray-700">
+                   <div className="flex gap-3">
+                     <Calendar className="w-5 h-5 text-gray-400 shrink-0" />
+                     <span className="font-medium">{formatDate(selectedEvent.startDate)}</span>
+                   </div>
+                   <div className="flex gap-3">
+                     <Clock className="w-5 h-5 text-gray-400 shrink-0" />
+                     <span className="font-medium">{selectedEvent.timeStr}</span>
+                   </div>
+                   <div className="flex gap-3">
+                     <MapPin className="w-5 h-5 text-gray-400 shrink-0" />
+                     <span className="font-medium">{selectedEvent.location}</span>
                    </div>
                  </div>
                </div>
 
-               <div className="bg-off-white p-6 rounded-2xl mb-10 border border-gray-100">
+               <div className="bg-off-white p-6 rounded-2xl mb-8 border border-gray-100 flex-1">
                  <h4 className="font-bold text-navy mb-2">Acerca del evento</h4>
                  <p className="text-gray-600 text-sm leading-relaxed">
                    {selectedEvent.description}
                  </p>
                </div>
 
-               <div className="flex flex-col sm:flex-row gap-4">
-                 <Button className="w-full flex-1">Registrarme ahora</Button>
-                 <Button variant="outline" className="w-full flex-1" onClick={() => setSelectedEvent(null)}>Cerrar ventana</Button>
-               </div>
+               <Button variant="outline" className="w-full" onClick={() => setSelectedEvent(null)}>Cerrar</Button>
             </div>
 
           </div>
