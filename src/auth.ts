@@ -20,28 +20,18 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   },
   callbacks: {
     async jwt({ token, user, trigger }) {
-      // On initial sign-in, user object is available — always fetch role from DB
+      // On initial sign-in: always read role from DB (DrizzleAdapter doesn't populate custom fields)
       if (user?.email) {
         const dbUser = await db.query.users.findFirst({
           where: eq(users.email, user.email),
         });
-
         if (dbUser) {
-          // Auto-promote superadmin if email matches env var
-          if (dbUser.email === process.env.SUPER_ADMIN_EMAIL && dbUser.role !== "superadmin") {
-            await db
-              .update(users)
-              .set({ role: "superadmin" })
-              .where(eq(users.id, dbUser.id));
-            token.role = "superadmin" as UserRole;
-          } else {
-            token.role = dbUser.role as UserRole;
-          }
+          token.role = dbUser.role as UserRole;
           token.id = dbUser.id;
         }
       }
 
-      // On session update, re-read role from DB to pick up admin promotions
+      // On session update: re-read role from DB to pick up promotions made in admin panel
       if (trigger === "update" && token.email) {
         const dbUser = await db.query.users.findFirst({
           where: eq(users.email, token.email as string),
