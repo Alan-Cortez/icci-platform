@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ChevronRight, Sun, Sunrise, Moon } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 
 // ─── Schedule Data ─────────────────────────────────────────────────────────────
 
@@ -12,7 +12,6 @@ const WEEKLY_SERVICES = [
     title: "Oración Matutina",
     subtitle: "Servicio de oración",
     time: "9 AM",
-    icon: Sunrise,
     variant: "navy" as const,
   },
   {
@@ -21,7 +20,6 @@ const WEEKLY_SERVICES = [
     title: "Servicio Femenil",
     subtitle: "Un espacio de fe para mujeres",
     time: "7 PM",
-    icon: Moon,
     variant: "gold" as const,
   },
   {
@@ -30,7 +28,6 @@ const WEEKLY_SERVICES = [
     title: "Servicio General",
     subtitle: "Adoración y palabra",
     time: "7 PM",
-    icon: Moon,
     variant: "navy" as const,
   },
   {
@@ -39,8 +36,7 @@ const WEEKLY_SERVICES = [
     title: "Jóvenes & Varones",
     subtitle: "11 años en adelante",
     time: "7 PM",
-    icon: Moon,
-    variant: "outline" as const,
+    variant: "gold" as const,
   },
   {
     id: "domingo",
@@ -48,8 +44,7 @@ const WEEKLY_SERVICES = [
     title: "Servicio General",
     subtitle: "Celebración dominical",
     time: "10 AM",
-    icon: Sun,
-    variant: "gold" as const,
+    variant: "navy" as const,
   },
 ];
 
@@ -58,7 +53,7 @@ const WEEKLY_SERVICES = [
 export function WeeklySchedule() {
   return (
     <section className="py-24 bg-off-white overflow-hidden">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* Heading */}
         <div className="text-center mb-16">
@@ -70,70 +65,82 @@ export function WeeklySchedule() {
           </p>
         </div>
 
-        {/* Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
-          {WEEKLY_SERVICES.map((svc) => {
-            const Icon = svc.icon;
-            const isGold = svc.variant === "gold";
-            const isOutline = svc.variant === "outline";
+        {/* Timeline */}
+        <div className="relative">
+          {/* Center line */}
+          <div className="absolute left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-gold to-transparent -translate-x-1/2 hidden md:block" />
 
-            return (
-              <Link
-                key={svc.id}
-                href="/campus/allende"
-                className={`group relative flex flex-col justify-between rounded-2xl p-6 cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl border
-                  ${isGold
-                    ? "bg-gold border-gold text-navy"
-                    : isOutline
-                    ? "bg-white border-gray-200 hover:border-navy text-navy"
-                    : "bg-navy border-navy text-white"
+          <div className="space-y-8">
+            {WEEKLY_SERVICES.map((svc, i) => {
+              const isLeft = i % 2 === 0;
+              const isGold = svc.variant === "gold";
+
+              return (
+                <div
+                  key={svc.id}
+                  className={`relative flex items-center gap-4 md:gap-0 ${
+                    isLeft ? "md:flex-row" : "md:flex-row-reverse"
                   }`}
-              >
-                {/* Top row: icon + time */}
-                <div className="flex items-start justify-between mb-8">
-                  <div className={`w-9 h-9 rounded-xl flex items-center justify-center
-                    ${isGold ? "bg-navy/10" : isOutline ? "bg-navy/5" : "bg-white/10"}`}
+                >
+                  {/* Card */}
+                  <Link
+                    href="/campus/allende"
+                    className={`group flex-1 flex items-center gap-4 rounded-2xl px-6 py-5 border transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl cursor-pointer
+                      ${isLeft ? "md:mr-10" : "md:ml-10"}
+                      ${isGold
+                        ? "bg-gold border-gold text-navy"
+                        : "bg-navy border-navy text-white"
+                      }`}
                   >
-                    <Icon className={`w-4 h-4 ${isGold ? "text-navy/70" : isOutline ? "text-navy/50" : "text-white/70"}`} />
+                    {/* Time pill */}
+                    <span
+                      className={`flex-shrink-0 text-sm font-black px-3 py-1.5 rounded-full tracking-wide
+                        ${isGold ? "bg-navy text-gold" : "bg-gold text-navy"}`}
+                    >
+                      {svc.time}
+                    </span>
+
+                    {/* Text */}
+                    <div className="flex-1 min-w-0">
+                      <p
+                        className={`font-display uppercase leading-none tracking-wide ${
+                          isGold ? "text-navy" : "text-white"
+                        }`}
+                        style={{ fontSize: "clamp(1.1rem, 2.5vw, 1.5rem)" }}
+                      >
+                        {svc.day}
+                      </p>
+                      <p className={`text-sm font-semibold mt-0.5 ${isGold ? "text-navy" : "text-white"}`}>
+                        {svc.title}
+                      </p>
+                      <p className={`text-xs mt-0.5 font-light ${isGold ? "text-navy/60" : "text-white/50"}`}>
+                        {svc.subtitle}
+                      </p>
+                    </div>
+
+                    {/* Arrow */}
+                    <ChevronRight
+                      className={`w-4 h-4 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity ${
+                        isGold ? "text-navy/50" : "text-white/50"
+                      }`}
+                    />
+                  </Link>
+
+                  {/* Center dot */}
+                  <div className="hidden md:flex absolute left-1/2 -translate-x-1/2 w-4 h-4 rounded-full border-2 border-gold bg-off-white z-10 items-center justify-center">
+                    <div className="w-1.5 h-1.5 rounded-full bg-gold" />
                   </div>
-                  <span className={`text-xs font-black tracking-widest uppercase px-2.5 py-1 rounded-full
-                    ${isGold ? "bg-navy text-gold" : isOutline ? "bg-navy text-white" : "bg-gold text-navy"}`}
-                  >
-                    {svc.time}
-                  </span>
-                </div>
 
-                {/* Day */}
-                <div>
-                  <p className={`font-display uppercase leading-none mb-1
-                    ${isGold ? "text-navy" : isOutline ? "text-navy" : "text-white"}`}
-                    style={{ fontSize: "clamp(1.4rem, 3vw, 1.9rem)" }}
-                  >
-                    {svc.day}
-                  </p>
-                  <p className={`text-sm font-semibold tracking-wide mt-1
-                    ${isGold ? "text-navy" : isOutline ? "text-navy/80" : "text-white"}`}
-                  >
-                    {svc.title}
-                  </p>
-                  <p className={`text-xs mt-1 font-light
-                    ${isGold ? "text-navy/60" : isOutline ? "text-navy/40" : "text-white/50"}`}
-                  >
-                    {svc.subtitle}
-                  </p>
+                  {/* Empty half on desktop */}
+                  <div className="hidden md:block flex-1" />
                 </div>
-
-                {/* Hover accent line */}
-                <div className={`absolute bottom-0 left-6 right-6 h-0.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300
-                  ${isGold ? "bg-navy/30" : "bg-gold/60"}`}
-                />
-              </Link>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
 
         {/* CTA */}
-        <div className="text-center mt-12">
+        <div className="text-center mt-14">
           <Link
             href="/campus"
             className="inline-flex items-center gap-2 border-2 border-navy text-navy text-sm font-semibold px-7 py-3 rounded-full hover:bg-navy hover:text-white transition-all duration-300"
