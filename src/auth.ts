@@ -7,6 +7,7 @@ import { users } from "@/db/schema";
 import type { UserRole } from "@/types/next-auth";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
+  trustHost: true,                    // Auto-detect URL from request (works on Vercel)
   adapter: DrizzleAdapter(db),
   providers: [
     Google({
