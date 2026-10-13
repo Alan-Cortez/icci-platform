@@ -32,28 +32,43 @@ const QUICK_LINKS = [
 
 export function HeroVideo() {
   const [loaded, setLoaded] = useState(false);
+  const [shouldLoadVideo, setShouldLoadVideo] = useState(false);
 
   useEffect(() => {
     setLoaded(true);
+    // Avoid downloading heavy background video on mobile screens, Save-Data mode, or reduced motion
+    const isDesktop = window.innerWidth >= 768;
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const saveData = (navigator as any).connection?.saveData === true;
+    if (isDesktop && !prefersReducedMotion && !saveData) {
+      setShouldLoadVideo(true);
+    }
   }, []);
 
   return (
     <section className="relative h-screen min-h-[640px] overflow-hidden bg-navy">
-      {/* Video background */}
-      <video
-        autoPlay
-        loop
-        muted
-        playsInline
-        className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${
-          loaded ? "opacity-100" : "opacity-0"
-        }`}
-        onLoadedData={() => setLoaded(true)}
-        poster="/hero-poster.jpg"
-      >
-        <source src="/hero.mp4"  type="video/mp4"  />
-        <source src="/hero.webm" type="video/webm" />
-      </video>
+      {/* Fast lightweight poster background (72 KB) — instant on mobile & desktop */}
+      <div
+        className="absolute inset-0 bg-cover bg-center"
+        style={{ backgroundImage: "url('/hero-poster.jpg')" }}
+      />
+
+      {/* Video background — only loaded on desktop without data-saver */}
+      {shouldLoadVideo && (
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="metadata"
+          poster="/hero-poster.jpg"
+          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${
+            loaded ? "opacity-100" : "opacity-0"
+          }`}
+        >
+          <source src="/hero.mp4" type="video/mp4" />
+        </video>
+      )}
 
       {/* Layered overlays */}
       <div className="absolute inset-0 bg-gradient-to-r from-navy/90 via-navy/65 to-navy/30" />

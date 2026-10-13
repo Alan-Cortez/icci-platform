@@ -12,15 +12,48 @@ export const SITE = {
   tiktok: "https://www.tiktok.com/@iglesiacomunidaddecristo",
 } as const;
 
-export const ROLES = {
-  SUPER_ADMIN: "super_admin",
-  PASTOR_GENERAL: "pastor_general",
-  CAMPUS_PASTOR: "campus_pastor",
-  LEADER: "leader",
-  SOCIAL_ADMIN: "social_admin",
-} as const;
-
-export type UserRole = (typeof ROLES)[keyof typeof ROLES];
+export const WEEKLY_SERVICES = [
+  {
+    id: "lunes-viernes",
+    day: "Lun – Vie",
+    title: "Oración Matutina",
+    subtitle: "Servicio de oración",
+    time: "9:00 AM",
+    variant: "navy" as const,
+  },
+  {
+    id: "miercoles",
+    day: "Miércoles",
+    title: "Servicio Femenil",
+    subtitle: "Un espacio de fe para mujeres",
+    time: "7:00 PM",
+    variant: "gold" as const,
+  },
+  {
+    id: "jueves",
+    day: "Jueves",
+    title: "Servicio General",
+    subtitle: "Adoración y palabra",
+    time: "7:00 PM",
+    variant: "navy" as const,
+  },
+  {
+    id: "sabado",
+    day: "Sábado",
+    title: "Jóvenes & Varones",
+    subtitle: "11 años en adelante",
+    time: "7:00 PM",
+    variant: "gold" as const,
+  },
+  {
+    id: "domingo",
+    day: "Domingo",
+    title: "Servicio General",
+    subtitle: "Celebración dominical",
+    time: "10:00 AM",
+    variant: "navy" as const,
+  },
+] as const;
 
 export const SCHEDULES = [
   { title: "Servicio de oración", days: "Lunes a viernes", time: "9:00 AM - 10:00 AM" },
@@ -118,7 +151,6 @@ export const ADMIN_MODULES = [
   { href: "/admin", label: "Dashboard", icon: "LayoutDashboard" },
   { href: "/admin/usuarios", label: "Usuarios", icon: "Users" },
   { href: "/admin/eventos", label: "Eventos", icon: "Calendar" },
-  { href: "/admin/donaciones", label: "Donaciones", icon: "HandCoins" },
   { href: "/admin/oracion", label: "Solicitudes de oración", icon: "MessageCircle" },
   { href: "/admin/devocionales", label: "Devocionales", icon: "BookOpen" },
   { href: "/admin/testimonios", label: "Testimonios", icon: "Heart" },

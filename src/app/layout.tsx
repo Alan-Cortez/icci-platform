@@ -28,6 +28,7 @@ const cormorant = Cormorant_Garamond({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.AUTH_URL || "https://iccinternacional.vercel.app"),
   title: {
     default: "ICCI | Iglesias Comunidad De Cristo Internacional",
     template: "%s | ICCI",
@@ -37,9 +38,26 @@ export const metadata: Metadata = {
   keywords: ["iglesia", "ICCI", "Comunidad De Cristo", "Allende", "Coahuila", "cristiano"],
   openGraph: {
     title: "ICCI | Iglesias Comunidad De Cristo Internacional",
-    description: "Una familia de fe, esperanza y amor",
+    description:
+      "Una familia de fe, esperanza y amor. Campus en Allende, Sabinas, Múzquiz, Barroterán, Anáhuac y Durango.",
+    url: "https://iccinternacional.vercel.app",
+    siteName: "ICCI",
     locale: "es_MX",
     type: "website",
+    images: [
+      {
+        url: "/og-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "ICCI | Iglesias Comunidad De Cristo Internacional",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "ICCI | Iglesias Comunidad De Cristo Internacional",
+    description: "Una familia de fe, esperanza y amor",
+    images: ["/og-image.jpg"],
   },
 };
 

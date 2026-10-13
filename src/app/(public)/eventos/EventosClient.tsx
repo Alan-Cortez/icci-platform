@@ -10,12 +10,12 @@ const MONTHS_ES = ["Todos los meses", "Enero", "Febrero", "Marzo", "Abril", "May
 
 function formatDate(ts: number | Date | null): string {
   if (!ts) return "";
-  return new Date(ts).toLocaleDateString("es-MX", { day: "numeric", month: "long", year: "numeric" });
+  return new Date(ts).toLocaleDateString("es-MX", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
 }
 
 function getMonthLabel(ts: number | Date | null): string {
   if (!ts) return "";
-  return new Date(ts).toLocaleDateString("es-MX", { month: "long" });
+  return new Date(ts).toLocaleDateString("es-MX", { month: "long", timeZone: "UTC" });
 }
 
 interface EventData {

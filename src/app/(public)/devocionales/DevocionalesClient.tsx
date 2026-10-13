@@ -175,6 +175,7 @@ export function DevocionalesClient({ initialDevotionals }: { initialDevotionals:
                 year: "numeric",
                 month: "long",
                 day: "numeric",
+                timeZone: "UTC",
               });
 
               // --- TYPE 1: QUOTE / PENSIAMIENTO (Grid Card) ---

@@ -50,15 +50,24 @@ interface HomeSectionsProps {
 }
 
 export function HomeSections({ featuredTestimonies = [] }: HomeSectionsProps) {
-  const testimoniesToShow = featuredTestimonies.length > 0
-    ? featuredTestimonies.map((t, idx) => ({
+  // Deduplicate by normalized text content in case DB has repeated entries
+  const uniqueFeatured = featuredTestimonies.filter((t, index, self) => {
+    const norm = (t.content || "").trim().toLowerCase();
+    return index === self.findIndex((item) => (item.content || "").trim().toLowerCase() === norm);
+  });
+
+  const testimoniesToShow = uniqueFeatured.length > 0
+    ? uniqueFeatured.map((t, idx) => ({
         id: t.id,
         name: t.user.name,
         role: "Miembro ICCI",
         text: t.content,
-        rotate: idx % 5 === 0 ? "-rotate-2" : idx % 5 === 1 ? "rotate-1" : idx % 5 === 2 ? "-rotate-1" : idx % 5 === 3 ? "rotate-2" : "-rotate-3",
+        rotate: idx % 5 === 0 ? "md:-rotate-2" : idx % 5 === 1 ? "md:rotate-1" : idx % 5 === 2 ? "md:-rotate-1" : idx % 5 === 3 ? "md:rotate-2" : "md:-rotate-3",
       }))
-    : TESTIMONIES;
+    : TESTIMONIES.map((t) => ({
+        ...t,
+        rotate: `md:${t.rotate}`,
+      }));
 
   return (
     <>
@@ -136,36 +145,19 @@ export function HomeSections({ featuredTestimonies = [] }: HomeSectionsProps) {
             </div>
           </div>
 
-          {/* Desktop: scattered cards */}
-          <div className="hidden md:flex flex-wrap gap-4 justify-center">
+          {/* Single unified list: horizontal snap scroll on mobile, scattered cards on desktop (no DOM duplication for SEO) */}
+          <div
+            className="flex gap-4 overflow-x-auto pb-4 snap-x scrollbar-hide md:flex-wrap md:justify-center md:overflow-visible md:pb-0"
+            style={{ scrollbarWidth: "none" }}
+          >
             {testimoniesToShow.map((t, i) => (
               <div
                 key={t.id}
-                className={`w-52 bg-white rounded-2xl p-5 shadow-md border border-white/10 ${t.rotate} transition-all hover:rotate-0 hover:scale-105 hover:shadow-2xl hover:border-gold/30 duration-300`}
-                style={{ marginTop: i % 2 === 0 ? "0px" : "40px" }}
+                className={`flex-shrink-0 w-60 md:w-52 snap-start bg-white rounded-2xl p-5 shadow-md border border-white/10 ${t.rotate} ${i % 2 === 1 ? "md:mt-10" : ""} transition-all md:hover:rotate-0 md:hover:scale-105 md:hover:shadow-2xl md:hover:border-gold/30 duration-300`}
               >
                 <p className="text-xs font-bold text-navy">{t.name}</p>
                 <p className="text-xs text-gold mb-3 font-semibold">{t.role}</p>
                 <p className="text-xs text-gray-600 leading-relaxed line-clamp-6 font-serif italic font-light">
-                  &ldquo;{t.text}&rdquo;
-                </p>
-              </div>
-            ))}
-          </div>
-
-          {/* Mobile: horizontal scroll */}
-          <div
-            className="md:hidden flex gap-4 overflow-x-auto pb-4 snap-x scrollbar-hide"
-            style={{ scrollbarWidth: "none" }}
-          >
-            {testimoniesToShow.map((t) => (
-              <div
-                key={t.id}
-                className="flex-shrink-0 w-60 snap-start bg-white rounded-2xl p-5 shadow-md border border-white/10"
-              >
-                <p className="text-xs font-bold text-navy">{t.name}</p>
-                <p className="text-xs text-gold mb-3 font-semibold">{t.role}</p>
-                <p className="text-xs text-gray-600 leading-relaxed font-serif italic font-light">
                   &ldquo;{t.text}&rdquo;
                 </p>
               </div>

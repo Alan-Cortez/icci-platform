@@ -6,30 +6,16 @@ export default auth((req) => {
   const role: UserRole = req.auth?.user?.role ?? "user";
   const { pathname } = req.nextUrl;
 
-  const isLoginRoute = pathname === "/admin/login";
-  const isAdminRoute = pathname.startsWith("/admin") && !isLoginRoute;
-
-  // ── Admin login page ──────────────────────────────────────────────────
-  // If already logged in as admin/superadmin → redirect to panel
-  // If logged in as regular user → redirect to home
-  if (isLoginRoute) {
-    if (isLoggedIn) {
-      const dest = role === "admin" || role === "superadmin" ? "/admin" : "/";
-      return Response.redirect(new URL(dest, req.nextUrl));
-    }
-    return null;
-  }
-
-  // ── Admin panel ───────────────────────────────────────────────────────
-  if (isAdminRoute) {
-    // Must be logged in
-    if (!isLoggedIn) {
-      return Response.redirect(new URL("/admin/login", req.nextUrl));
-    }
-
-    // Must have admin or superadmin role (given by another admin in the panel)
-    if (role !== "admin" && role !== "superadmin") {
+  // ── Protect all /admin routes (including /admin/login) ────────────────
+  if (pathname.startsWith("/admin")) {
+    // Must be logged in and have admin or superadmin role
+    if (!isLoggedIn || (role !== "admin" && role !== "superadmin")) {
       return Response.redirect(new URL("/", req.nextUrl));
+    }
+
+    // Redirect legacy /admin/login to /admin for authenticated admins
+    if (pathname === "/admin/login") {
+      return Response.redirect(new URL("/admin", req.nextUrl));
     }
 
     // Only superadmin can access /admin/usuarios

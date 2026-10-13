@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { Facebook, Instagram, Phone, Mail, MapPin } from "lucide-react";
-import { SITE, SCHEDULES } from "@/lib/constants";
+import { Facebook, Phone, Mail, MapPin } from "lucide-react";
+import { SITE, WEEKLY_SERVICES } from "@/lib/constants";
 
 const quickLinks = [
   { href: "/conocenos", label: "Conócenos" },
@@ -16,9 +16,6 @@ const supportLinks = [
   { href: "/testimonios", label: "Testimonios" },
   { href: "/calendario", label: "Calendario" },
 ];
-
-// Just show first 4 schedules in footer
-const schedulePreview = SCHEDULES.slice(0, 4);
 
 export function Footer() {
   return (
@@ -46,11 +43,6 @@ export function Footer() {
               <a href={SITE.facebook} target="_blank" rel="noopener noreferrer" aria-label="Facebook"
                 className="w-9 h-9 rounded-full bg-white/10 hover:bg-gold hover:text-navy flex items-center justify-center transition-all duration-200 text-white">
                 <Facebook className="w-4 h-4" />
-              </a>
-              {/* Instagram */}
-              <a href="#" aria-label="Instagram"
-                className="w-9 h-9 rounded-full bg-white/10 hover:bg-gold hover:text-navy flex items-center justify-center transition-all duration-200 text-white">
-                <Instagram className="w-4 h-4" />
               </a>
               {/* YouTube */}
               <a href={SITE.youtube} target="_blank" rel="noopener noreferrer" aria-label="YouTube"
@@ -133,10 +125,10 @@ export function Footer() {
             </div>
             <h4 className="font-semibold text-xs text-white/50 uppercase tracking-widest mb-3">Horarios</h4>
             <div className="space-y-2">
-              {schedulePreview.map((s) => (
-                <div key={s.title + s.days} className="flex justify-between text-xs">
-                  <span className="text-white/50">{s.days}</span>
-                  <span className="text-gold font-medium">{s.time}</span>
+              {WEEKLY_SERVICES.map((s) => (
+                <div key={s.id} className="flex justify-between text-xs gap-2">
+                  <span className="text-white/50">{s.day} · {s.title}</span>
+                  <span className="text-gold font-medium shrink-0">{s.time}</span>
                 </div>
               ))}
               <Link href="/calendario" className="inline-block text-xs text-gold hover:underline mt-1">
@@ -153,13 +145,9 @@ export function Footer() {
           <p className="text-white/40 text-xs">
             © {new Date().getFullYear()} {SITE.name}. Todos los derechos reservados.
           </p>
-          <div className="flex gap-4">
-            <Link href="/admin/login" className="text-white/30 hover:text-white/60 text-xs transition-colors">
-              Admin
-            </Link>
-          </div>
         </div>
       </div>
     </footer>
   );
 }
+

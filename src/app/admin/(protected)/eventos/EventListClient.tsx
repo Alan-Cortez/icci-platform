@@ -8,12 +8,12 @@ import { deleteEvent } from "@/actions/events";
 
 function formatDate(ts: number | Date | null): string {
   if (!ts) return "";
-  return new Date(ts).toLocaleDateString("es-MX", { day: "numeric", month: "long", year: "numeric" });
+  return new Date(ts).toLocaleDateString("es-MX", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
 }
 
 function getMonthLabel(ts: number | Date | null): string {
   if (!ts) return "";
-  return new Date(ts).toLocaleDateString("es-MX", { month: "long" });
+  return new Date(ts).toLocaleDateString("es-MX", { month: "long", timeZone: "UTC" });
 }
 
 export function EventListClient({ initialEvents }: { initialEvents: any[] }) {

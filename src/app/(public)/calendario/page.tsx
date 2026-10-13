@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 
 function formatDate(date: Date | null): string {
   if (!date) return "";
-  return new Date(date).toLocaleDateString("es-MX", { day: "numeric", month: "long", year: "numeric" });
+  return new Date(date).toLocaleDateString("es-MX", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
 }
 
 const dayOrder = ["Lunes a viernes", "Miércoles", "Jueves", "Último viernes de cada mes", "Sábado", "Domingo", "Último domingo del mes"];

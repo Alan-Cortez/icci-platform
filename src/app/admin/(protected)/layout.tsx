@@ -4,15 +4,9 @@ import {
   Calendar,
   Heart,
   LayoutDashboard,
-  MapPin,
   MessageCircle,
   Users,
-  Video,
   BookOpen,
-  FileText,
-  Image,
-  Droplets,
-  HandCoins,
   ArrowLeft,
 } from "lucide-react";
 import { auth } from "@/auth";
@@ -21,16 +15,10 @@ import { AdminLogoutButton } from "@/components/admin/AdminLogoutButton";
 
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   LayoutDashboard,
-  MapPin,
   Users,
   Calendar,
   Heart,
-  Video,
   BookOpen,
-  FileText,
-  Image,
-  Droplets,
-  HandCoins,
   MessageCircle,
 };
 
@@ -40,7 +28,6 @@ const NAV_MODULES = [
   { href: "/admin/devocionales", label: "Devocionales", icon: "BookOpen" },
   { href: "/admin/oracion", label: "Solicitudes de Oración", icon: "MessageCircle" },
   { href: "/admin/testimonios", label: "Testimonios", icon: "Heart" },
-  { href: "/admin/donaciones", label: "Donaciones", icon: "HandCoins" },
   { href: "/admin/usuarios", label: "Usuarios", icon: "Users" },
 ] as const;
 
@@ -48,7 +35,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   const session = await auth();
 
   if (!session) {
-    redirect("/admin/login");
+    redirect("/");
   }
 
   const role = session.user.role;

@@ -2,51 +2,7 @@
 
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
-
-// ─── Schedule Data ─────────────────────────────────────────────────────────────
-
-const WEEKLY_SERVICES = [
-  {
-    id: "lunes-viernes",
-    day: "Lun – Vie",
-    title: "Oración Matutina",
-    subtitle: "Servicio de oración",
-    time: "9 AM",
-    variant: "navy" as const,
-  },
-  {
-    id: "miercoles",
-    day: "Miércoles",
-    title: "Servicio Femenil",
-    subtitle: "Un espacio de fe para mujeres",
-    time: "7 PM",
-    variant: "gold" as const,
-  },
-  {
-    id: "jueves",
-    day: "Jueves",
-    title: "Servicio General",
-    subtitle: "Adoración y palabra",
-    time: "7 PM",
-    variant: "navy" as const,
-  },
-  {
-    id: "sabado",
-    day: "Sábado",
-    title: "Jóvenes & Varones",
-    subtitle: "11 años en adelante",
-    time: "7 PM",
-    variant: "gold" as const,
-  },
-  {
-    id: "domingo",
-    day: "Domingo",
-    title: "Servicio General",
-    subtitle: "Celebración dominical",
-    time: "10 AM",
-    variant: "navy" as const,
-  },
-];
+import { WEEKLY_SERVICES } from "@/lib/constants";
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
