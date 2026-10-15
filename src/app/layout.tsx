@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Bebas_Neue, Cormorant_Garamond } from "next/font/google";
 import "./globals.css";
 import { SessionProvider } from "next-auth/react";
+import { ChurchJsonLd } from "@/components/seo/JsonLd";
 
 /* ── Body / UI font ─────────────────────────────────── */
 const inter = Inter({
@@ -64,6 +65,9 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="es" className={`${inter.variable} ${bebasNeue.variable} ${cormorant.variable} h-full`}>
+      <head>
+        <ChurchJsonLd />
+      </head>
       <body className="min-h-full flex flex-col antialiased">
         <SessionProvider>
           {children}
