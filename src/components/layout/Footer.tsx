@@ -1,66 +1,86 @@
 import Link from "next/link";
-import { Facebook, Phone, Mail, MapPin } from "lucide-react";
-import { SITE, WEEKLY_SERVICES } from "@/lib/constants";
+import { Facebook, Phone, Mail, MapPin, Calendar, Clock, ArrowUpRight } from "lucide-react";
+import { SITE } from "@/lib/constants";
 
-const quickLinks = [
+const navLinks = [
   { href: "/conocenos", label: "Conócenos" },
-  { href: "/campus",   label: "Campus"    },
-  { href: "/eventos",  label: "Eventos"   },
-];
-
-const supportLinks = [
-  { href: "/oracion", label: "Solicitud de Oración" },
-  { href: "/donaciones", label: "Donaciones" },
-  { href: "/contacto", label: "Contacto" },
+  { href: "/campus", label: "Nuestros Campus" },
+  { href: "/eventos", label: "Próximos Eventos" },
   { href: "/devocionales", label: "Devocionales" },
-  { href: "/testimonios", label: "Testimonios" },
-  { href: "/calendario", label: "Calendario" },
+  { href: "/testimonios", label: "Historias de Fe" },
+  { href: "/oracion", label: "Petición de Oración" },
 ];
 
 export function Footer() {
   return (
-    <footer className="bg-navy text-white">
-      {/* Thin gold separator line */}
-      <div className="h-px w-full bg-gold opacity-30" />
-      {/* Main footer */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
-          {/* Brand */}
-          <div className="lg:col-span-1">
-            <div className="flex items-center gap-3 mb-4">
-              <img src="/images/logo.png" alt="ICCI Logo" className="w-10 h-10 object-contain" />
+    <footer className="bg-navy text-white relative overflow-hidden">
+      {/* Decorative top accent line */}
+      <div className="h-0.5 w-full bg-gradient-to-r from-transparent via-gold/60 to-transparent" />
+
+      {/* Main footer container */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-20">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 lg:gap-8 items-start">
+          
+          {/* ── Col 1: Brand & Identity (4 cols) ── */}
+          <div className="lg:col-span-4 space-y-5">
+            <div className="flex items-center gap-3">
+              <img src="/images/logo.png" alt="ICCI Logo" className="w-12 h-12 object-contain" />
+              <div>
+                <p className="font-display text-2xl tracking-wider text-white leading-none">ICCI</p>
+                <p className="text-[11px] uppercase tracking-widest text-gold font-semibold mt-1">
+                  Comunidad de Cristo
+                </p>
+              </div>
             </div>
-            <p className="font-display text-display text-white leading-none mb-1">ICCI</p>
-            <p className="font-serif text-white/50 text-sm italic font-light mb-5">
-              Una familia de fe, esperanza y amor
+
+            <p className="font-serif text-white/70 text-base italic font-light leading-relaxed max-w-sm">
+              &ldquo;{SITE.tagline}&rdquo;
             </p>
-            <p className="text-white/50 text-sm leading-relaxed mb-6">
-              Sirviendo a nuestra comunidad desde Allende, Coahuila.
+
+            <p className="text-white/40 text-xs leading-relaxed max-w-sm">
+              Una iglesia cristiana con propósito y visión, edificando familias y extendiendo el reino de Dios desde Allende, Coahuila hacia todo el norte de México.
             </p>
-            {/* Social icons */}
-            <div className="flex flex-wrap gap-3">
-              {/* Facebook */}
-              <a href={SITE.facebook} target="_blank" rel="noopener noreferrer" aria-label="Facebook"
-                className="w-9 h-9 rounded-full bg-white/10 hover:bg-gold hover:text-navy flex items-center justify-center transition-all duration-200 text-white">
+
+            {/* Social pills */}
+            <div className="flex items-center gap-2.5 pt-2">
+              <a
+                href={SITE.facebook}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Facebook"
+                className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 hover:border-gold hover:bg-gold hover:text-navy flex items-center justify-center transition-all duration-300 text-white/80"
+              >
                 <Facebook className="w-4 h-4" />
               </a>
-              {/* YouTube */}
-              <a href={SITE.youtube} target="_blank" rel="noopener noreferrer" aria-label="YouTube"
-                className="w-9 h-9 rounded-full bg-white/10 hover:bg-gold hover:text-navy flex items-center justify-center transition-all duration-200 text-white">
+              <a
+                href={SITE.youtube}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="YouTube"
+                className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 hover:border-gold hover:bg-gold hover:text-navy flex items-center justify-center transition-all duration-300 text-white/80"
+              >
                 <svg viewBox="0 0 24 24" className="w-4 h-4 fill-current">
                   <path d="M23.495 6.205a3.007 3.007 0 00-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 00.527 6.205a31.247 31.247 0 00-.522 5.805 31.247 31.247 0 00.522 5.783 3.007 3.007 0 002.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 002.088-2.088 31.247 31.247 0 00.5-5.783 31.247 31.247 0 00-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/>
                 </svg>
               </a>
-              {/* Spotify */}
-              <a href={SITE.spotify} target="_blank" rel="noopener noreferrer" aria-label="Spotify"
-                className="w-9 h-9 rounded-full bg-white/10 hover:bg-gold hover:text-navy flex items-center justify-center transition-all duration-200 text-white">
+              <a
+                href={SITE.spotify}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Spotify"
+                className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 hover:border-gold hover:text-navy flex items-center justify-center transition-all duration-300 text-white/80"
+              >
                 <svg viewBox="0 0 24 24" className="w-4 h-4 fill-current">
                   <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/>
                 </svg>
               </a>
-              {/* TikTok */}
-              <a href={SITE.tiktok} target="_blank" rel="noopener noreferrer" aria-label="TikTok"
-                className="w-9 h-9 rounded-full bg-white/10 hover:bg-gold hover:text-navy flex items-center justify-center transition-all duration-200 text-white">
+              <a
+                href={SITE.tiktok}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="TikTok"
+                className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 hover:border-gold hover:bg-gold hover:text-navy flex items-center justify-center transition-all duration-300 text-white/80"
+              >
                 <svg viewBox="0 0 24 24" className="w-4 h-4 fill-current">
                   <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.27 6.27 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.18 8.18 0 004.78 1.52V6.72a4.85 4.85 0 01-1.01-.03z" />
                 </svg>
@@ -68,86 +88,109 @@ export function Footer() {
             </div>
           </div>
 
-          {/* Quick links */}
-          <div>
-            <p className="label-eyebrow mb-4">Navegar</p>
-            <ul className="space-y-2.5">
-              {quickLinks.map((link) => (
+          {/* ── Col 2: Navigation Links (3 cols) ── */}
+          <div className="lg:col-span-3">
+            <p className="text-xs uppercase tracking-[0.2em] font-bold text-gold mb-6">
+              Navegación
+            </p>
+            <ul className="space-y-3">
+              {navLinks.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-white/60 hover:text-gold text-sm transition-colors"
+                    className="text-white/60 hover:text-white hover:translate-x-1 inline-flex items-center gap-1.5 text-sm transition-all duration-200"
                   >
-                    {link.label}
+                    <span>{link.label}</span>
                   </Link>
                 </li>
               ))}
             </ul>
           </div>
 
-          {/* Support links */}
-          <div>
-            <p className="label-eyebrow mb-4">Comunidad</p>
-            <ul className="space-y-2.5">
-              {supportLinks.map((link) => (
-                <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="text-white/60 hover:text-gold text-sm transition-colors"
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
+          {/* ── Col 3: Direct Contact (5 cols) ── */}
+          <div className="lg:col-span-5 space-y-6">
+            <p className="text-xs uppercase tracking-[0.2em] font-bold text-gold mb-6">
+              Visítanos & Contáctanos
+            </p>
 
-          {/* Contact & Schedules */}
-          <div>
-            <p className="label-eyebrow mb-4">Contáctanos</p>
-            <div className="space-y-3 mb-6">
-              <div className="flex items-start gap-2 text-sm text-white/60">
-                <MapPin className="w-4 h-4 text-gold shrink-0 mt-0.5" />
-                <span>{SITE.address}, {SITE.location}</span>
+            <div className="space-y-4">
+              {/* Address */}
+              <div className="flex items-start gap-3.5 group">
+                <div className="w-9 h-9 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center shrink-0 mt-0.5 text-gold group-hover:bg-gold group-hover:text-navy transition-colors">
+                  <MapPin className="w-4 h-4" />
+                </div>
+                <div>
+                  <p className="text-xs uppercase tracking-wider text-white/40 font-semibold">Ubicación Principal</p>
+                  <p className="text-sm text-white/90 font-medium mt-0.5 leading-snug">
+                    {SITE.address}
+                  </p>
+                  <p className="text-xs text-white/50">{SITE.location}</p>
+                </div>
               </div>
-              <div className="flex items-center gap-2 text-sm text-white/60">
-                <Phone className="w-4 h-4 text-gold shrink-0" />
-                <a href={`tel:${SITE.phone.replace(/\s/g, "")}`} className="hover:text-gold transition-colors">
-                  {SITE.phone}
-                </a>
+
+              {/* Phone */}
+              <div className="flex items-start gap-3.5 group">
+                <div className="w-9 h-9 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center shrink-0 mt-0.5 text-gold group-hover:bg-gold group-hover:text-navy transition-colors">
+                  <Phone className="w-4 h-4" />
+                </div>
+                <div>
+                  <p className="text-xs uppercase tracking-wider text-white/40 font-semibold">Teléfono</p>
+                  <a
+                    href={`tel:${SITE.phone.replace(/\s/g, "")}`}
+                    className="text-sm text-white/90 hover:text-gold font-medium mt-0.5 inline-block transition-colors"
+                  >
+                    {SITE.phone}
+                  </a>
+                </div>
               </div>
-              <div className="flex items-center gap-2 text-sm text-white/60">
-                <Mail className="w-4 h-4 text-gold shrink-0" />
-                <a href={`mailto:${SITE.email}`} className="hover:text-gold transition-colors">
-                  {SITE.email}
-                </a>
+
+              {/* Email */}
+              <div className="flex items-start gap-3.5 group">
+                <div className="w-9 h-9 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center shrink-0 mt-0.5 text-gold group-hover:bg-gold group-hover:text-navy transition-colors">
+                  <Mail className="w-4 h-4" />
+                </div>
+                <div>
+                  <p className="text-xs uppercase tracking-wider text-white/40 font-semibold">Correo Electrónico</p>
+                  <a
+                    href={`mailto:${SITE.email}`}
+                    className="text-sm text-white/90 hover:text-gold font-medium mt-0.5 inline-block transition-colors"
+                  >
+                    {SITE.email}
+                  </a>
+                </div>
               </div>
             </div>
-            <h4 className="font-semibold text-xs text-white/50 uppercase tracking-widest mb-3">Horarios</h4>
-            <div className="space-y-2">
-              {WEEKLY_SERVICES.map((s) => (
-                <div key={s.id} className="flex justify-between text-xs gap-2">
-                  <span className="text-white/50">{s.day} · {s.title}</span>
-                  <span className="text-gold font-medium shrink-0">{s.time}</span>
+
+            {/* Aesthetic card for Sunday Service & Calendario */}
+            <div className="p-4 rounded-2xl bg-gradient-to-r from-white/[0.04] to-white/[0.02] border border-white/10 flex items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-gold/15 text-gold flex items-center justify-center shrink-0">
+                  <Clock className="w-5 h-5" />
                 </div>
-              ))}
-              <Link href="/calendario" className="inline-block text-xs text-gold hover:underline mt-1">
-                Ver todos los horarios →
+                <div>
+                  <p className="text-xs font-bold text-white uppercase tracking-wider">Servicio Dominical</p>
+                  <p className="text-xs text-gold font-semibold">Domingos · 10:00 AM</p>
+                </div>
+              </div>
+              <Link
+                href="/campus/allende"
+                className="text-xs font-bold text-white/80 hover:text-white bg-white/10 hover:bg-white/20 px-3.5 py-2 rounded-xl transition-all flex items-center gap-1 shrink-0"
+              >
+                Horarios <ArrowUpRight className="w-3.5 h-3.5" />
               </Link>
             </div>
           </div>
+
         </div>
       </div>
 
       {/* Bottom bar */}
-      <div className="border-t border-white/10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row items-center justify-between gap-2">
-          <p className="text-white/40 text-xs">
-            © {new Date().getFullYear()} {SITE.name}. Todos los derechos reservados.
-          </p>
+      <div className="border-t border-white/10 bg-black/20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-white/40">
+          <p>© {new Date().getFullYear()} {SITE.name}. Todos los derechos reservados.</p>
+          <p className="font-serif italic text-white/30 text-xs">Una iglesia que ama a Dios y a las personas</p>
         </div>
       </div>
     </footer>
   );
 }
-
