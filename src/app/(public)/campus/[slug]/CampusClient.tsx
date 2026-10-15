@@ -26,24 +26,6 @@ export function CampusClient({ campus, pastorName, googleMapsUrl }: CampusClient
     pastorColor = "from-navy to-navy-light";
   }
 
-  // Load TikTok script when modal is Jóvenes
-  useEffect(() => {
-    if (activeModal === "Jóvenes") {
-      const script = document.createElement("script");
-      script.src = "https://www.tiktok.com/embed.js";
-      script.async = true;
-      document.body.appendChild(script);
-      
-      return () => {
-        // We don't necessarily need to remove it, but it's good practice.
-        // However, TikTok's script might leave some global variables.
-        if (document.body.contains(script)) {
-          document.body.removeChild(script);
-        }
-      };
-    }
-  }, [activeModal]);
-
   return (
     <>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 space-y-16">
@@ -198,8 +180,19 @@ export function CampusClient({ campus, pastorName, googleMapsUrl }: CampusClient
                         href="https://www.facebook.com/share/14jAxX7pjUE/"
                         target="_blank" rel="noopener noreferrer"
                         className="w-10 h-10 rounded-full bg-white/20 hover:bg-white/30 backdrop-blur-md flex items-center justify-center text-white transition-colors"
+                        aria-label="Facebook Jóvenes"
                       >
                         <Facebook className="w-5 h-5" />
+                      </a>
+                      <a
+                        href="https://www.tiktok.com/@jovenes.con.todo"
+                        target="_blank" rel="noopener noreferrer"
+                        className="w-10 h-10 rounded-full bg-white/20 hover:bg-white/30 backdrop-blur-md flex items-center justify-center text-white transition-colors"
+                        aria-label="TikTok Jóvenes"
+                      >
+                        <svg viewBox="0 0 24 24" className="w-5 h-5 fill-current">
+                          <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.27 6.27 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.18 8.18 0 004.78 1.52V6.72a4.85 4.85 0 01-1.01-.03z" />
+                        </svg>
                       </a>
                     </div>
                   </div>
@@ -234,23 +227,29 @@ export function CampusClient({ campus, pastorName, googleMapsUrl }: CampusClient
                       </div>
                     </div>
 
-                    {/* TikTok embed */}
+                    {/* TikTok channel card */}
                     <div>
-                       <h4 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4">Lo más reciente</h4>
-                       <div className="w-full flex justify-center bg-white rounded-2xl overflow-hidden min-h-[400px] border border-gray-100 shadow-sm">
-                        <blockquote
-                          className="tiktok-embed w-full m-0"
-                          cite="https://www.tiktok.com/@jovenes.con.todo"
-                          data-unique-id="jovenes.con.todo"
-                          data-embed-type="creator"
-                          style={{ maxWidth: "100%", minWidth: "288px" }}
+                      <h4 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4">Redes y contenido</h4>
+                      <div className="p-6 rounded-2xl bg-white border border-gray-100 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                        <div className="flex items-center gap-3">
+                          <div className="w-12 h-12 rounded-xl bg-navy text-gold flex items-center justify-center shrink-0">
+                            <svg viewBox="0 0 24 24" className="w-6 h-6 fill-current">
+                              <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.27 6.27 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.18 8.18 0 004.78 1.52V6.72a4.85 4.85 0 01-1.01-.03z" />
+                            </svg>
+                          </div>
+                          <div>
+                            <p className="font-bold text-navy text-base">@jovenes.con.todo</p>
+                            <p className="text-xs text-gray-500">Conoce lo que vivimos cada fin de semana en TikTok</p>
+                          </div>
+                        </div>
+                        <a
+                          href="https://www.tiktok.com/@jovenes.con.todo"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-2 bg-navy hover:bg-navy-light text-white text-xs font-semibold px-4 py-2.5 rounded-full transition-colors shrink-0"
                         >
-                          <section>
-                            <a target="_blank" href="https://www.tiktok.com/@jovenes.con.todo?refer=creator_embed" rel="noreferrer">
-                              @jovenes.con.todo
-                            </a>
-                          </section>
-                        </blockquote>
+                          Ver en TikTok →
+                        </a>
                       </div>
                     </div>
 

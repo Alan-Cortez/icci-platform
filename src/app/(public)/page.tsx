@@ -1,5 +1,4 @@
 import { Play } from "lucide-react";
-import Script from "next/script";
 import { Button } from "@/components/ui";
 import { HeroVideo } from "@/components/layout/HeroVideo";
 import { HomeSections } from "@/components/layout/HomeSections";
@@ -53,29 +52,6 @@ export default async function HomePage() {
 
       {/* ── Conectar + Testimonios ── */}
       <HomeSections featuredTestimonies={featuredTestimonies} />
-
-      {/* ── TikTok Embed ── */}
-      <section className="bg-off-white py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center flex flex-col items-center">
-          <p className="label-eyebrow mb-3">Síguenos en TikTok</p>
-          <div className="divider-gold mx-auto mb-10" />
-          
-          <blockquote 
-            className="tiktok-embed" 
-            cite="https://www.tiktok.com/@iglesiacomunidaddecristo" 
-            data-unique-id="iglesiacomunidaddecristo" 
-            data-embed-type="creator" 
-            style={{ maxWidth: "780px", minWidth: "288px" }} 
-          > 
-            <section> 
-              <a target="_blank" href="https://www.tiktok.com/@iglesiacomunidaddecristo?refer=creator_embed" rel="noreferrer">
-                @iglesiacomunidaddecristo
-              </a> 
-            </section> 
-          </blockquote> 
-          <Script src="https://www.tiktok.com/embed.js" strategy="lazyOnload" />
-        </div>
-      </section>
     </>
   );
 }
