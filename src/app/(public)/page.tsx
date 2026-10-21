@@ -149,7 +149,7 @@ export default async function HomePage() {
                   href="https://youtube.com/@icctv-101?si=kp51y50RG4r6icuu"
                   target="_blank"
                   rel="noopener noreferrer"
-                  variant="gold"
+                  variant="primary"
                   className="font-bold flex items-center gap-2"
                 >
                   <Play className="w-4 h-4 fill-current" />
