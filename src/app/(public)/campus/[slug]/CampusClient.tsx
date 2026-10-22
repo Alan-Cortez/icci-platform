@@ -20,11 +20,9 @@ export function CampusClient({ campus, pastorName, googleMapsUrl }: CampusClient
 
   // Determine pastor details based on name
   let pastorImg = null;
-  let pastorColor = "from-navy-light to-navy";
   
   if (pastorName.includes("Oscar") || pastorName.includes("Óscar")) {
     pastorImg = "/images/pastores-sosa.jpg";
-    pastorColor = "from-navy to-navy-light";
   }
 
   return (
@@ -34,9 +32,9 @@ export function CampusClient({ campus, pastorName, googleMapsUrl }: CampusClient
         <div className="grid md:grid-cols-2 gap-6">
           {/* Pastor Visual Card */}
           <div 
-            className="relative group rounded-3xl overflow-hidden shadow-md border border-gray-100 h-[300px] sm:h-[360px] md:h-[400px] lg:h-[460px]"
+            className="relative group rounded-3xl overflow-hidden shadow-md border border-gray-100 h-[300px] sm:h-[360px] md:h-[400px] lg:h-[460px] bg-black"
           >
-            <div className={`absolute inset-0 bg-gradient-to-b ${pastorColor}`}>
+            <div className="absolute inset-0 bg-black">
               {pastorImg && (
                 <img
                   src={pastorImg}

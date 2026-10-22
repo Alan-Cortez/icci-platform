@@ -14,7 +14,6 @@ const PASTORS = [
     desc:
       "Fundadores y visionarios de Iglesias Comunidad De Cristo Internacional. Su liderazgo y pasión por la adoración han guiado la red de campus hacia un crecimiento sostenido y profundo.",
     img: "/images/pastores-sosa.jpg",
-    color: "from-navy to-navy-light",
   },
   {
     id: "copastores-rojero",
@@ -23,7 +22,6 @@ const PASTORS = [
     desc:
       "Siervos fieles y pilares de la iglesia, Tomás y Mary Rojero pastorean con dedicación y amor, apoyando el crecimiento espiritual de cada familia en la comunidad.",
     img: "/images/pastores-rojero.jpg",
-    color: "from-gold/60 to-gold/30",
   },
   {
     id: "copastores-quistiano",
@@ -32,7 +30,6 @@ const PASTORS = [
     desc:
       "Epitacio y Ana Quistiano sirven con corazón pastoral, acompañando a la congregación con sabiduría, fe y un amor genuino por las personas.",
     img: "/images/pastores-quistiano.jpg",
-    color: "from-navy-muted to-navy",
   },
   {
     id: "pastores-jovenes",
@@ -41,7 +38,6 @@ const PASTORS = [
     desc:
       "Omar y Jacqueline lideran el ministerio de jóvenes con pasión y visión, formando una generación de líderes comprometidos con Dios y con su propósito.",
     img: null,
-    color: "from-gold/40 to-navy-light",
   },
   {
     id: "pastor-campus",
@@ -50,7 +46,6 @@ const PASTORS = [
     desc:
       "Cada campus cuenta con pastores comprometidos que sirven a su comunidad local con excelencia, amor y visión.",
     img: null,
-    color: "from-navy-light to-navy",
   },
 ];
 
@@ -173,8 +168,8 @@ export function ConocenosClient() {
                   setActivePastor(activePastor === pastor.id ? null : pastor.id)
                 }
               >
-                {/* Full background photo or gradient */}
-                <div className={`absolute inset-0 bg-gradient-to-b ${pastor.color}`}>
+                {/* Full background: photo or solid black */}
+                <div className="absolute inset-0 bg-black">
                   {pastor.img && (
                     <img
                       src={pastor.img}
