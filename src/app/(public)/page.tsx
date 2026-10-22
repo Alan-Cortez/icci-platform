@@ -16,15 +16,45 @@ export default async function HomePage() {
 
   const now = new Date();
   now.setHours(0, 0, 0, 0);
-  const upcomingEvent = allEvents.find((e) => new Date(e.startDate) >= now) || allEvents[0] || null;
+
+  // 1. Filtrar eventos activos (cuya fecha de inicio o fin sea hoy o en el futuro)
+  const activeEvents = allEvents.filter((e) => {
+    const end = e.endDate ? new Date(e.endDate) : new Date(e.startDate);
+    end.setHours(23, 59, 59, 999);
+    return end >= now;
+  });
+
+  // 2. Eventos del mes en curso
+  const currentYear = now.getFullYear();
+  const currentMonth = now.getMonth();
+  const monthEvents = activeEvents.filter((e) => {
+    const d = new Date(e.startDate);
+    return d.getFullYear() === currentYear && d.getMonth() === currentMonth;
+  });
+
+  // 3. Eventos marcados como destacados (featured)
+  const featuredEvents = activeEvents.filter((e) => Boolean(e.featured));
+
+  // 4. Combinar: Primero las destacadas, luego los eventos del mes, o el próximo evento activo
+  const eventsMap = new Map<string, any>();
+  featuredEvents.forEach((e) => eventsMap.set(e.id, e));
+  monthEvents.forEach((e) => eventsMap.set(e.id, e));
+  
+  // Si no hay del mes ni destacadas, pero sí hay un próximo evento en los siguientes 60 días
+  if (eventsMap.size === 0 && activeEvents.length > 0) {
+    eventsMap.set(activeEvents[0].id, activeEvents[0]);
+  }
+
+  // Lista final: si no hay eventos activos futuros, queda vacía [] ("si no hay pues nada")
+  const upcomingEvents = Array.from(eventsMap.values());
 
   return (
     <>
       {/* ── 1. Hero Principal (Oscuro) ── */}
       <HeroVideo />
 
-      {/* ── 2. Programa Semanal + Próximo Evento Especial (Claro: bg-off-white) ── */}
-      <WeeklySchedule upcomingEvent={upcomingEvent} />
+      {/* ── 2. Programa Semanal + Eventos del Mes / Destacadas (Claro: bg-off-white) ── */}
+      <WeeklySchedule events={upcomingEvents} />
 
       {/* ── 3. Predicación Destacada (Oscuro: bg-navy) ── */}
       <section className="py-20 bg-navy text-white">

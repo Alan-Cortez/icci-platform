@@ -1,7 +1,8 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
-import { Clock, MapPin, ChevronRight, Sparkles, Calendar } from "lucide-react";
+import { Clock, MapPin, ChevronRight, ChevronLeft, Sparkles, Calendar } from "lucide-react";
 import { WEEKLY_SERVICES } from "@/lib/constants";
 
 function formatEventDate(ts: number | Date | null): string {
@@ -17,10 +18,21 @@ function formatEventDate(ts: number | Date | null): string {
 }
 
 interface WeeklyScheduleProps {
+  events?: any[];
   upcomingEvent?: any;
 }
 
-export function WeeklySchedule({ upcomingEvent }: WeeklyScheduleProps) {
+export function WeeklySchedule({ events, upcomingEvent }: WeeklyScheduleProps) {
+  // Normalize events list: support both array of events or single upcomingEvent
+  const eventList: any[] = events ?? (upcomingEvent ? [upcomingEvent] : []);
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const hasEvents = eventList.length > 0;
+  const currentEvent = hasEvents ? eventList[currentIndex] || eventList[0] : null;
+
+  // Determine badge label
+  const isFeatured = currentEvent?.featured;
+
   return (
     <section className="py-20 lg:py-24 bg-off-white relative overflow-hidden">
       {/* Decorative gradient */}
@@ -30,18 +42,22 @@ export function WeeklySchedule({ upcomingEvent }: WeeklyScheduleProps) {
 
         {/* Section Header */}
         <div className="text-center mb-12 sm:mb-14">
-          <p className="label-eyebrow mb-3">Reuniones y Agenda</p>
+          <p className="label-eyebrow mb-3">
+            {hasEvents ? "Reuniones y Agenda" : "Reuniones y Servicios"}
+          </p>
           <div className="divider-gold mx-auto mb-5" />
           <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl text-navy uppercase tracking-tight">
-            Programa y Próximos Eventos
+            {hasEvents ? "Programa y Próximos Eventos" : "Programa Semanal"}
           </h2>
           <p className="text-gray-500 text-xs sm:text-sm max-w-xl mx-auto mt-3 font-light">
-            Conoce los horarios de nuestros servicios regulares y acompáñanos en nuestras actividades especiales.
+            {hasEvents
+              ? "Conoce los horarios de nuestros servicios regulares y acompáñanos en nuestras actividades especiales."
+              : "Conoce los horarios y puntos de encuentro de nuestros servicios regulares cada semana."}
           </p>
         </div>
 
-        {upcomingEvent ? (
-          /* ── Layout de 2 Columnas (Programa Semanal + Evento Destacado) ── */
+        {hasEvents && currentEvent ? (
+          /* ── Layout de 2 Columnas (Programa Semanal + Eventos del Mes / Destacadas) ── */
           <div className="grid lg:grid-cols-12 gap-8 items-stretch">
             
             {/* Columna Izquierda: Programa Semanal */}
@@ -126,7 +142,7 @@ export function WeeklySchedule({ upcomingEvent }: WeeklyScheduleProps) {
               </div>
             </div>
 
-            {/* Columna Derecha: Próximo Evento Destacado */}
+            {/* Columna Derecha: Tarjeta de Evento del Mes / Destacado */}
             <div className="lg:col-span-5 flex flex-col">
               <div className="bg-gradient-to-br from-navy via-navy to-[#081324] rounded-3xl border border-gold/30 shadow-xl overflow-hidden text-white flex-1 flex flex-col justify-between relative group">
                 
@@ -134,26 +150,71 @@ export function WeeklySchedule({ upcomingEvent }: WeeklyScheduleProps) {
 
                 <div className="p-6 sm:p-7 relative z-10 flex-1 flex flex-col">
                   
+                  {/* Selector si hay múltiples eventos este mes */}
+                  {eventList.length > 1 && (
+                    <div className="flex items-center justify-between gap-2 mb-4 pb-3 border-b border-white/10">
+                      <span className="text-[11px] font-semibold text-gold uppercase tracking-wider">
+                        Eventos del mes ({currentIndex + 1} de {eventList.length})
+                      </span>
+                      <div className="flex items-center gap-1">
+                        <button
+                          type="button"
+                          onClick={() => setCurrentIndex((prev) => (prev > 0 ? prev - 1 : eventList.length - 1))}
+                          className="w-7 h-7 rounded-full bg-white/10 hover:bg-gold hover:text-navy flex items-center justify-center text-white transition-colors cursor-pointer"
+                          aria-label="Evento anterior"
+                        >
+                          <ChevronLeft className="w-4 h-4" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setCurrentIndex((prev) => (prev < eventList.length - 1 ? prev + 1 : 0))}
+                          className="w-7 h-7 rounded-full bg-white/10 hover:bg-gold hover:text-navy flex items-center justify-center text-white transition-colors cursor-pointer"
+                          aria-label="Siguiente evento"
+                        >
+                          <ChevronRight className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
                   {/* Imagen de portada del evento */}
-                  {upcomingEvent.image ? (
+                  {currentEvent.image ? (
                     <div className="w-full rounded-2xl overflow-hidden aspect-[16/9] bg-navy-muted shadow-lg border border-white/10 mb-5 shrink-0 relative">
                       <img
-                        src={upcomingEvent.image}
-                        alt={upcomingEvent.title}
+                        src={currentEvent.image}
+                        alt={currentEvent.title}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       />
                       <div className="absolute top-3 left-3">
                         <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest bg-gold text-navy shadow-md">
-                          <Sparkles className="w-3 h-3 fill-current" />
-                          Próximo Evento
+                          {isFeatured ? (
+                            <>
+                              <Sparkles className="w-3 h-3 fill-current" />
+                              Evento Destacado
+                            </>
+                          ) : (
+                            <>
+                              <Calendar className="w-3 h-3" />
+                              Evento del Mes
+                            </>
+                          )}
                         </span>
                       </div>
                     </div>
                   ) : (
                     <div className="mb-4">
                       <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest bg-gold text-navy shadow-md">
-                        <Sparkles className="w-3 h-3 fill-current" />
-                        Próximo Evento
+                        {isFeatured ? (
+                          <>
+                            <Sparkles className="w-3 h-3 fill-current" />
+                            Evento Destacado
+                          </>
+                        ) : (
+                          <>
+                            <Calendar className="w-3 h-3" />
+                            Evento del Mes
+                          </>
+                        )}
                       </span>
                     </div>
                   )}
@@ -162,37 +223,37 @@ export function WeeklySchedule({ upcomingEvent }: WeeklyScheduleProps) {
                   <div className="space-y-2.5 flex-1">
                     <div className="flex items-center gap-2">
                       <span className="px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-white/10 text-white/80 border border-white/15">
-                        {upcomingEvent.category}
+                        {currentEvent.category}
                       </span>
                     </div>
 
                     <h3 className="font-display text-2xl sm:text-3xl text-white uppercase tracking-tight leading-tight">
-                      {upcomingEvent.title}
+                      {currentEvent.title}
                     </h3>
 
                     {/* Metadata con iconos dorados */}
                     <div className="space-y-1.5 text-xs text-gold pt-1">
                       <div className="flex items-center gap-2 font-medium">
                         <Calendar className="w-3.5 h-3.5 text-gold shrink-0" />
-                        <span>{formatEventDate(upcomingEvent.startDate)}</span>
+                        <span>{formatEventDate(currentEvent.startDate)}</span>
                       </div>
-                      {upcomingEvent.timeStr && (
+                      {currentEvent.timeStr && (
                         <div className="flex items-center gap-2 text-white/80 font-medium">
                           <Clock className="w-3.5 h-3.5 text-gold shrink-0" />
-                          <span>{upcomingEvent.timeStr}</span>
+                          <span>{currentEvent.timeStr}</span>
                         </div>
                       )}
-                      {upcomingEvent.location && (
+                      {currentEvent.location && (
                         <div className="flex items-center gap-2 text-white/70">
                           <MapPin className="w-3.5 h-3.5 text-gold shrink-0" />
-                          <span className="truncate">{upcomingEvent.location}</span>
+                          <span className="truncate">{currentEvent.location}</span>
                         </div>
                       )}
                     </div>
 
-                    {upcomingEvent.description && (
+                    {currentEvent.description && (
                       <p className="text-white/70 text-xs sm:text-sm leading-relaxed line-clamp-3 font-light pt-2">
-                        {upcomingEvent.description}
+                        {currentEvent.description}
                       </p>
                     )}
                   </div>
@@ -220,7 +281,7 @@ export function WeeklySchedule({ upcomingEvent }: WeeklyScheduleProps) {
 
           </div>
         ) : (
-          /* ── Layout de 1 Columna Centrado (Fallback si no hay eventos) ── */
+          /* ── Layout de 1 Columna Centrado ("si no hay pues nada") ── */
           <div className="max-w-4xl mx-auto">
             <div className="bg-white rounded-3xl shadow-xl shadow-navy/5 border border-gray-100 overflow-hidden divide-y divide-gray-100">
               {WEEKLY_SERVICES.map((svc) => {
