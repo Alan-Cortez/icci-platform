@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Clock, MapPin, ChevronRight, Sparkles, Radio } from "lucide-react";
+import { Clock, MapPin, ChevronRight, Sparkles } from "lucide-react";
 import { WEEKLY_SERVICES } from "@/lib/constants";
 
 export function WeeklySchedule() {
@@ -51,16 +51,9 @@ export function WeeklySchedule() {
 
                   {/* Service info */}
                   <div className="min-w-0">
-                    <div className="flex items-center gap-2">
-                      <h3 className="font-bold text-navy text-base sm:text-lg group-hover:text-gold-dark transition-colors truncate">
-                        {svc.title}
-                      </h3>
-                      {isSunday && (
-                        <span className="hidden md:inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-red-50 text-red-600 border border-red-200">
-                          <Radio className="w-3 h-3 animate-pulse text-red-500" /> En Vivo
-                        </span>
-                      )}
-                    </div>
+                    <h3 className="font-bold text-navy text-base sm:text-lg group-hover:text-gold-dark transition-colors truncate">
+                      {svc.title}
+                    </h3>
                     <p className="text-xs sm:text-sm text-gray-500 font-light mt-0.5">
                       {svc.subtitle}
                     </p>

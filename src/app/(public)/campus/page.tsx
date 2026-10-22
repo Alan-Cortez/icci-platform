@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { MapPin, ChevronRight } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import { SectionHeading } from "@/components/ui";
 import { CAMPUSES } from "@/lib/constants";
+import { getYoutubeLiveStatus } from "@/lib/youtube";
+import { CampusLiveSection } from "@/components/campus/CampusLiveSection";
 
 export const metadata: Metadata = {
   title: "Campus",
-  description: "Ubicaciones de ICCI en Allende, Sabinas, Múzquiz, Barroterán, Anáhuac y Durango.",
+  description: "Ubicaciones de ICCI en Allende, Sabinas, Múzquiz, Barroterán, Anáhuac y Durango, y Campus en Línea.",
 };
 export const revalidate = 0;
 
@@ -22,6 +24,7 @@ const CAMPUS_IMAGES: Record<string, string> = {
 
 export default async function CampusListPage() {
   const allCampuses = [...CAMPUSES].sort((a, b) => (a.isMain === b.isMain ? 0 : a.isMain ? -1 : 1));
+  const liveStatus = await getYoutubeLiveStatus();
 
   return (
     <div className="py-16 bg-off-white min-h-screen">
@@ -30,7 +33,7 @@ export default async function CampusListPage() {
         <SectionHeading
           subtitle="Ubicaciones"
           title="Nuestros Campus"
-          description="Encuentra el campus ICCI más cercano a ti."
+          description="Encuentra el campus ICCI más cercano a ti o acompáñanos a través de nuestro Campus en Línea."
         />
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -76,6 +79,9 @@ export default async function CampusListPage() {
             );
           })}
         </div>
+
+        {/* ── Sección de Campus en Línea y Transmisión en Vivo ── */}
+        <CampusLiveSection initialStatus={liveStatus} />
       </div>
     </div>
   );

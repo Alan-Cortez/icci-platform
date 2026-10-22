@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import { Calendar, Clock, Mail, MapPin, Phone, User, X, ChevronRight, Instagram, Facebook, Video } from "lucide-react";
 import { Button, Card, SectionHeading } from "@/components/ui";
 import { SCHEDULES } from "@/lib/constants";
@@ -127,6 +128,25 @@ export function CampusClient({ campus, pastorName, googleMapsUrl }: CampusClient
                   </Card>
                 );
               })}
+            </div>
+
+            {/* Campus en Línea Callout */}
+            <div className="mt-6 p-5 rounded-2xl bg-navy text-white flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-gold/20 text-gold flex items-center justify-center shrink-0">
+                  <Video className="w-5 h-5" />
+                </div>
+                <div>
+                  <p className="font-bold text-white text-sm sm:text-base">Transmisión en Vivo</p>
+                  <p className="text-xs sm:text-sm text-white/60">¿No puedes asistir presencialmente? Sigue nuestros servicios en el Campus en Línea.</p>
+                </div>
+              </div>
+              <Link
+                href="/campus#campus-online"
+                className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-navy bg-gold hover:bg-gold-light px-4 py-2.5 rounded-full transition-colors shrink-0"
+              >
+                Ver transmisión <ChevronRight className="w-3.5 h-3.5" />
+              </Link>
             </div>
           </div>
         )}

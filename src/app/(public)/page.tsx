@@ -117,70 +117,37 @@ export default async function HomePage() {
       {/* ── Programa Semanal ── */}
       <WeeklySchedule />
 
-      {/* ── Servicio en Vivo de YouTube & Predicaciones ── */}
-      <section className="py-24 bg-navy text-white relative overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_30%,rgba(212,175,55,0.08),transparent_50%)]" />
-
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-            
-            {/* Left Column: Info & Live Schedule */}
+      {/* ── Predicación destacada ── */}
+      <section className="py-20 bg-navy text-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
-              {/* Live streaming status badge */}
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold bg-red-500/15 text-red-400 border border-red-500/30 mb-5">
-                <span className="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse" />
-                TRANSMISIÓN EN VIVO · ICCTV
-              </div>
-
-              <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl text-white leading-tight uppercase tracking-tight mb-4">
-                Conéctate al <span className="text-gold">Servicio en Vivo</span>
+              <p className="label-eyebrow mb-3">Predicación destacada</p>
+              <div className="divider-gold mb-5" />
+              <h2 className="font-display text-3xl sm:text-4xl lg:text-[3.25rem] text-white leading-none mb-3">
+                La Aguja Que
+                <span className="block text-gold">Desinfla Mi Ego</span>
               </h2>
-
-              <p className="font-serif text-serif-lg text-white/80 italic font-light mb-4">
-                Todos los domingos a las 10:00 AM y servicios especiales
+              <p className="font-serif text-serif-lg text-white/60 italic font-light mb-4">
+                Compartiendo con · Pastor Oscar Sosa (Parte 2)
               </p>
-
-              <p className="text-white/60 leading-relaxed mb-8 font-light max-w-lg text-sm sm:text-base">
-                Si no puedes acompañarnos de forma presencial en Allende o nuestros campus, únete a la transmisión en directo con alabanza, mensaje de la Palabra y oración a través de nuestro canal oficial de YouTube.
+              <p className="text-white/55 leading-relaxed mb-8 font-light max-w-md">
+                Escucha esta edificante y honesta conversación en el podcast de Producciones Buenas Nuevas Internacional junto al Pastor Oscar Sosa.
               </p>
-
-              <div className="flex flex-wrap items-center gap-4">
-                <Button
-                  href="https://youtube.com/@icctv-101?si=kp51y50RG4r6icuu"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  variant="primary"
-                  className="font-bold flex items-center gap-2"
-                >
-                  <Play className="w-4 h-4 fill-current" />
-                  Ir al canal de YouTube
-                  <ExternalLink className="w-3.5 h-3.5 ml-1 opacity-70" />
-                </Button>
-                <Link
-                  href="/campus"
-                  className="inline-flex items-center gap-2 border border-white/30 text-white hover:bg-white hover:text-navy px-6 py-3 rounded-full text-sm font-semibold transition-all duration-200"
-                >
-                  Asistir en persona
-                </Link>
-              </div>
+              <Button href="https://youtube.com/@icctv-101?si=kp51y50RG4r6icuu" target="_blank" variant="secondary" className="group">
+                <Play className="w-4 h-4 mr-2" />
+                Ver predicaciones en YouTube
+              </Button>
             </div>
-
-            {/* Right Column: YouTube Stream Player Embed */}
-            <div>
-              <div className="aspect-video rounded-3xl bg-navy-light overflow-hidden border border-white/15 shadow-[0_20px_50px_rgba(0,0,0,0.5)] relative">
-                <iframe
-                  className="w-full h-full"
-                  src="https://www.youtube.com/embed/MuLpLancL80?autoplay=0&rel=0"
-                  title="ICCI Transmisión y Predicación Destacada"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                  allowFullScreen
-                />
-              </div>
-              <p className="text-center text-xs text-white/40 mt-3 font-light">
-                Canal oficial: <strong>@icctv-101</strong> · Suscríbete y activa la campana para notificaciones
-              </p>
+            <div className="aspect-video rounded-2xl bg-navy-light overflow-hidden border border-white/10 shadow-2xl relative">
+              <iframe
+                className="w-full h-full"
+                src="https://www.youtube.com/embed/MuLpLancL80?autoplay=0&rel=0"
+                title="Predicación destacada: Fe Que Mueve Montañas"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowFullScreen
+              />
             </div>
-
           </div>
         </div>
       </section>
