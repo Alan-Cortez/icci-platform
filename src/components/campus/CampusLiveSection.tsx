@@ -107,19 +107,13 @@ export function CampusLiveSection({ initialStatus }: CampusLiveSectionProps) {
                     <ExternalLink className="w-3.5 h-3.5 ml-1 opacity-70" />
                   </a>
 
-                  <div className="grid grid-cols-2 gap-3">
+                  <div>
                     <Link
                       href="/oracion"
-                      className="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 text-white text-xs font-semibold px-4 py-3 rounded-full transition-colors border border-white/10"
+                      className="w-full inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 text-white text-xs font-semibold px-4 py-3 rounded-full transition-colors border border-white/10"
                     >
                       <Heart className="w-3.5 h-3.5 text-gold" />
                       Pedir oración
-                    </Link>
-                    <Link
-                      href="/donaciones"
-                      className="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 text-white text-xs font-semibold px-4 py-3 rounded-full transition-colors border border-white/10"
-                    >
-                      Dar mi ofrenda
                     </Link>
                   </div>
                 </div>

@@ -21,7 +21,6 @@ const NAV = [
     ],
   },
   { label: "Oraciones", href: "/oracion"    },
-  { label: "Donativos", href: "/donaciones" },
 ];
 
 // ─── Component ───────────────────────────────────────────────────────────────
