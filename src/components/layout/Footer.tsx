@@ -1,15 +1,6 @@
 import Link from "next/link";
-import { Facebook, Phone, Mail, MapPin, Calendar, Clock, ArrowUpRight } from "lucide-react";
+import { Facebook, Phone, Mail, MapPin, Clock, ArrowUpRight } from "lucide-react";
 import { SITE } from "@/lib/constants";
-
-const navLinks = [
-  { href: "/conocenos", label: "Conócenos" },
-  { href: "/campus", label: "Nuestros Campus" },
-  { href: "/eventos", label: "Próximos Eventos" },
-  { href: "/devocionales", label: "Devocionales" },
-  { href: "/testimonios", label: "Historias de Fe" },
-  { href: "/oracion", label: "Petición de Oración" },
-];
 
 export function Footer() {
   return (
@@ -19,30 +10,30 @@ export function Footer() {
 
       {/* Main footer container */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-20">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 lg:gap-8 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
           
-          {/* ── Col 1: Brand & Identity (4 cols) ── */}
-          <div className="lg:col-span-4 space-y-5">
-            <div className="flex items-center gap-3">
-              <img src="/images/logo.png" alt="ICCI Logo" className="w-12 h-12 object-contain" />
+          {/* ── Col 1: Brand, Tagline & Socials (6 cols) ── */}
+          <div className="lg:col-span-6 space-y-6">
+            <div className="flex items-center gap-3.5">
+              <img src="/images/logo.png" alt="ICCI Logo" className="w-14 h-14 object-contain" />
               <div>
-                <p className="font-display text-2xl tracking-wider text-white leading-none">ICCI</p>
-                <p className="text-[11px] uppercase tracking-widest text-gold font-semibold mt-1">
+                <p className="font-display text-3xl tracking-wider text-white leading-none">ICCI</p>
+                <p className="text-xs uppercase tracking-[0.2em] text-gold font-bold mt-1">
                   Comunidad de Cristo
                 </p>
               </div>
             </div>
 
-            <p className="font-serif text-white/70 text-base italic font-light leading-relaxed max-w-sm">
+            <p className="font-serif text-white/80 text-lg italic font-light leading-relaxed max-w-lg">
               &ldquo;{SITE.tagline}&rdquo;
             </p>
 
-            <p className="text-white/40 text-xs leading-relaxed max-w-sm">
+            <p className="text-white/50 text-sm leading-relaxed max-w-lg font-light">
               Una iglesia cristiana con propósito y visión, edificando familias y extendiendo el reino de Dios desde Allende, Coahuila hacia todo el norte de México.
             </p>
 
             {/* Social pills */}
-            <div className="flex items-center gap-2.5 pt-2">
+            <div className="flex items-center gap-3 pt-2">
               <a
                 href={SITE.facebook}
                 target="_blank"
@@ -88,27 +79,8 @@ export function Footer() {
             </div>
           </div>
 
-          {/* ── Col 2: Navigation Links (3 cols) ── */}
-          <div className="lg:col-span-3">
-            <p className="text-xs uppercase tracking-[0.2em] font-bold text-gold mb-6">
-              Navegación
-            </p>
-            <ul className="space-y-3">
-              {navLinks.map((link) => (
-                <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="text-white/60 hover:text-white hover:translate-x-1 inline-flex items-center gap-1.5 text-sm transition-all duration-200"
-                  >
-                    <span>{link.label}</span>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* ── Col 3: Direct Contact (5 cols) ── */}
-          <div className="lg:col-span-5 space-y-6">
+          {/* ── Col 2: Direct Contact & Service Info (6 cols) ── */}
+          <div className="lg:col-span-6 space-y-6">
             <p className="text-xs uppercase tracking-[0.2em] font-bold text-gold mb-6">
               Visítanos & Contáctanos
             </p>
@@ -161,8 +133,8 @@ export function Footer() {
               </div>
             </div>
 
-            {/* Aesthetic card for Sunday Service & Calendario */}
-            <div className="p-4 rounded-2xl bg-gradient-to-r from-white/[0.04] to-white/[0.02] border border-white/10 flex items-center justify-between gap-4">
+            {/* Aesthetic card for Sunday Service */}
+            <div className="p-4 rounded-2xl bg-gradient-to-r from-white/[0.04] to-white/[0.02] border border-white/10 flex items-center justify-between gap-4 mt-6">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-gold/15 text-gold flex items-center justify-center shrink-0">
                   <Clock className="w-5 h-5" />
