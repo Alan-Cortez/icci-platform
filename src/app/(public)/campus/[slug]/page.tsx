@@ -6,6 +6,7 @@ import { SCHEDULES, CAMPUSES } from "@/lib/constants";
 import { CampusClient } from "./CampusClient";
 import { CampusGallery } from "@/components/campus/CampusGallery";
 import { getServicePhotos } from "@/actions/gallery";
+import { getCampusImages } from "@/actions/campus";
 
 // Google Maps link for the real address
 const GOOGLE_MAPS_URL =
@@ -47,6 +48,8 @@ export default async function CampusDetailPage({ params }: Props) {
 
   // Never let a gallery/DB hiccup break the whole campus page
   const photos = await getServicePhotos(campus.id).catch(() => []);
+  const customImages = await getCampusImages();
+  const heroImage = customImages[campus.id] || `/images/campus-${campus.id}.jpg`;
 
   return (
     <div>
@@ -56,7 +59,7 @@ export default async function CampusDetailPage({ params }: Props) {
         <>
           <div
             className="absolute inset-0 bg-cover bg-center bg-navy"
-            style={{ backgroundImage: `url('/images/campus-${campus.id}.jpg')` }}
+            style={{ backgroundImage: `url('${heroImage}')` }}
           />
           {/* Overlays to ensure text readability */}
           <div className="absolute inset-0 bg-gradient-to-r from-navy/85 via-navy/70 to-navy/40" />

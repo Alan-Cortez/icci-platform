@@ -5,6 +5,7 @@ import { SectionHeading } from "@/components/ui";
 import { CAMPUSES } from "@/lib/constants";
 import { getYoutubeLiveStatus } from "@/lib/youtube";
 import { CampusLiveSection } from "@/components/campus/CampusLiveSection";
+import { getCampusImages } from "@/actions/campus";
 
 export const metadata: Metadata = {
   title: "Campus",
@@ -24,7 +25,7 @@ const CAMPUS_IMAGES: Record<string, string> = {
 
 export default async function CampusListPage() {
   const allCampuses = [...CAMPUSES].sort((a, b) => (a.isMain === b.isMain ? 0 : a.isMain ? -1 : 1));
-  const liveStatus = await getYoutubeLiveStatus();
+  const [liveStatus, customImages] = await Promise.all([getYoutubeLiveStatus(), getCampusImages()]);
 
   return (
     <div className="py-16 bg-off-white min-h-screen">
@@ -38,7 +39,9 @@ export default async function CampusListPage() {
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {allCampuses.map((campus) => {
-            const img = (campus as any).image || CAMPUS_IMAGES[campus.id] || CAMPUS_IMAGES.allende;
+            // Photo uploaded from /admin/configuracion, or the default one
+            const customImage = customImages[campus.id];
+            const img = customImage || CAMPUS_IMAGES[campus.id] || CAMPUS_IMAGES.allende;
             return (
               <Link
                 key={campus.id}
@@ -56,6 +59,11 @@ export default async function CampusListPage() {
                   }}
                 />
 
+                {/* Custom photos have no name printed on them: add a readable overlay with the campus name */}
+                {customImage && (
+                  <div className="absolute inset-0 bg-gradient-to-t from-navy/90 via-navy/30 to-transparent" />
+                )}
+
                 {/* Subtle hover overlay */}
                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-500" />
 
@@ -69,7 +77,15 @@ export default async function CampusListPage() {
                 )}
 
                 {/* Content pinned to bottom */}
-                <div className="absolute bottom-0 left-0 right-0 z-10 p-6 flex justify-start">
+                <div className="absolute bottom-0 left-0 right-0 z-10 p-6 flex flex-col items-start gap-1">
+                  {customImage && (
+                    <>
+                      <h3 className="font-display text-white text-4xl leading-none">
+                        {campus.name}
+                      </h3>
+                      <p className="text-white/70 text-sm font-light mb-1">{campus.state}</p>
+                    </>
+                  )}
                   {/* CTA */}
                   <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-gold group-hover:gap-2.5 transition-all duration-200">
                     Ver detalles <ChevronRight className="w-4 h-4" />
@@ -79,6 +95,7 @@ export default async function CampusListPage() {
             );
           })}
         </div>
+
 
         {/* ── Sección de Campus en Línea y Transmisión en Vivo ── */}
         <CampusLiveSection initialStatus={liveStatus} />

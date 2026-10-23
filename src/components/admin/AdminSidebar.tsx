@@ -11,6 +11,7 @@ import {
   Users,
   BookOpen,
   Camera,
+  Settings,
   ArrowLeft,
   Menu,
   X,
@@ -29,6 +30,7 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   BookOpen,
   MessageCircle,
   Camera,
+  Settings,
 };
 
 export interface NavModule {

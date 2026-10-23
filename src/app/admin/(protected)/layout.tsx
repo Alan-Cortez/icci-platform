@@ -41,6 +41,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       badge: pendingTestimonies?.count || 0,
     },
     { href: "/admin/usuarios", label: "Usuarios", icon: "Users" },
+    { href: "/admin/configuracion", label: "Configuración", icon: "Settings" },
   ];
 
   const visibleModules =
