@@ -1,7 +1,17 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Calendar, Camera, ChevronLeft, ChevronRight, Search, X } from "lucide-react";
+import {
+  Calendar,
+  Camera,
+  ChevronLeft,
+  ChevronRight,
+  Images,
+  RotateCcw,
+  Search,
+  SlidersHorizontal,
+  X,
+} from "lucide-react";
 import {
   MONTHS,
   SERVICE_TYPES,
@@ -13,12 +23,12 @@ import {
   startOfWeekKey,
   todayKey,
   weekdayOf,
+  type Album,
   type BankPhoto,
 } from "@/lib/gallery";
 import { cn } from "@/lib/utils";
 
-const ALBUMS_PER_PAGE = 6;
-const PHOTOS_PER_ALBUM_PREVIEW = 8;
+const ALBUMS_PER_PAGE = 9;
 
 type Period = "all" | "week" | "lastWeek" | "month" | "lastMonth";
 
@@ -43,8 +53,18 @@ function inPeriod(dateKey: string, period: Period): boolean {
   return dateKey.startsWith(target.toISOString().slice(0, 7));
 }
 
+function shortDate(key: string) {
+  const [y, m, d] = key.split("-").map(Number);
+  return `${d} ${MONTHS[m - 1].slice(0, 3).toLowerCase()} ${y}`;
+}
+
+function monthHeading(key: string) {
+  const [y, m] = key.split("-").map(Number);
+  return `${MONTHS[m - 1]} ${y}`;
+}
+
 const selectClass =
-  "px-3.5 py-2.5 rounded-xl border border-gray-200 bg-white text-sm text-navy font-medium focus:outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold cursor-pointer";
+  "w-full px-3.5 py-2.5 rounded-xl border border-gray-200 bg-white text-sm text-navy font-medium focus:outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold cursor-pointer";
 
 export function CampusGallery({ photos, campusName }: { photos: BankPhoto[]; campusName: string }) {
   const [ministry, setMinistry] = useState("all");
@@ -53,10 +73,15 @@ export function CampusGallery({ photos, campusName }: { photos: BankPhoto[]; cam
   const [month, setMonth] = useState("all");
   const [weekday, setWeekday] = useState("all");
   const [query, setQuery] = useState("");
+  const [showFilters, setShowFilters] = useState(false);
   const [visibleAlbums, setVisibleAlbums] = useState(ALBUMS_PER_PAGE);
-  const [active, setActive] = useState<number | null>(null);
 
-  // Options available in the filters (only what actually exists)
+  const [openAlbumKey, setOpenAlbumKey] = useState<string | null>(null);
+  const [lightbox, setLightbox] = useState<number | null>(null);
+
+  // ── Data for filters / stats ──────────────────────────────────────
+  const allAlbums = useMemo(() => groupIntoAlbums(photos), [photos]);
+
   const ministriesPresent = useMemo(() => {
     const counts = new Map<string, number>();
     photos.forEach((p) => counts.set(p.ministry, (counts.get(p.ministry) ?? 0) + 1));
@@ -76,6 +101,7 @@ export function CampusGallery({ photos, campusName }: { photos: BankPhoto[]; cam
     return Array.from(set).sort((a, b) => a - b);
   }, [photos, year]);
 
+  // ── Filtering ─────────────────────────────────────────────────────
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     return photos.filter((p) => {
@@ -93,12 +119,25 @@ export function CampusGallery({ photos, campusName }: { photos: BankPhoto[]; cam
   }, [photos, ministry, year, month, weekday, period, query]);
 
   const albums = useMemo(() => groupIntoAlbums(filtered), [filtered]);
-  // Flat list in the order shown, used by the lightbox
-  const flat = useMemo(() => albums.flatMap((a) => a.photos), [albums]);
   const shownAlbums = albums.slice(0, visibleAlbums);
 
-  const hasFilters =
-    ministry !== "all" || period !== "all" || year !== "all" || month !== "all" || weekday !== "all" || query !== "";
+  // Albums grouped by month ("Octubre 2026") for the timeline
+  const monthGroups = useMemo(() => {
+    const groups: { key: string; label: string; albums: Album[] }[] = [];
+    for (const album of shownAlbums) {
+      const key = album.dateKey.slice(0, 7);
+      let g = groups[groups.length - 1];
+      if (!g || g.key !== key) {
+        g = { key, label: monthHeading(key), albums: [] };
+        groups.push(g);
+      }
+      g.albums.push(album);
+    }
+    return groups;
+  }, [shownAlbums]);
+
+  const activeFilterCount = [ministry, period, year, month, weekday].filter((v) => v !== "all").length + (query ? 1 : 0);
+  const secondaryFilterCount = [period, year, month, weekday].filter((v) => v !== "all").length + (query ? 1 : 0);
 
   function clearFilters() {
     setMinistry("all");
@@ -109,22 +148,35 @@ export function CampusGallery({ photos, campusName }: { photos: BankPhoto[]; cam
     setQuery("");
   }
 
-  // Keep dependent filters coherent and go back to the first page when filters change
   useEffect(() => setVisibleAlbums(ALBUMS_PER_PAGE), [ministry, period, year, month, weekday, query]);
 
-  const close = useCallback(() => setActive(null), []);
+  // ── Album viewer + lightbox ───────────────────────────────────────
+  const openAlbum = openAlbumKey ? allAlbums.find((a) => a.key === openAlbumKey) ?? null : null;
+  const lightboxPhoto = openAlbum && lightbox !== null ? openAlbum.photos[lightbox] : null;
+  const photoCount = openAlbum?.photos.length ?? 0;
+
+  const closeAlbum = useCallback(() => {
+    setLightbox(null);
+    setOpenAlbumKey(null);
+  }, []);
   const prev = useCallback(
-    () => setActive((i) => (i === null ? i : (i - 1 + flat.length) % flat.length)),
-    [flat.length]
+    () => setLightbox((i) => (i === null || photoCount === 0 ? i : (i - 1 + photoCount) % photoCount)),
+    [photoCount]
   );
-  const next = useCallback(() => setActive((i) => (i === null ? i : (i + 1) % flat.length)), [flat.length]);
+  const next = useCallback(
+    () => setLightbox((i) => (i === null || photoCount === 0 ? i : (i + 1) % photoCount)),
+    [photoCount]
+  );
 
   useEffect(() => {
-    if (active === null) return;
+    if (!openAlbumKey) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") close();
-      if (e.key === "ArrowLeft") prev();
-      if (e.key === "ArrowRight") next();
+      if (e.key === "Escape") {
+        if (lightbox !== null) setLightbox(null);
+        else closeAlbum();
+      }
+      if (lightbox !== null && e.key === "ArrowLeft") prev();
+      if (lightbox !== null && e.key === "ArrowRight") next();
     };
     document.body.style.overflow = "hidden";
     window.addEventListener("keydown", onKey);
@@ -132,35 +184,49 @@ export function CampusGallery({ photos, campusName }: { photos: BankPhoto[]; cam
       document.body.style.overflow = "";
       window.removeEventListener("keydown", onKey);
     };
-  }, [active, close, prev, next]);
+  }, [openAlbumKey, lightbox, closeAlbum, prev, next]);
 
   if (photos.length === 0) return null;
 
-  const current = active !== null ? flat[active] : null;
-  const currentAlbum = current ? albums.find((a) => a.photos.some((p) => p.id === current.id)) : null;
-
-  function openPhoto(id: string) {
-    const index = flat.findIndex((p) => p.id === id);
-    if (index >= 0) setActive(index);
-  }
+  const latest = allAlbums[0];
 
   return (
-    <section className="py-16 bg-off-white" id="fotos-cultos">
+    <section className="py-16 sm:py-20 bg-off-white" id="fotos-cultos">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* ── Header ── */}
         <div className="text-center mb-10">
           <p className="label-eyebrow mb-3">Banco de fotos · {campusName}</p>
           <div className="divider-gold mb-4 mx-auto block" />
-          <h2 className="font-display text-display text-navy">Fotos de Nuestros Cultos</h2>
-          <p className="mt-4 text-gray-600 max-w-2xl mx-auto font-light">
-            Revive lo que Dios hace cada semana en nuestra familia. Filtra por ministerio, día,
-            semana, mes o año.
+          <h2
+            className="font-display text-navy"
+            style={{ fontSize: "clamp(2rem, 4.5vw, 3.25rem)" }}
+          >
+            Fotos de nuestros cultos
+          </h2>
+          <p className="mt-4 text-gray-600 max-w-2xl mx-auto font-light leading-relaxed">
+            Revive lo que Dios hace cada semana en nuestra familia. Explora los álbumes por
+            ministerio, día, mes o año.
           </p>
+
+          {/* Quick stats */}
+          <div className="mt-8 inline-grid grid-cols-3 divide-x divide-gray-200 bg-white rounded-2xl border border-gray-100 shadow-sm">
+            {[
+              { icon: Camera, value: String(photos.length), label: "Fotos" },
+              { icon: Images, value: String(allAlbums.length), label: "Álbumes" },
+              { icon: Calendar, value: latest ? shortDate(latest.dateKey) : "—", label: "Último culto" },
+            ].map((s) => (
+              <div key={s.label} className="px-4 sm:px-8 py-3.5 text-center">
+                <s.icon className="w-4 h-4 text-gold mx-auto mb-1" />
+                <p className="font-bold text-navy text-sm sm:text-lg leading-none">{s.value}</p>
+                <p className="text-[10px] sm:text-xs text-gray-500 mt-1 uppercase tracking-wider">{s.label}</p>
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* ── Filters ── */}
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 sm:p-5 mb-10 space-y-4">
-          {/* Ministry / service chips */}
-          <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1 -mx-1 px-1">
+          <div className="flex gap-2 overflow-x-auto scrollbar-hide -mx-1 px-1 pb-1">
             <button
               onClick={() => setMinistry("all")}
               className={cn(
@@ -170,7 +236,7 @@ export function CampusGallery({ photos, campusName }: { photos: BankPhoto[]; cam
                   : "bg-white text-gray-600 border-gray-200 hover:border-gold hover:text-navy"
               )}
             >
-              Todos ({photos.length})
+              Todos
             </button>
             {ministriesPresent.map((s) => (
               <button
@@ -183,136 +249,176 @@ export function CampusGallery({ photos, campusName }: { photos: BankPhoto[]; cam
                     : "bg-white text-gray-600 border-gray-200 hover:border-gold hover:text-navy"
                 )}
               >
-                {s.label} ({s.count})
+                {s.label}
+                <span className={cn("ml-1.5 font-semibold", ministry === s.key ? "text-navy/60" : "text-gray-400")}>
+                  {s.count}
+                </span>
               </button>
             ))}
           </div>
 
-          <div className="flex flex-wrap items-center gap-2.5">
-            <select value={period} onChange={(e) => setPeriod(e.target.value as Period)} className={selectClass} aria-label="Período">
-              {PERIODS.map((p) => (
-                <option key={p.key} value={p.key}>
-                  {p.label}
-                </option>
-              ))}
-            </select>
-
-            <select
-              value={year}
-              onChange={(e) => {
-                setYear(e.target.value);
-                setMonth("all");
-              }}
-              className={selectClass}
-              aria-label="Año"
-            >
-              <option value="all">Todos los años</option>
-              {years.map((y) => (
-                <option key={y} value={y}>
-                  {y}
-                </option>
-              ))}
-            </select>
-
-            <select value={month} onChange={(e) => setMonth(e.target.value)} className={selectClass} aria-label="Mes">
-              <option value="all">Todos los meses</option>
-              {monthsPresent.map((m) => (
-                <option key={m} value={m}>
-                  {MONTHS[m]}
-                </option>
-              ))}
-            </select>
-
-            <select value={weekday} onChange={(e) => setWeekday(e.target.value)} className={selectClass} aria-label="Día de la semana">
-              <option value="all">Cualquier día</option>
-              {WEEKDAYS.map((d, i) => (
-                <option key={d} value={i}>
-                  {d}
-                </option>
-              ))}
-            </select>
-
-            <div className="relative flex-1 min-w-[180px]">
+          <div className="flex flex-col sm:flex-row gap-2.5">
+            <div className="relative flex-1">
               <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
               <input
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Buscar en descripciones..."
+                placeholder="Buscar por título o descripción..."
                 className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold"
               />
             </div>
+            <button
+              onClick={() => setShowFilters((v) => !v)}
+              className={cn(
+                "inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold border transition-colors cursor-pointer",
+                showFilters || secondaryFilterCount > 0
+                  ? "bg-navy/5 border-navy/20 text-navy"
+                  : "bg-white border-gray-200 text-gray-600 hover:text-navy"
+              )}
+              aria-expanded={showFilters}
+            >
+              <SlidersHorizontal className="w-4 h-4" />
+              Fecha y día
+              {secondaryFilterCount > 0 && (
+                <span className="w-5 h-5 rounded-full bg-gold text-navy text-[11px] font-extrabold flex items-center justify-center">
+                  {secondaryFilterCount}
+                </span>
+              )}
+            </button>
+          </div>
 
-            {hasFilters && (
+          {showFilters && (
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 pt-1">
+              <label className="space-y-1">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-gray-400">Período</span>
+                <select value={period} onChange={(e) => setPeriod(e.target.value as Period)} className={selectClass}>
+                  {PERIODS.map((p) => (
+                    <option key={p.key} value={p.key}>
+                      {p.label}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label className="space-y-1">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-gray-400">Año</span>
+                <select
+                  value={year}
+                  onChange={(e) => {
+                    setYear(e.target.value);
+                    setMonth("all");
+                  }}
+                  className={selectClass}
+                >
+                  <option value="all">Todos</option>
+                  {years.map((y) => (
+                    <option key={y} value={y}>
+                      {y}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label className="space-y-1">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-gray-400">Mes</span>
+                <select value={month} onChange={(e) => setMonth(e.target.value)} className={selectClass}>
+                  <option value="all">Todos</option>
+                  {monthsPresent.map((m) => (
+                    <option key={m} value={m}>
+                      {MONTHS[m]}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label className="space-y-1">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-gray-400">Día de la semana</span>
+                <select value={weekday} onChange={(e) => setWeekday(e.target.value)} className={selectClass}>
+                  <option value="all">Cualquiera</option>
+                  {WEEKDAYS.map((d, i) => (
+                    <option key={d} value={i}>
+                      {d}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            </div>
+          )}
+
+          <div className="flex items-center justify-between gap-3 pt-1 border-t border-gray-100">
+            <p className="text-xs text-gray-500 font-medium pt-3">
+              {filtered.length} foto(s) en {albums.length} álbum(es)
+            </p>
+            {activeFilterCount > 0 && (
               <button
                 onClick={clearFilters}
-                className="inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl text-xs font-bold text-gray-600 hover:text-navy hover:bg-gray-100 transition-colors cursor-pointer"
+                className="inline-flex items-center gap-1.5 pt-3 text-xs font-bold text-gold-dark hover:text-navy transition-colors cursor-pointer"
               >
-                <X className="w-3.5 h-3.5" /> Limpiar
+                <RotateCcw className="w-3.5 h-3.5" /> Limpiar filtros
               </button>
             )}
           </div>
-
-          <p className="text-xs text-gray-500 font-medium">
-            {flat.length} foto(s) en {albums.length} álbum(es)
-          </p>
         </div>
 
-        {/* ── Albums ── */}
+        {/* ── Timeline of albums, grouped by month ── */}
         <div className="space-y-12">
-          {shownAlbums.map((album) => {
-            const preview = album.photos.slice(0, PHOTOS_PER_ALBUM_PREVIEW);
-            const extra = album.photos.length - preview.length;
-            return (
-              <article key={album.key}>
-                <header className="mb-4">
-                  <div className="flex flex-wrap items-center gap-2 mb-2">
-                    <span className="text-[10px] font-bold tracking-[0.15em] uppercase bg-gold/15 text-gold-dark border border-gold/30 px-3 py-1 rounded-full">
-                      {serviceLabel(album.ministry)}
-                    </span>
-                    <span className="inline-flex items-center gap-1.5 text-xs text-gray-500 font-medium">
-                      <Calendar className="w-3.5 h-3.5" />
-                      {formatLongDate(album.dateKey)}
-                    </span>
-                  </div>
-                  <h3 className="text-xl sm:text-2xl font-bold text-navy leading-snug">{album.title}</h3>
-                  {album.description && (
-                    <p className="text-gray-600 mt-1.5 max-w-3xl leading-relaxed">{album.description}</p>
-                  )}
-                </header>
+          {monthGroups.map((group) => (
+            <div key={group.key}>
+              <div className="flex items-center gap-4 mb-5">
+                <h3 className="text-sm font-bold uppercase tracking-[0.2em] text-navy whitespace-nowrap">
+                  {group.label}
+                </h3>
+                <div className="flex-1 h-px bg-gray-200" />
+                <span className="text-xs text-gray-400 font-medium whitespace-nowrap">
+                  {group.albums.length} {group.albums.length === 1 ? "culto" : "cultos"}
+                </span>
+              </div>
 
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-3">
-                  {preview.map((photo, i) => {
-                    const isLastWithExtra = extra > 0 && i === preview.length - 1;
-                    return (
-                      <button
-                        key={photo.id}
-                        onClick={() => openPhoto(photo.id)}
-                        className={cn(
-                          "group relative block overflow-hidden rounded-2xl bg-gray-100 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-gold",
-                          i === 0 && album.photos.length > 3
-                            ? "col-span-2 row-span-2 aspect-square md:aspect-auto"
-                            : "aspect-[4/3]"
-                        )}
-                        aria-label={`Ver foto de ${album.title}`}
-                      >
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
+                {group.albums.map((album) => {
+                  const cover = album.photos[0];
+                  return (
+                    <button
+                      key={album.key}
+                      onClick={() => setOpenAlbumKey(album.key)}
+                      className="group text-left bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-gold"
+                    >
+                      <div className="relative aspect-[4/3] bg-navy overflow-hidden">
                         <img
-                          src={photo.imageUrl}
+                          src={cover.imageUrl}
                           alt={`${album.title} - ${formatLongDate(album.dateKey)}`}
                           loading="lazy"
                           className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                         />
-                        {isLastWithExtra && (
-                          <div className="absolute inset-0 bg-navy/70 flex items-center justify-center">
-                            <span className="text-white font-bold text-2xl">+{extra + 1}</span>
-                          </div>
+                        <div className="absolute inset-0 bg-gradient-to-t from-navy/70 via-transparent to-transparent" />
+                        <span className="absolute top-3 left-3 text-[10px] font-bold tracking-[0.12em] uppercase bg-gold text-navy px-3 py-1 rounded-full shadow-sm">
+                          {serviceLabel(album.ministry)}
+                        </span>
+                        <span className="absolute bottom-3 right-3 inline-flex items-center gap-1.5 text-xs font-semibold text-white bg-black/45 backdrop-blur-sm px-2.5 py-1 rounded-full">
+                          <Images className="w-3.5 h-3.5" />
+                          {album.photos.length}
+                        </span>
+                      </div>
+                      <div className="p-4 sm:p-5">
+                        <p className="flex items-center gap-1.5 text-xs text-gray-500 font-medium mb-1.5">
+                          <Calendar className="w-3.5 h-3.5 text-gold" />
+                          {formatLongDate(album.dateKey)}
+                        </p>
+                        <h4 className="font-bold text-navy text-lg leading-snug group-hover:text-gold-dark transition-colors">
+                          {album.title}
+                        </h4>
+                        {album.description && (
+                          <p className="text-sm text-gray-600 mt-1.5 line-clamp-2 leading-relaxed">
+                            {album.description}
+                          </p>
                         )}
-                      </button>
-                    );
-                  })}
-                </div>
-              </article>
-            );
-          })}
+                        <span className="inline-flex items-center gap-1 mt-3 text-xs font-bold text-navy group-hover:gap-2 transition-all">
+                          Ver álbum <ChevronRight className="w-3.5 h-3.5 text-gold" />
+                        </span>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
 
           {albums.length === 0 && (
             <div className="text-center py-16 bg-white rounded-2xl border border-gray-100">
@@ -342,23 +448,78 @@ export function CampusGallery({ photos, campusName }: { photos: BankPhoto[]; cam
         )}
       </div>
 
-      {/* ── Lightbox ── */}
-      {current && currentAlbum && (
+      {/* ── Album viewer ── */}
+      {openAlbum && (
         <div
-          className="fixed inset-0 z-[100] bg-black/90 flex items-center justify-center p-4"
-          onClick={(e) => e.target === e.currentTarget && close()}
+          className="fixed inset-0 z-[100] bg-navy/95 backdrop-blur-sm overflow-y-auto"
+          role="dialog"
+          aria-modal="true"
+          aria-label={`Álbum ${openAlbum.title}`}
+        >
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
+            <div className="flex items-start justify-between gap-4 mb-6">
+              <div className="min-w-0">
+                <div className="flex flex-wrap items-center gap-2 mb-2">
+                  <span className="text-[10px] font-bold tracking-[0.15em] uppercase bg-gold text-navy px-3 py-1 rounded-full">
+                    {serviceLabel(openAlbum.ministry)}
+                  </span>
+                  <span className="inline-flex items-center gap-1.5 text-xs text-white/60 font-medium">
+                    <Calendar className="w-3.5 h-3.5" /> {formatLongDate(openAlbum.dateKey)}
+                  </span>
+                </div>
+                <h3 className="text-2xl sm:text-3xl font-bold text-white leading-tight">{openAlbum.title}</h3>
+                {openAlbum.description && (
+                  <p className="text-white/70 mt-2 max-w-3xl leading-relaxed">{openAlbum.description}</p>
+                )}
+                <p className="text-white/40 text-xs mt-2">{openAlbum.photos.length} foto(s)</p>
+              </div>
+              <button
+                onClick={closeAlbum}
+                className="shrink-0 w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center cursor-pointer"
+                aria-label="Cerrar álbum"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="columns-2 md:columns-3 lg:columns-4 gap-3 [&>*]:mb-3">
+              {openAlbum.photos.map((photo, i) => (
+                <button
+                  key={photo.id}
+                  onClick={() => setLightbox(i)}
+                  className="group relative block w-full overflow-hidden rounded-xl bg-white/5 break-inside-avoid cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-gold"
+                  aria-label={`Ampliar foto ${i + 1}`}
+                >
+                  <img
+                    src={photo.imageUrl}
+                    alt={`${openAlbum.title} - foto ${i + 1}`}
+                    loading="lazy"
+                    className="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Lightbox (inside the opened album) ── */}
+      {openAlbum && lightboxPhoto && (
+        <div
+          className="fixed inset-0 z-[110] bg-black/95 flex items-center justify-center p-4"
+          onClick={(e) => e.target === e.currentTarget && setLightbox(null)}
           role="dialog"
           aria-modal="true"
         >
           <button
-            onClick={close}
+            onClick={() => setLightbox(null)}
             className="absolute top-4 right-4 w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center cursor-pointer"
-            aria-label="Cerrar"
+            aria-label="Cerrar foto"
           >
             <X className="w-5 h-5" />
           </button>
 
-          {flat.length > 1 && (
+          {openAlbum.photos.length > 1 && (
             <>
               <button
                 onClick={prev}
@@ -379,20 +540,17 @@ export function CampusGallery({ photos, campusName }: { photos: BankPhoto[]; cam
 
           <figure className="max-w-5xl max-h-full flex flex-col items-center">
             <img
-              src={current.imageUrl}
-              alt={currentAlbum.title}
-              className="max-h-[75vh] max-w-full object-contain rounded-xl"
+              src={lightboxPhoto.imageUrl}
+              alt={openAlbum.title}
+              className="max-h-[78vh] max-w-full object-contain rounded-xl"
             />
             <figcaption className="mt-4 text-center max-w-2xl">
-              <p className="text-white font-semibold">{currentAlbum.title}</p>
+              <p className="text-white font-semibold">{openAlbum.title}</p>
               <p className="text-gold text-xs font-medium mt-0.5">
-                {serviceLabel(currentAlbum.ministry)} · {formatLongDate(currentAlbum.dateKey)}
+                {serviceLabel(openAlbum.ministry)} · {formatLongDate(openAlbum.dateKey)}
               </p>
-              {currentAlbum.description && (
-                <p className="text-white/70 text-sm mt-1.5">{currentAlbum.description}</p>
-              )}
               <p className="text-white/40 text-xs mt-2">
-                {(active ?? 0) + 1} / {flat.length}
+                {(lightbox ?? 0) + 1} / {openAlbum.photos.length}
               </p>
             </figcaption>
           </figure>

@@ -25,7 +25,7 @@ import {
   Radio,
   ExternalLink,
 } from "lucide-react";
-import { Button, Card } from "@/components/ui";
+import { Button } from "@/components/ui";
 
 interface CampusClientProps {
   campus: any;
@@ -33,9 +33,8 @@ interface CampusClientProps {
   googleMapsUrl: string;
 }
 
-// ─── Horarios Detallados con Categorías y Jerarquía Visual ────────────────────
-
-const DETAILED_SCHEDULES = [
+// ─── Servicios Regulares Semanales (5 servicios) ─────────────────────────────
+const WEEKLY_SERVICES_DETAILED = [
   {
     title: "Servicio de Oración",
     category: "Oración Matutina",
@@ -72,7 +71,7 @@ const DETAILED_SCHEDULES = [
     description: "Una generación apasionada por Dios. Alabanza dinámica, mensajes relevantes y una gran comunidad.",
     icon: Zap,
     isInteractive: true,
-    tagColor: "bg-gold text-navy font-bold shadow-sm",
+    tagColor: "bg-gold text-navy font-bold shadow-xs",
   },
   {
     title: "Ministerio de Varones",
@@ -83,30 +82,33 @@ const DETAILED_SCHEDULES = [
     icon: Shield,
     tagColor: "bg-navy/5 text-navy border-navy/10",
   },
+];
+
+// ─── Citas Mensuales Especiales (2 actividades equilibradas) ─────────────────
+const MONTHLY_ACTIVITIES = [
   {
     title: "Vigilia de Oración",
     category: "Clamor & Búsqueda",
-    days: "Último viernes de cada mes",
+    cadence: "Último viernes de cada mes",
     time: "7:00 PM",
     description: "Noche dedicada a la búsqueda profunda de Dios, oración ferviente y llenura del Espíritu Santo.",
     icon: Flame,
-    tagColor: "bg-navy/5 text-navy border-navy/10",
+    color: "from-amber-500/10 to-transparent border-amber-500/20 text-amber-700",
   },
   {
     title: "Jornada de Evangelización",
     category: "Impacto Comunitario",
-    days: "Último domingo del mes",
+    cadence: "Último domingo del mes",
     time: "7:00 PM",
-    description: "Llevando el amor de Jesús a las calles, compartiendo esperanza y sirviendo a nuestra comunidad.",
+    description: "Llevando el amor de Jesús a las calles, compartiendo esperanza y sirviendo activamente a nuestra comunidad.",
     icon: Compass,
-    tagColor: "bg-navy/5 text-navy border-navy/10",
+    color: "from-gold/10 to-transparent border-gold/30 text-gold-dark",
   },
 ];
 
 export function CampusClient({ campus, pastorName, googleMapsUrl }: CampusClientProps) {
   const [activeModal, setActiveModal] = useState<string | null>(null);
 
-  // Determinar foto del pastor
   let pastorImg = null;
   if (pastorName.includes("Oscar") || pastorName.includes("Óscar")) {
     pastorImg = "/images/pastores-sosa.jpg";
@@ -119,42 +121,41 @@ export function CampusClient({ campus, pastorName, googleMapsUrl }: CampusClient
 
   return (
     <>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-20 space-y-20">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 lg:py-20 space-y-16 sm:space-y-20">
 
         {/* ═══════════════════════════════════════════════════════════════════
             1. SECCIÓN SUPERIOR: LIDERAZGO PASTORAL + HUB DE INFORMACIÓN
             ═══════════════════════════════════════════════════════════════════ */}
-        <div className="grid lg:grid-cols-12 gap-8 items-stretch">
+        <div className="grid lg:grid-cols-12 gap-6 lg:gap-8 items-stretch">
           
           {/* ── Col 1: Tarjeta Visual de Pastores (5 cols) ── */}
           <div className="lg:col-span-5 flex flex-col">
-            <div className="relative group rounded-3xl overflow-hidden shadow-xl border border-gray-100 flex-1 min-h-[360px] sm:min-h-[420px] lg:min-h-[460px] bg-black">
-              {/* Foto o fondo negro */}
-              <div className="absolute inset-0 bg-black">
-                {pastorImg && (
-                  <img
-                    src={pastorImg}
-                    alt={pastorName}
-                    className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-700"
-                  />
-                )}
-              </div>
+            <div className="relative group rounded-3xl overflow-hidden shadow-xl border border-gray-100 flex-1 min-h-[380px] sm:min-h-[440px] bg-navy">
+              {pastorImg ? (
+                <img
+                  src={pastorImg}
+                  alt={pastorName}
+                  className="absolute inset-0 w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-700"
+                />
+              ) : (
+                <div className="absolute inset-0 bg-gradient-to-br from-navy via-navy-light to-navy" />
+              )}
 
               {/* Degradado para legibilidad */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-navy via-navy/40 to-transparent" />
 
               {/* Contenido inferior */}
               <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-8 space-y-2 z-10">
-                <div className="inline-flex items-center gap-1.5 text-gold text-[11px] font-bold uppercase tracking-widest bg-black/60 px-3.5 py-1.5 rounded-full backdrop-blur-md border border-white/10">
-                  <User className="w-3.5 h-3.5" />
+                <div className="inline-flex items-center gap-1.5 text-gold text-[11px] font-bold uppercase tracking-widest bg-navy/80 px-3.5 py-1.5 rounded-full backdrop-blur-md border border-gold/30">
+                  <User className="w-3.5 h-3.5 text-gold" />
                   {isMain ? "Pastores Principales" : "Liderazgo Pastoral"}
                 </div>
                 <h2 className="font-display text-white text-2xl sm:text-3xl font-bold leading-tight">
                   {pastorName}
                 </h2>
-                <p className="text-white/70 text-xs sm:text-sm font-light">
+                <p className="text-white/75 text-xs sm:text-sm font-light leading-relaxed">
                   {isMain
-                    ? "Guiando a la familia de Iglesias Comunidad de Cristo Internacional con visión y amor."
+                    ? "Guiando a la familia de Iglesias Comunidad de Cristo Internacional con visión, fe y amor."
                     : `Pastoreando con dedicación la congregación de Campus ${campus.name}.`}
                 </p>
               </div>
@@ -163,37 +164,37 @@ export function CampusClient({ campus, pastorName, googleMapsUrl }: CampusClient
 
           {/* ── Col 2: Hub Ejecutivo de Ubicación y Contacto (7 cols) ── */}
           <div className="lg:col-span-7 flex flex-col">
-            <div className="bg-white rounded-3xl shadow-xl shadow-navy/5 border border-gray-100 p-8 sm:p-10 flex-1 flex flex-col justify-between">
+            <div className="bg-white rounded-3xl shadow-xl shadow-navy/5 border border-gray-100 p-6 sm:p-8 lg:p-10 flex-1 flex flex-col justify-between">
               
               {/* Encabezado */}
-              <div className="space-y-3">
+              <div className="space-y-2.5">
                 <div className="flex items-center gap-2">
-                  <span className="text-[11px] font-bold uppercase tracking-widest text-gold bg-gold/15 px-3 py-1 rounded-full">
+                  <span className="text-[11px] font-bold uppercase tracking-widest text-gold bg-gold/15 px-3 py-1 rounded-full border border-gold/20">
                     {isMain ? "Sede Central · Allende, Coah." : `Campus ${campus.name}`}
                   </span>
                 </div>
-                <h3 className="font-display text-2xl sm:text-3xl lg:text-4xl text-navy font-bold leading-tight">
+                <h3 className="font-display text-3xl sm:text-4xl text-navy font-bold leading-tight">
                   Visítanos y Conéctate
                 </h3>
-                <p className="text-gray-600 text-sm sm:text-base leading-relaxed font-light max-w-xl">
+                <p className="text-gray-600 text-sm sm:text-base leading-relaxed font-light">
                   {campus.description || "Nuestras puertas están abiertas para recibirte a ti y a tu familia en cada uno de nuestros servicios y actividades."}
                 </p>
               </div>
 
               {/* Tarjeta de Ubicación con botón de Google Maps */}
-              <div className="my-6 p-5 sm:p-6 rounded-2xl bg-off-white border border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-5">
-                <div className="flex items-start gap-4 min-w-0">
-                  <div className="w-12 h-12 rounded-2xl bg-gold/20 text-gold-dark flex items-center justify-center shrink-0 mt-0.5">
-                    <MapPin className="w-6 h-6 text-gold" />
+              <div className="my-5 p-5 rounded-2xl bg-off-white border border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="flex items-start gap-3.5 min-w-0">
+                  <div className="w-11 h-11 rounded-xl bg-gold/20 text-gold-dark flex items-center justify-center shrink-0 mt-0.5">
+                    <MapPin className="w-5 h-5 text-gold-dark" />
                   </div>
-                  <div>
-                    <p className="text-xs font-bold uppercase tracking-wider text-gray-400">
+                  <div className="min-w-0">
+                    <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400">
                       Dirección del Campus
                     </p>
                     <p className="font-bold text-navy text-sm sm:text-base mt-0.5 leading-snug">
                       {campus.address}
                     </p>
-                    <p className="text-xs text-gray-500 mt-1">
+                    <p className="text-xs text-gray-500 mt-0.5 truncate">
                       {campus.state ? `${campus.name}, ${campus.state}, México` : "Coahuila, México"}
                     </p>
                   </div>
@@ -203,7 +204,7 @@ export function CampusClient({ campus, pastorName, googleMapsUrl }: CampusClient
                   href={mapsHref}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center gap-2 bg-navy hover:bg-navy-light text-white text-xs sm:text-sm font-semibold px-5 py-3 rounded-full transition-all shadow-sm hover:shadow-md shrink-0"
+                  className="inline-flex items-center justify-center gap-2 bg-navy hover:bg-navy-light text-white text-xs sm:text-sm font-semibold px-5 py-2.5 rounded-full transition-all shadow-xs hover:shadow-md shrink-0"
                 >
                   <MapPin className="w-4 h-4 text-gold" />
                   Cómo llegar
@@ -212,17 +213,17 @@ export function CampusClient({ campus, pastorName, googleMapsUrl }: CampusClient
               </div>
 
               {/* Canales de Contacto Directo */}
-              <div className="grid sm:grid-cols-2 gap-4 mb-6">
+              <div className="grid sm:grid-cols-2 gap-3.5 mb-5">
                 <a
                   href={`tel:${campus.phone.replace(/\s/g, "")}`}
-                  className="p-4 rounded-2xl bg-off-white/60 hover:bg-off-white border border-gray-100 transition-colors flex items-center gap-3.5 group"
+                  className="p-3.5 rounded-2xl bg-off-white/70 hover:bg-off-white border border-gray-100 transition-colors flex items-center gap-3 group"
                 >
-                  <div className="w-10 h-10 rounded-xl bg-navy/5 group-hover:bg-navy group-hover:text-white flex items-center justify-center shrink-0 transition-colors text-navy">
+                  <div className="w-10 h-10 rounded-xl bg-navy/5 group-hover:bg-navy flex items-center justify-center shrink-0 transition-colors text-navy">
                     <Phone className="w-4 h-4 text-gold" />
                   </div>
                   <div className="min-w-0">
-                    <p className="text-[11px] font-bold uppercase tracking-wider text-gray-400">Teléfono</p>
-                    <p className="text-sm font-bold text-navy truncate group-hover:text-gold transition-colors">
+                    <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400">Teléfono</p>
+                    <p className="text-sm font-bold text-navy truncate group-hover:text-gold-dark transition-colors">
                       {campus.phone}
                     </p>
                   </div>
@@ -230,14 +231,14 @@ export function CampusClient({ campus, pastorName, googleMapsUrl }: CampusClient
 
                 <a
                   href="mailto:contacto@icci.org.mx"
-                  className="p-4 rounded-2xl bg-off-white/60 hover:bg-off-white border border-gray-100 transition-colors flex items-center gap-3.5 group"
+                  className="p-3.5 rounded-2xl bg-off-white/70 hover:bg-off-white border border-gray-100 transition-colors flex items-center gap-3 group"
                 >
-                  <div className="w-10 h-10 rounded-xl bg-navy/5 group-hover:bg-navy group-hover:text-white flex items-center justify-center shrink-0 transition-colors text-navy">
+                  <div className="w-10 h-10 rounded-xl bg-navy/5 group-hover:bg-navy flex items-center justify-center shrink-0 transition-colors text-navy">
                     <Mail className="w-4 h-4 text-gold" />
                   </div>
                   <div className="min-w-0">
-                    <p className="text-[11px] font-bold uppercase tracking-wider text-gray-400">Correo</p>
-                    <p className="text-sm font-bold text-navy truncate group-hover:text-gold transition-colors">
+                    <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400">Correo</p>
+                    <p className="text-sm font-bold text-navy truncate group-hover:text-gold-dark transition-colors">
                       contacto@icci.org.mx
                     </p>
                   </div>
@@ -246,11 +247,11 @@ export function CampusClient({ campus, pastorName, googleMapsUrl }: CampusClient
 
               {/* Botones de Acción Rápida */}
               <div className="pt-4 border-t border-gray-100 flex flex-wrap items-center gap-3">
-                <Button href="/oracion" variant="primary" className="font-bold flex-1 sm:flex-initial">
+                <Button href="/oracion" variant="primary" className="font-bold flex-1 sm:flex-initial text-sm">
                   <Heart className="w-4 h-4 mr-2" />
                   Solicitar oración
                 </Button>
-                <Button href="/eventos" variant="outline" className="font-semibold flex-1 sm:flex-initial">
+                <Button href="/eventos" variant="outline" className="font-semibold flex-1 sm:flex-initial text-sm">
                   <Calendar className="w-4 h-4 mr-2" />
                   Próximos eventos
                 </Button>
@@ -268,7 +269,7 @@ export function CampusClient({ campus, pastorName, googleMapsUrl }: CampusClient
           <div className="space-y-10">
             
             {/* Encabezado de la sección */}
-            <div className="text-center max-w-2xl mx-auto space-y-3">
+            <div className="text-center max-w-2xl mx-auto space-y-2.5">
               <p className="label-eyebrow">Horarios y Citas Semanales</p>
               <div className="divider-gold mx-auto" />
               <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl text-navy uppercase tracking-tight">
@@ -321,61 +322,113 @@ export function CampusClient({ campus, pastorName, googleMapsUrl }: CampusClient
               </div>
             </div>
 
-            {/* ── Grilla de los Demás Servicios y Ministerios ── */}
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-              {DETAILED_SCHEDULES.map((svc) => {
-                const IconComponent = svc.icon;
-                const isInteractive = Boolean(svc.isInteractive);
+            {/* ── Grilla Balanceada de Servicios Semanales ── */}
+            <div>
+              <div className="flex items-center justify-between mb-4">
+                <p className="text-xs font-bold uppercase tracking-widest text-navy">
+                  Servicios de la Semana
+                </p>
+              </div>
 
-                return (
-                  <div
-                    key={svc.title}
-                    onClick={() => isInteractive && setActiveModal("Jóvenes")}
-                    className={`rounded-2xl p-6 transition-all duration-300 flex flex-col justify-between ${
-                      isInteractive
-                        ? "bg-gradient-to-b from-white to-gold/[0.04] border-2 border-gold/40 shadow-md hover:shadow-xl hover:-translate-y-1 cursor-pointer"
-                        : "bg-white border border-gray-100 shadow-sm hover:shadow-md hover:-translate-y-0.5"
-                    }`}
-                  >
-                    <div>
-                      {/* Cabecera de la tarjeta */}
-                      <div className="flex items-center justify-between gap-3 mb-4">
-                        <span className={`text-[10px] uppercase tracking-wider px-2.5 py-1 rounded-full border ${svc.tagColor}`}>
-                          {svc.category}
-                        </span>
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                {WEEKLY_SERVICES_DETAILED.map((svc) => {
+                  const IconComponent = svc.icon;
+                  const isInteractive = Boolean(svc.isInteractive);
 
-                        <div className="w-9 h-9 rounded-xl bg-navy/5 text-navy flex items-center justify-center shrink-0">
-                          <IconComponent className="w-4 h-4 text-gold" />
+                  return (
+                    <div
+                      key={svc.title}
+                      onClick={() => isInteractive && setActiveModal("Jóvenes")}
+                      className={`rounded-2xl p-6 transition-all duration-300 flex flex-col justify-between ${
+                        isInteractive
+                          ? "bg-gradient-to-b from-white to-gold/[0.04] border-2 border-gold/40 shadow-sm hover:shadow-xl hover:-translate-y-1 cursor-pointer"
+                          : "bg-white border border-gray-100 shadow-xs hover:shadow-md hover:-translate-y-0.5"
+                      }`}
+                    >
+                      <div>
+                        {/* Cabecera de la tarjeta */}
+                        <div className="flex items-center justify-between gap-3 mb-4">
+                          <span className={`text-[10px] uppercase tracking-wider px-2.5 py-1 rounded-full border ${svc.tagColor}`}>
+                            {svc.category}
+                          </span>
+
+                          <div className="w-9 h-9 rounded-xl bg-navy/5 text-navy flex items-center justify-center shrink-0">
+                            <IconComponent className="w-4 h-4 text-gold" />
+                          </div>
                         </div>
+
+                        {/* Título y Días */}
+                        <h4 className="font-bold text-navy text-lg leading-snug">
+                          {svc.title}
+                        </h4>
+                        <p className="text-xs font-semibold text-gold-dark mt-1">
+                          {svc.days} · {svc.time}
+                        </p>
+
+                        {/* Descripción */}
+                        <p className="text-gray-600 text-xs sm:text-sm font-light leading-relaxed mt-3">
+                          {svc.description}
+                        </p>
                       </div>
 
-                      {/* Título y Días */}
-                      <h4 className="font-bold text-navy text-lg leading-snug">
-                        {svc.title}
-                      </h4>
-                      <p className="text-xs font-semibold text-gold-dark mt-1">
-                        {svc.days} · {svc.time}
-                      </p>
-
-                      {/* Descripción */}
-                      <p className="text-gray-600 text-xs sm:text-sm font-light leading-relaxed mt-3">
-                        {svc.description}
-                      </p>
+                      {/* Pie de tarjeta */}
+                      {isInteractive && (
+                        <div className="pt-4 mt-4 border-t border-gold/20 flex items-center justify-between text-xs font-bold text-navy">
+                          <span className="flex items-center gap-1.5 text-gold-dark">
+                            <Zap className="w-3.5 h-3.5 text-gold fill-current" />
+                            Conocer el ministerio
+                          </span>
+                          <ChevronRight className="w-4 h-4 text-gold-dark" />
+                        </div>
+                      )}
                     </div>
+                  );
+                })}
+              </div>
+            </div>
 
-                    {/* Pie de tarjeta */}
-                    {isInteractive && (
-                      <div className="pt-4 mt-4 border-t border-gold/20 flex items-center justify-between text-xs font-bold text-navy">
-                        <span className="flex items-center gap-1.5 text-gold-dark">
-                          <Zap className="w-3.5 h-3.5 text-gold fill-current" />
-                          Conocer el ministerio
-                        </span>
-                        <ChevronRight className="w-4 h-4 text-gold-dark group-hover:translate-x-1 transition-transform" />
+            {/* ── Citas Mensuales Especiales (Grid 2 columnas balanceado) ── */}
+            <div className="pt-2">
+              <div className="flex items-center justify-between mb-4">
+                <p className="text-xs font-bold uppercase tracking-widest text-navy">
+                  Citas Mensuales Especiales
+                </p>
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-5">
+                {MONTHLY_ACTIVITIES.map((act) => {
+                  const Icon = act.icon;
+                  return (
+                    <div
+                      key={act.title}
+                      className="rounded-2xl p-6 bg-white border border-gray-200/80 shadow-xs hover:shadow-md transition-all flex items-start gap-4"
+                    >
+                      <div className="w-12 h-12 rounded-2xl bg-gold/15 text-gold-dark flex items-center justify-center shrink-0">
+                        <Icon className="w-6 h-6 text-gold" />
                       </div>
-                    )}
-                  </div>
-                );
-              })}
+                      <div className="space-y-1 min-w-0 flex-1">
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="text-[10px] font-bold uppercase tracking-wider text-gold-dark bg-gold/10 px-2 py-0.5 rounded-full">
+                            {act.category}
+                          </span>
+                          <span className="text-xs font-bold text-navy">
+                            {act.time}
+                          </span>
+                        </div>
+                        <h4 className="font-bold text-navy text-lg leading-snug">
+                          {act.title}
+                        </h4>
+                        <p className="text-xs font-semibold text-gray-500">
+                          {act.cadence}
+                        </p>
+                        <p className="text-gray-600 text-xs sm:text-sm font-light leading-relaxed pt-1">
+                          {act.description}
+                        </p>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
 
             {/* ── Banner Elegante: Campus en Línea ── */}
