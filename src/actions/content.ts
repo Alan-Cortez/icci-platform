@@ -46,6 +46,7 @@ export async function createDevotional(formData: FormData) {
     };
 
     await db.insert(devotionals).values(values);
+    revalidatePath("/admin");
     revalidatePath("/admin/devocionales");
     revalidatePath("/devocionales");
     return { success: true };
@@ -82,6 +83,7 @@ export async function updateDevotional(id: string, formData: FormData) {
       })
       .where(eq(devotionals.id, id));
 
+    revalidatePath("/admin");
     revalidatePath("/admin/devocionales");
     revalidatePath("/devocionales");
     return { success: true };
@@ -94,6 +96,7 @@ export async function updateDevotional(id: string, formData: FormData) {
 export async function deleteDevotional(id: string) {
   try {
     await db.delete(devotionals).where(eq(devotionals.id, id));
+    revalidatePath("/admin");
     revalidatePath("/admin/devocionales");
     revalidatePath("/devocionales");
     return { success: true };

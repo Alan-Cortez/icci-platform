@@ -13,6 +13,7 @@ export async function updateTestimonyStatus(id: string, status: "pending" | "app
     updateData.featured = false;
   }
   await db.update(testimonies).set(updateData).where(eq(testimonies.id, id));
+  revalidatePath("/admin");
   revalidatePath("/admin/testimonios");
   revalidatePath("/testimonios");
   revalidatePath("/");
@@ -20,6 +21,7 @@ export async function updateTestimonyStatus(id: string, status: "pending" | "app
 
 export async function toggleTestimonyFeatured(id: string, featured: boolean) {
   await db.update(testimonies).set({ featured }).where(eq(testimonies.id, id));
+  revalidatePath("/admin");
   revalidatePath("/admin/testimonios");
   revalidatePath("/testimonios");
   revalidatePath("/");
@@ -27,6 +29,7 @@ export async function toggleTestimonyFeatured(id: string, featured: boolean) {
 
 export async function deleteTestimony(id: string) {
   await db.delete(testimonies).where(eq(testimonies.id, id));
+  revalidatePath("/admin");
   revalidatePath("/admin/testimonios");
   revalidatePath("/testimonios");
   revalidatePath("/");

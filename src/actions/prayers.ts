@@ -27,9 +27,17 @@ export async function createPrayerRequest(formData: FormData) {
 export async function updatePrayerStatus(id: string, status: "pending" | "prayed") {
   await db.update(prayerRequests).set({ status }).where(eq(prayerRequests.id, id));
   revalidatePath("/admin/oracion");
+  revalidatePath("/admin");
+}
+
+export async function markAllPrayersAsPrayed() {
+  await db.update(prayerRequests).set({ status: "prayed" }).where(eq(prayerRequests.status, "pending"));
+  revalidatePath("/admin/oracion");
+  revalidatePath("/admin");
 }
 
 export async function deletePrayerRequest(id: string) {
   await db.delete(prayerRequests).where(eq(prayerRequests.id, id));
   revalidatePath("/admin/oracion");
+  revalidatePath("/admin");
 }

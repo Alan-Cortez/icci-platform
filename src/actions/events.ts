@@ -63,6 +63,7 @@ export async function createEvent(formData: FormData) {
     };
 
     await db.insert(events).values(values);
+    revalidatePath("/admin");
     revalidatePath("/admin/eventos");
     revalidatePath("/eventos");
     return { success: true };
@@ -114,6 +115,7 @@ export async function updateEvent(id: string, formData: FormData) {
       })
       .where(eq(events.id, id));
 
+    revalidatePath("/admin");
     revalidatePath("/admin/eventos");
     revalidatePath("/eventos");
     return { success: true };
@@ -126,6 +128,7 @@ export async function updateEvent(id: string, formData: FormData) {
 export async function deleteEvent(id: string) {
   try {
     await db.delete(events).where(eq(events.id, id));
+    revalidatePath("/admin");
     revalidatePath("/admin/eventos");
     revalidatePath("/eventos");
     return { success: true };
@@ -138,11 +141,25 @@ export async function deleteEvent(id: string) {
 export async function toggleEventPublished(id: string, isPublished: boolean) {
   try {
     await db.update(events).set({ isPublished }).where(eq(events.id, id));
+    revalidatePath("/admin");
     revalidatePath("/admin/eventos");
     revalidatePath("/eventos");
     return { success: true };
   } catch (error) {
     console.error("toggleEventPublished error:", error);
     return { success: false, error: "No se pudo cambiar el estado del evento." };
+  }
+}
+
+export async function toggleEventFeatured(id: string, featured: boolean) {
+  try {
+    await db.update(events).set({ featured }).where(eq(events.id, id));
+    revalidatePath("/admin");
+    revalidatePath("/admin/eventos");
+    revalidatePath("/eventos");
+    return { success: true };
+  } catch (error) {
+    console.error("toggleEventFeatured error:", error);
+    return { success: false, error: "No se pudo cambiar el estado destacado del evento." };
   }
 }

@@ -25,6 +25,7 @@ export async function updateUserRole(userId: string, role: UserRole) {
 
   try {
     await db.update(users).set({ role }).where(eq(users.id, userId));
+    revalidatePath("/admin");
     revalidatePath("/admin/usuarios");
     return { success: true };
   } catch {
@@ -41,6 +42,7 @@ export async function toggleUserActive(userId: string) {
     if (user.role === "superadmin") return { success: false, error: "No se puede desactivar al superadmin." };
 
     await db.update(users).set({ isActive: !user.isActive }).where(eq(users.id, userId));
+    revalidatePath("/admin");
     revalidatePath("/admin/usuarios");
     return { success: true };
   } catch {
