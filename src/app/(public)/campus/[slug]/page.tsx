@@ -4,6 +4,8 @@ import { Calendar, Clock, Mail, MapPin, Phone, User } from "lucide-react";
 import { Button, Card, SectionHeading } from "@/components/ui";
 import { SCHEDULES, CAMPUSES } from "@/lib/constants";
 import { CampusClient } from "./CampusClient";
+import { CampusGallery } from "@/components/campus/CampusGallery";
+import { getServicePhotos } from "@/actions/gallery";
 
 // Google Maps link for the real address
 const GOOGLE_MAPS_URL =
@@ -43,6 +45,9 @@ export default async function CampusDetailPage({ params }: Props) {
     ? "Pastores Óscar y Raquel Sosa"
     : campus.pastor;
 
+  // Never let a gallery/DB hiccup break the whole campus page
+  const photos = await getServicePhotos(campus.id).catch(() => []);
+
   return (
     <div>
       {/* ── Hero header ── */}
@@ -80,6 +85,12 @@ export default async function CampusDetailPage({ params }: Props) {
 
       {/* ── Info cards (Interactive) ── */}
       <CampusClient campus={campus} pastorName={pastorName} googleMapsUrl={GOOGLE_MAPS_URL} />
+
+      {/* ── Fotos de cultos (se administran desde /admin/galeria) ── */}
+      <CampusGallery
+        photos={photos.map((p) => ({ id: p.id, title: p.title, imageUrl: p.imageUrl }))}
+        campusName={campus.name}
+      />
     </div>
   );
 }

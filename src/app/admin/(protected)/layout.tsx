@@ -27,6 +27,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     { href: "/admin", label: "Dashboard", icon: "LayoutDashboard" },
     { href: "/admin/eventos", label: "Eventos", icon: "Calendar" },
     { href: "/admin/devocionales", label: "Devocionales", icon: "BookOpen" },
+    { href: "/admin/galeria", label: "Fotos de Cultos", icon: "Camera" },
     {
       href: "/admin/oracion",
       label: "Solicitudes de Oración",

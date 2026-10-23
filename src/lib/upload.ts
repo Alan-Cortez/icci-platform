@@ -9,7 +9,7 @@ export async function uploadImage(file: File | string | null | undefined): Promi
   // If it's a valid File object with actual content
   if (file instanceof File && file.size > 0 && file.name && file.name !== "undefined") {
     try {
-      const blob = await put(file.name, file, { access: 'public' });
+      const blob = await put(file.name, file, { access: 'public', addRandomSuffix: true });
       return blob.url;
     } catch (error) {
       console.error("Vercel Blob Upload Error:", error);

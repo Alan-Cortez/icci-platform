@@ -10,6 +10,7 @@ import {
   MessageCircle,
   Users,
   BookOpen,
+  Camera,
   ArrowLeft,
   Menu,
   X,
@@ -27,6 +28,7 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   Heart,
   BookOpen,
   MessageCircle,
+  Camera,
 };
 
 export interface NavModule {
