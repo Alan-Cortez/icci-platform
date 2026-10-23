@@ -2,7 +2,7 @@ import { getAllServicePhotos } from "@/actions/gallery";
 import { CAMPUSES } from "@/lib/constants";
 import { GaleriaClient } from "./GaleriaClient";
 
-export const metadata = { title: "Fotos de Cultos | ICCI Admin" };
+export const metadata = { title: "Banco de Fotos | ICCI Admin" };
 
 export default async function AdminGaleriaPage() {
   const photos = await getAllServicePhotos();

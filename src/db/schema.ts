@@ -243,8 +243,11 @@ export const gallery = sqliteTable("gallery", {
   title: text("title").notNull(),
   imageUrl: text("imageUrl").notNull(),
   description: text("description"),
-  category: text("category").notNull(), // 'events' | 'youth' | 'kids' | 'campus' | 'general'
+  category: text("category").notNull(), // 'events' | 'youth' | 'kids' | 'campus' | 'general' | 'cultos'
   sortOrder: integer("sortOrder").default(0).notNull(),
+  // Photo bank of services ("cultos"): date of the service and ministry / service type
+  eventDate: integer("eventDate", { mode: "timestamp_ms" }),
+  ministry: text("ministry"),
   createdAt: integer("createdAt", { mode: "timestamp_ms" }).$defaultFn(() => new Date()),
 });
 

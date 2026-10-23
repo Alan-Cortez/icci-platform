@@ -90,10 +90,7 @@ export default async function CampusDetailPage({ params }: Props) {
       <CampusClient campus={campus} pastorName={pastorName} googleMapsUrl={GOOGLE_MAPS_URL} />
 
       {/* ── Fotos de cultos (se administran desde /admin/galeria) ── */}
-      <CampusGallery
-        photos={photos.map((p) => ({ id: p.id, title: p.title, imageUrl: p.imageUrl }))}
-        campusName={campus.name}
-      />
+      <CampusGallery photos={photos} campusName={campus.name} />
     </div>
   );
 }
