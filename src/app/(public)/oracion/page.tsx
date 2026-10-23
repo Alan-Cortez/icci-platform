@@ -146,7 +146,7 @@ export default function OracionPage() {
               <label className="block text-sm font-medium text-gray-800">Celular</label>
               <div className="flex">
                 <span className="inline-flex items-center px-4 rounded-l-xl border border-r-0 border-gray-200 bg-gray-50 text-gray-500 sm:text-sm">
-                  🇲🇽 +52
+                  MX +52
                 </span>
                 <input
                   name="celular"

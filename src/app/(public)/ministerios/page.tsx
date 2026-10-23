@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Users, Clock, ChevronRight } from "lucide-react";
+import { Users, Clock, ChevronRight, Heart, Megaphone, BookOpen, Sparkles, Music, Handshake } from "lucide-react";
 import { Card, SectionHeading, Badge } from "@/components/ui";
 import { db } from "@/db";
 import { ministries } from "@/db/schema";
@@ -14,12 +14,12 @@ export const revalidate = 0;
 // The dynamic ministries are fetched from the database
 
 const ministeriosFuturos = [
-  { name: "Matrimonios", emoji: "💍", desc: "Fortaleciendo los hogares" },
-  { name: "Evangelismo", emoji: "📢", desc: "Llevando el evangelio" },
-  { name: "EBDV", emoji: "📖", desc: "Escuela Bíblica" },
-  { name: "Danza", emoji: "🎶", desc: "Expresión artística" },
-  { name: "Alabanza", emoji: "🎵", desc: "Adoración y música" },
-  { name: "Ujieres", emoji: "🤝", desc: "Servicio y hospitalidad" },
+  { name: "Matrimonios", icon: Heart, desc: "Fortaleciendo los hogares" },
+  { name: "Evangelismo", icon: Megaphone, desc: "Llevando el evangelio" },
+  { name: "EBDV", icon: BookOpen, desc: "Escuela Bíblica" },
+  { name: "Danza", icon: Sparkles, desc: "Expresión artística" },
+  { name: "Alabanza", icon: Music, desc: "Adoración y música" },
+  { name: "Ujieres", icon: Handshake, desc: "Servicio y hospitalidad" },
 ];
 
 export default async function MinisteriosPage() {
@@ -72,7 +72,9 @@ export default async function MinisteriosPage() {
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
             {ministeriosFuturos.map((m) => (
               <div key={m.name} className="text-center p-4 bg-white rounded-2xl border border-gray-100">
-                <div className="text-3xl mb-2">{m.emoji}</div>
+                <div className="w-12 h-12 mx-auto mb-3 rounded-xl bg-gold/10 flex items-center justify-center">
+                  <m.icon className="w-6 h-6 text-gold" />
+                </div>
                 <p className="font-semibold text-navy text-sm">{m.name}</p>
                 <p className="text-gray-400 text-xs mt-1">{m.desc}</p>
               </div>

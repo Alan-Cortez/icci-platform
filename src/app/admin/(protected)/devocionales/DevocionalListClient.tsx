@@ -168,7 +168,10 @@ export function DevocionalListClient({ initialDevotionals }: { initialDevotional
 
             {devotional.verse && (
               <div className="mb-3 text-xs font-semibold text-gray-700 bg-gray-50 p-3 rounded-xl border border-gray-100">
-                📖 {devotional.verse}
+                <span className="flex items-center gap-1.5">
+                  <BookOpen className="w-3.5 h-3.5 shrink-0 text-gold" />
+                  {devotional.verse}
+                </span>
                 {devotional.verseText && (
                   <span className="block font-normal italic text-gray-500 mt-1">
                     &ldquo;{devotional.verseText}&rdquo;

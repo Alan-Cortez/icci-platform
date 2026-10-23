@@ -312,7 +312,7 @@ export function DevocionalesClient({ initialDevotionals }: { initialDevotionals:
                         </h3>
                         
                         {d.verse && (
-                          <p className="text-xs text-gold-dark italic font-serif truncate mb-3">📖 {d.verse}</p>
+                          <p className="text-xs text-gold-dark italic font-serif truncate mb-3 flex items-center gap-1.5"><BookOpen className="w-3.5 h-3.5 shrink-0" />{d.verse}</p>
                         )}
                         
                         <p className="text-xs text-gray-500 line-clamp-3 mb-4 leading-relaxed">
