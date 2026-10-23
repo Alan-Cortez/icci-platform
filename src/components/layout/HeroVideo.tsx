@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { ChevronRight, MapPin, Wifi, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui";
@@ -33,34 +33,51 @@ const QUICK_LINKS = [
 export function HeroVideo() {
   const [loaded, setLoaded] = useState(false);
   const [shouldLoadVideo, setShouldLoadVideo] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
     setLoaded(true);
-    // Avoid downloading heavy background video on mobile screens, Save-Data mode, or reduced motion
-    const isDesktop = window.innerWidth >= 768;
+    // Play the background video on every device (desktop and mobile).
+    // It is only skipped for users who explicitly prefer reduced motion.
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const saveData = (navigator as any).connection?.saveData === true;
-    if (isDesktop && !prefersReducedMotion && !saveData) {
+    if (!prefersReducedMotion) {
       setShouldLoadVideo(true);
     }
   }, []);
 
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    // React does not always render the `muted` attribute, and mobile browsers
+    // (iOS Safari / Chrome Android) refuse to autoplay unless it is set.
+    video.muted = true;
+    video.defaultMuted = true;
+    video.setAttribute("muted", "");
+    video.setAttribute("playsinline", "");
+    const tryPlay = () => video.play().catch(() => {});
+    tryPlay();
+    // Retry on first touch in case the browser blocked the initial autoplay
+    window.addEventListener("touchstart", tryPlay, { once: true, passive: true });
+    return () => window.removeEventListener("touchstart", tryPlay);
+  }, [shouldLoadVideo]);
+
   return (
     <section className="relative h-screen min-h-[640px] overflow-hidden bg-navy">
-      {/* Fast lightweight poster background (72 KB) — instant on mobile & desktop */}
+      {/* Fast lightweight poster background (72 KB) — shown instantly while the video loads */}
       <div
         className="absolute inset-0 bg-cover bg-center"
         style={{ backgroundImage: "url('/hero-poster.jpg')" }}
       />
 
-      {/* Video background — only loaded on desktop without data-saver */}
+      {/* Video background — plays on desktop and mobile */}
       {shouldLoadVideo && (
         <video
+          ref={videoRef}
           autoPlay
           loop
           muted
           playsInline
-          preload="metadata"
+          preload="auto"
           poster="/hero-poster.jpg"
           className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${
             loaded ? "opacity-100" : "opacity-0"
