@@ -11,6 +11,11 @@ import {
   Search,
   SlidersHorizontal,
   X,
+  Download,
+  Share2,
+  Check,
+  Maximize2,
+  Minimize2,
 } from "lucide-react";
 import {
   MONTHS,
@@ -76,8 +81,12 @@ export function CampusGallery({ photos, campusName }: { photos: BankPhoto[]; cam
   const [showFilters, setShowFilters] = useState(false);
   const [visibleAlbums, setVisibleAlbums] = useState(ALBUMS_PER_PAGE);
 
-  const [openAlbumKey, setOpenAlbumKey] = useState<string | null>(null);
-  const [lightbox, setLightbox] = useState<number | null>(null);
+  // Theater modal state (Facebook-style view)
+  const [theaterAlbumKey, setTheaterAlbumKey] = useState<string | null>(null);
+  const [photoIndex, setPhotoIndex] = useState<number>(0);
+  const [downloading, setDownloading] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   // ── Data for filters / stats ──────────────────────────────────────
   const allAlbums = useMemo(() => groupIntoAlbums(photos), [photos]);
@@ -121,7 +130,6 @@ export function CampusGallery({ photos, campusName }: { photos: BankPhoto[]; cam
   const albums = useMemo(() => groupIntoAlbums(filtered), [filtered]);
   const shownAlbums = albums.slice(0, visibleAlbums);
 
-  // Albums grouped by month ("Octubre 2026") for the timeline
   const monthGroups = useMemo(() => {
     const groups: { key: string; label: string; albums: Album[] }[] = [];
     for (const album of shownAlbums) {
@@ -150,41 +158,89 @@ export function CampusGallery({ photos, campusName }: { photos: BankPhoto[]; cam
 
   useEffect(() => setVisibleAlbums(ALBUMS_PER_PAGE), [ministry, period, year, month, weekday, query]);
 
-  // ── Album viewer + lightbox ───────────────────────────────────────
-  const openAlbum = openAlbumKey ? allAlbums.find((a) => a.key === openAlbumKey) ?? null : null;
-  const lightboxPhoto = openAlbum && lightbox !== null ? openAlbum.photos[lightbox] : null;
-  const photoCount = openAlbum?.photos.length ?? 0;
+  // ── Theater Mode Logic ────────────────────────────────────────────
+  const currentAlbum = useMemo(() => {
+    if (!theaterAlbumKey) return null;
+    return allAlbums.find((a) => a.key === theaterAlbumKey) ?? null;
+  }, [theaterAlbumKey, allAlbums]);
 
-  const closeAlbum = useCallback(() => {
-    setLightbox(null);
-    setOpenAlbumKey(null);
+  const currentPhoto = currentAlbum?.photos[photoIndex] ?? null;
+  const albumTotalPhotos = currentAlbum?.photos.length ?? 0;
+
+  const closeTheater = useCallback(() => {
+    setTheaterAlbumKey(null);
+    setPhotoIndex(0);
+    setIsFullscreen(false);
   }, []);
-  const prev = useCallback(
-    () => setLightbox((i) => (i === null || photoCount === 0 ? i : (i - 1 + photoCount) % photoCount)),
-    [photoCount]
-  );
-  const next = useCallback(
-    () => setLightbox((i) => (i === null || photoCount === 0 ? i : (i + 1) % photoCount)),
-    [photoCount]
-  );
 
+  const prevPhoto = useCallback(() => {
+    if (!currentAlbum || albumTotalPhotos <= 1) return;
+    setPhotoIndex((prev) => (prev > 0 ? prev - 1 : albumTotalPhotos - 1));
+  }, [currentAlbum, albumTotalPhotos]);
+
+  const nextPhoto = useCallback(() => {
+    if (!currentAlbum || albumTotalPhotos <= 1) return;
+    setPhotoIndex((prev) => (prev < albumTotalPhotos - 1 ? prev + 1 : 0));
+  }, [currentAlbum, albumTotalPhotos]);
+
+  // Keyboard navigation for theater
   useEffect(() => {
-    if (!openAlbumKey) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        if (lightbox !== null) setLightbox(null);
-        else closeAlbum();
-      }
-      if (lightbox !== null && e.key === "ArrowLeft") prev();
-      if (lightbox !== null && e.key === "ArrowRight") next();
+    if (!theaterAlbumKey) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") closeTheater();
+      if (e.key === "ArrowLeft") prevPhoto();
+      if (e.key === "ArrowRight") nextPhoto();
     };
     document.body.style.overflow = "hidden";
-    window.addEventListener("keydown", onKey);
+    window.addEventListener("keydown", onKeyDown);
     return () => {
       document.body.style.overflow = "";
-      window.removeEventListener("keydown", onKey);
+      window.removeEventListener("keydown", onKeyDown);
     };
-  }, [openAlbumKey, lightbox, closeAlbum, prev, next]);
+  }, [theaterAlbumKey, closeTheater, prevPhoto, nextPhoto]);
+
+  // Download handler
+  async function handleDownloadPhoto() {
+    if (!currentPhoto) return;
+    setDownloading(true);
+    try {
+      const response = await fetch(currentPhoto.imageUrl);
+      const blob = await response.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = blobUrl;
+      const cleanName = `${currentAlbum?.title || "culto"}-${currentAlbum?.dateKey || "foto"}-${photoIndex + 1}.jpg`
+        .toLowerCase()
+        .replace(/[^a-z0-9.-]/g, "_");
+      link.download = cleanName;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
+    } catch {
+      window.open(currentPhoto.imageUrl, "_blank");
+    } finally {
+      setDownloading(false);
+    }
+  }
+
+  // Copy share link
+  function handleCopyShareLink() {
+    if (!currentPhoto) return;
+    navigator.clipboard.writeText(currentPhoto.imageUrl);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  }
+
+  function toggleFullscreen() {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch(() => {});
+      setIsFullscreen(true);
+    } else {
+      document.exitFullscreen().catch(() => {});
+      setIsFullscreen(false);
+    }
+  }
 
   if (photos.length === 0) return null;
 
@@ -204,8 +260,8 @@ export function CampusGallery({ photos, campusName }: { photos: BankPhoto[]; cam
             Fotos de nuestros cultos
           </h2>
           <p className="mt-4 text-gray-600 max-w-2xl mx-auto font-light leading-relaxed">
-            Revive lo que Dios hace cada semana en nuestra familia. Explora los álbumes por
-            ministerio, día, mes o año.
+            Revive lo que Dios hace cada semana en nuestra familia. Haz clic en cualquier álbum para
+            ver las fotos en tamaño completo y descargarlas en alta resolución.
           </p>
 
           {/* Quick stats */}
@@ -377,7 +433,10 @@ export function CampusGallery({ photos, campusName }: { photos: BankPhoto[]; cam
                   return (
                     <button
                       key={album.key}
-                      onClick={() => setOpenAlbumKey(album.key)}
+                      onClick={() => {
+                        setTheaterAlbumKey(album.key);
+                        setPhotoIndex(0);
+                      }}
                       className="group text-left bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-gold"
                     >
                       <div className="relative aspect-[4/3] bg-navy overflow-hidden">
@@ -391,7 +450,7 @@ export function CampusGallery({ photos, campusName }: { photos: BankPhoto[]; cam
                         <span className="absolute top-3 left-3 text-[10px] font-bold tracking-[0.12em] uppercase bg-gold text-navy px-3 py-1 rounded-full shadow-sm">
                           {serviceLabel(album.ministry)}
                         </span>
-                        <span className="absolute bottom-3 right-3 inline-flex items-center gap-1.5 text-xs font-semibold text-white bg-black/45 backdrop-blur-sm px-2.5 py-1 rounded-full">
+                        <span className="absolute bottom-3 right-3 inline-flex items-center gap-1.5 text-xs font-semibold text-white bg-black/50 backdrop-blur-sm px-2.5 py-1 rounded-full">
                           <Images className="w-3.5 h-3.5" />
                           {album.photos.length}
                         </span>
@@ -410,7 +469,7 @@ export function CampusGallery({ photos, campusName }: { photos: BankPhoto[]; cam
                           </p>
                         )}
                         <span className="inline-flex items-center gap-1 mt-3 text-xs font-bold text-navy group-hover:gap-2 transition-all">
-                          Ver álbum <ChevronRight className="w-3.5 h-3.5 text-gold" />
+                          Abrir galería <ChevronRight className="w-3.5 h-3.5 text-gold" />
                         </span>
                       </div>
                     </button>
@@ -448,112 +507,213 @@ export function CampusGallery({ photos, campusName }: { photos: BankPhoto[]; cam
         )}
       </div>
 
-      {/* ── Album viewer ── */}
-      {openAlbum && (
+      {/* ═══════════════════════════════════════════════════════════════════
+          MODAL TIPO FACEBOOK THEATER (Visor con barra lateral)
+          ═══════════════════════════════════════════════════════════════════ */}
+      {currentAlbum && currentPhoto && (
         <div
-          className="fixed inset-0 z-[100] bg-navy/95 backdrop-blur-sm overflow-y-auto"
+          className="fixed inset-0 z-[150] bg-black/95 flex flex-col lg:flex-row overflow-hidden select-none animate-fade-in"
           role="dialog"
           aria-modal="true"
-          aria-label={`Álbum ${openAlbum.title}`}
         >
-          <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
-            <div className="flex items-start justify-between gap-4 mb-6">
-              <div className="min-w-0">
-                <div className="flex flex-wrap items-center gap-2 mb-2">
-                  <span className="text-[10px] font-bold tracking-[0.15em] uppercase bg-gold text-navy px-3 py-1 rounded-full">
-                    {serviceLabel(openAlbum.ministry)}
-                  </span>
-                  <span className="inline-flex items-center gap-1.5 text-xs text-white/60 font-medium">
-                    <Calendar className="w-3.5 h-3.5" /> {formatLongDate(openAlbum.dateKey)}
-                  </span>
-                </div>
-                <h3 className="text-2xl sm:text-3xl font-bold text-white leading-tight">{openAlbum.title}</h3>
-                {openAlbum.description && (
-                  <p className="text-white/70 mt-2 max-w-3xl leading-relaxed">{openAlbum.description}</p>
-                )}
-                <p className="text-white/40 text-xs mt-2">{openAlbum.photos.length} foto(s)</p>
+          {/* ── Columna Izquierda: Visor de Foto a Pantalla Completa ── */}
+          <div className="relative flex-1 bg-black flex flex-col justify-between items-center min-h-[50vh] lg:min-h-full overflow-hidden">
+            {/* Barra superior de controles sobre la imagen */}
+            <div className="absolute top-0 left-0 right-0 z-20 p-4 flex items-center justify-between bg-gradient-to-b from-black/80 via-black/30 to-transparent">
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={closeTheater}
+                  className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors cursor-pointer backdrop-blur-sm"
+                  title="Cerrar (Esc)"
+                  aria-label="Cerrar visor"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+                <span className="text-white/80 text-xs font-semibold px-3 py-1 rounded-full bg-white/10 backdrop-blur-sm">
+                  {photoIndex + 1} de {albumTotalPhotos}
+                </span>
               </div>
+
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={toggleFullscreen}
+                  className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors cursor-pointer backdrop-blur-sm hidden sm:flex"
+                  title={isFullscreen ? "Salir de pantalla completa" : "Pantalla completa"}
+                >
+                  {isFullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
+                </button>
+                <button
+                  onClick={closeTheater}
+                  className="lg:hidden w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors cursor-pointer backdrop-blur-sm"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+
+            {/* Imagen Principal Centrada */}
+            <div
+              className="relative w-full flex-1 flex items-center justify-center p-4 sm:p-8"
+              onClick={(e) => {
+                if (e.target === e.currentTarget) closeTheater();
+              }}
+            >
+              <img
+                src={currentPhoto.imageUrl}
+                alt={currentAlbum.title}
+                className="max-h-[75vh] lg:max-h-[82vh] max-w-full object-contain drop-shadow-2xl transition-all duration-200"
+              />
+
+              {/* Botones de navegación Anterior / Siguiente flotantes */}
+              {albumTotalPhotos > 1 && (
+                <>
+                  <button
+                    onClick={prevPhoto}
+                    className="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-black/50 hover:bg-black/80 border border-white/20 text-white flex items-center justify-center transition-all cursor-pointer backdrop-blur-md shadow-lg"
+                    aria-label="Foto anterior"
+                    title="Foto anterior (Flecha izquierda)"
+                  >
+                    <ChevronLeft className="w-6 h-6" />
+                  </button>
+
+                  <button
+                    onClick={nextPhoto}
+                    className="absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-black/50 hover:bg-black/80 border border-white/20 text-white flex items-center justify-center transition-all cursor-pointer backdrop-blur-md shadow-lg"
+                    aria-label="Siguiente foto"
+                    title="Siguiente foto (Flecha derecha)"
+                  >
+                    <ChevronRight className="w-6 h-6" />
+                  </button>
+                </>
+              )}
+            </div>
+
+            {/* Barra inferior de miniaturas (Tira del álbum) */}
+            {albumTotalPhotos > 1 && (
+              <div className="w-full bg-black/70 backdrop-blur-md border-t border-white/10 p-3 flex justify-center">
+                <div className="flex items-center gap-2 overflow-x-auto max-w-2xl scrollbar-hide py-1">
+                  {currentAlbum.photos.map((photo, i) => (
+                    <button
+                      key={photo.id}
+                      onClick={() => setPhotoIndex(i)}
+                      className={cn(
+                        "relative shrink-0 w-12 h-12 rounded-lg overflow-hidden border-2 transition-all cursor-pointer",
+                        i === photoIndex
+                          ? "border-gold scale-105 shadow-md"
+                          : "border-transparent opacity-50 hover:opacity-100"
+                      )}
+                    >
+                      <img src={photo.imageUrl} alt="" className="w-full h-full object-cover" />
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* ── Columna Derecha: Panel de Información Tipo Facebook (Sin reacciones ni comentarios) ── */}
+          <div className="w-full lg:w-[380px] xl:w-[420px] bg-white text-navy flex flex-col justify-between shrink-0 max-h-[50vh] lg:max-h-full border-t lg:border-t-0 lg:border-l border-gray-200">
+            {/* Header del Panel */}
+            <div className="p-5 border-b border-gray-100 flex items-start justify-between gap-3">
+              <div className="flex items-center gap-3 min-w-0">
+                <div className="w-10 h-10 rounded-full bg-navy text-gold flex items-center justify-center font-bold text-xs shrink-0 shadow-sm">
+                  ICCI
+                </div>
+                <div className="min-w-0">
+                  <p className="font-bold text-navy text-sm leading-tight truncate">
+                    Iglesias Comunidad de Cristo
+                  </p>
+                  <p className="text-[11px] text-gray-500 flex items-center gap-1 mt-0.5">
+                    Campus {campusName}
+                  </p>
+                </div>
+              </div>
+
               <button
-                onClick={closeAlbum}
-                className="shrink-0 w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center cursor-pointer"
-                aria-label="Cerrar álbum"
+                onClick={closeTheater}
+                className="hidden lg:flex w-8 h-8 rounded-full hover:bg-gray-100 text-gray-500 hover:text-navy items-center justify-center transition-colors cursor-pointer"
+                title="Cerrar visor"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <div className="columns-2 md:columns-3 lg:columns-4 gap-3 [&>*]:mb-3">
-              {openAlbum.photos.map((photo, i) => (
-                <button
-                  key={photo.id}
-                  onClick={() => setLightbox(i)}
-                  className="group relative block w-full overflow-hidden rounded-xl bg-white/5 break-inside-avoid cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-gold"
-                  aria-label={`Ampliar foto ${i + 1}`}
-                >
-                  <img
-                    src={photo.imageUrl}
-                    alt={`${openAlbum.title} - foto ${i + 1}`}
-                    loading="lazy"
-                    className="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-105"
-                  />
-                </button>
-              ))}
+            {/* Contenido / Descripción del Álbum */}
+            <div className="p-5 sm:p-6 overflow-y-auto flex-1 space-y-4">
+              {/* Etiquetas de fecha y ministerio */}
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-gold/15 text-gold-dark border border-gold/30">
+                  {serviceLabel(currentAlbum.ministry)}
+                </span>
+                <span className="text-xs text-gray-500 flex items-center gap-1.5 font-medium">
+                  <Calendar className="w-3.5 h-3.5 text-gold" />
+                  {formatLongDate(currentAlbum.dateKey)}
+                </span>
+              </div>
+
+              {/* Título del Álbum */}
+              <div>
+                <h3 className="font-bold text-navy text-xl leading-snug">
+                  {currentAlbum.title}
+                </h3>
+                <p className="text-xs text-gray-400 mt-0.5">
+                  Foto {photoIndex + 1} de {albumTotalPhotos} en este álbum
+                </p>
+              </div>
+
+              {/* Descripción del culto */}
+              {currentAlbum.description ? (
+                <div className="p-4 rounded-xl bg-off-white border border-gray-100 text-gray-700 text-sm leading-relaxed whitespace-pre-wrap">
+                  {currentAlbum.description}
+                </div>
+              ) : (
+                <p className="text-xs text-gray-400 italic">
+                  Culto celebrado en Campus {campusName}.
+                </p>
+              )}
+
+              {/* Descripción específica de la foto si tiene una distinta */}
+              {currentPhoto.description && currentPhoto.description !== currentAlbum.description && (
+                <div className="pt-2">
+                  <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">
+                    Nota de esta foto:
+                  </p>
+                  <p className="text-xs text-gray-600 bg-gray-50 p-2.5 rounded-lg border border-gray-100">
+                    {currentPhoto.description}
+                  </p>
+                </div>
+              )}
+            </div>
+
+            {/* Botones de Acción (Descarga y Compartir - SIN reacciones ni comentarios) */}
+            <div className="p-5 border-t border-gray-100 bg-gray-50/70 space-y-2.5">
+              <button
+                onClick={handleDownloadPhoto}
+                disabled={downloading}
+                className="w-full inline-flex items-center justify-center gap-2 bg-navy hover:bg-navy-light text-white font-bold text-sm py-3 px-4 rounded-xl transition-all shadow-sm hover:shadow-md cursor-pointer disabled:opacity-50"
+              >
+                <Download className="w-4 h-4 text-gold" />
+                {downloading ? "Descargando imagen..." : "Descargar foto"}
+              </button>
+
+              <button
+                onClick={handleCopyShareLink}
+                className="w-full inline-flex items-center justify-center gap-2 bg-white hover:bg-gray-100 border border-gray-200 text-navy font-semibold text-xs py-2.5 px-4 rounded-xl transition-colors cursor-pointer"
+              >
+                {copied ? (
+                  <>
+                    <Check className="w-4 h-4 text-emerald-600" />
+                    <span className="text-emerald-700 font-bold">¡Enlace copiado!</span>
+                  </>
+                ) : (
+                  <>
+                    <Share2 className="w-3.5 h-3.5 text-gray-500" />
+                    Copiar enlace de la foto
+                  </>
+                )}
+              </button>
             </div>
           </div>
-        </div>
-      )}
-
-      {/* ── Lightbox (inside the opened album) ── */}
-      {openAlbum && lightboxPhoto && (
-        <div
-          className="fixed inset-0 z-[110] bg-black/95 flex items-center justify-center p-4"
-          onClick={(e) => e.target === e.currentTarget && setLightbox(null)}
-          role="dialog"
-          aria-modal="true"
-        >
-          <button
-            onClick={() => setLightbox(null)}
-            className="absolute top-4 right-4 w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center cursor-pointer"
-            aria-label="Cerrar foto"
-          >
-            <X className="w-5 h-5" />
-          </button>
-
-          {openAlbum.photos.length > 1 && (
-            <>
-              <button
-                onClick={prev}
-                className="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center cursor-pointer"
-                aria-label="Foto anterior"
-              >
-                <ChevronLeft className="w-6 h-6" />
-              </button>
-              <button
-                onClick={next}
-                className="absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center cursor-pointer"
-                aria-label="Foto siguiente"
-              >
-                <ChevronRight className="w-6 h-6" />
-              </button>
-            </>
-          )}
-
-          <figure className="max-w-5xl max-h-full flex flex-col items-center">
-            <img
-              src={lightboxPhoto.imageUrl}
-              alt={openAlbum.title}
-              className="max-h-[78vh] max-w-full object-contain rounded-xl"
-            />
-            <figcaption className="mt-4 text-center max-w-2xl">
-              <p className="text-white font-semibold">{openAlbum.title}</p>
-              <p className="text-gold text-xs font-medium mt-0.5">
-                {serviceLabel(openAlbum.ministry)} · {formatLongDate(openAlbum.dateKey)}
-              </p>
-              <p className="text-white/40 text-xs mt-2">
-                {(lightbox ?? 0) + 1} / {openAlbum.photos.length}
-              </p>
-            </figcaption>
-          </figure>
         </div>
       )}
     </section>
