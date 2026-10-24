@@ -124,7 +124,7 @@ export function HeroVideo() {
 
             {/* Sub-line — Cormorant serif */}
             <p className="font-serif text-serif-lg text-white/80 italic mt-4 leading-snug font-light">
-              Una familia de fe, esperanza y amor
+              Somos uno, uno somos
             </p>
 
             <p className="mt-5 text-white/65 text-base leading-relaxed max-w-md font-light">

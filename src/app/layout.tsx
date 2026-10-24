@@ -40,7 +40,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "ICCI | Iglesias Comunidad De Cristo Internacional",
     description:
-      "Una familia de fe, esperanza y amor. Campus en Allende, Sabinas, Múzquiz, Barroterán, Anáhuac y Durango.",
+      "Somos uno, uno somos. Plataforma oficial de Iglesias Comunidad De Cristo Internacional. Campus en Allende, Sabinas, Múzquiz, Barroterán, Anáhuac y Durango.",
     url: "https://iccinternacional.vercel.app",
     siteName: "ICCI",
     locale: "es_MX",
@@ -57,7 +57,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "ICCI | Iglesias Comunidad De Cristo Internacional",
-    description: "Una familia de fe, esperanza y amor",
+    description: "Somos uno, uno somos",
     images: ["/og-image.jpg"],
   },
 };

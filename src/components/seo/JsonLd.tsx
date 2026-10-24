@@ -12,7 +12,7 @@ export function ChurchJsonLd() {
     url: baseUrl,
     logo: `${baseUrl}/images/logo.png`,
     image: `${baseUrl}/og-image.jpg`,
-    description: "Una familia de fe, esperanza y amor. Red de campus en el norte de México.",
+    description: "Somos uno, uno somos. Red de campus en el norte de México.",
     telephone: SITE.phone,
     email: SITE.email,
     address: {

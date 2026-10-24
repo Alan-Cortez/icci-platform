@@ -1,7 +1,7 @@
 export const SITE = {
   name: "Iglesias Comunidad De Cristo Internacional",
   shortName: "ICCI",
-  tagline: "Una familia de fe, esperanza y amor",
+  tagline: "Somos uno, uno somos",
   location: "Allende, Coahuila, México",
   address: "Calle Benito Juárez #1705 Norte",
   phone: "+52 862 101 3598",

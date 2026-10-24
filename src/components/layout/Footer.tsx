@@ -160,7 +160,7 @@ export function Footer() {
       <div className="border-t border-white/10 bg-black/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-white/40">
           <p>© {new Date().getFullYear()} {SITE.name}. Todos los derechos reservados.</p>
-          <p className="font-serif italic text-white/30 text-xs">Una iglesia que ama a Dios y a las personas</p>
+          <p className="font-serif italic text-white/40 text-xs">Somos uno, uno somos</p>
         </div>
       </div>
     </footer>
