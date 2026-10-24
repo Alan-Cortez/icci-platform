@@ -14,6 +14,8 @@ export async function GET() {
         videoId: null,
         channelUrl: "https://youtube.com/@icctv-101?si=kp51y50RG4r6icuu",
         liveUrl: "https://www.youtube.com/@icctv-101/live",
+        latestVideo: null,
+        recentStreams: [],
       },
       { status: 200 }
     );

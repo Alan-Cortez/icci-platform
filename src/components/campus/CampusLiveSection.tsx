@@ -2,9 +2,18 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Radio, Play, ExternalLink, Calendar, Heart, MessageSquare, Video } from "lucide-react";
+import {
+  Radio,
+  Play,
+  ExternalLink,
+  Calendar,
+  Heart,
+  Video,
+  Clock,
+  Sparkles,
+} from "lucide-react";
 import { Button } from "@/components/ui";
-import type { YoutubeLiveStatus } from "@/lib/youtube";
+import type { YoutubeLiveStatus, YoutubeStreamItem } from "@/lib/youtube";
 
 interface CampusLiveSectionProps {
   initialStatus: YoutubeLiveStatus;
@@ -12,6 +21,17 @@ interface CampusLiveSectionProps {
 
 export function CampusLiveSection({ initialStatus }: CampusLiveSectionProps) {
   const [status, setStatus] = useState<YoutubeLiveStatus>(initialStatus);
+
+  // Active selected video for preview (defaults to latest broadcast)
+  const defaultVideo: YoutubeStreamItem = status.latestVideo ||
+    status.recentStreams?.[0] || {
+      videoId: "FGd6mF5Qm-A",
+      title: "Cielos abiertos",
+      subtitle: "Última reunión transmitida",
+      url: "https://www.youtube.com/watch?v=FGd6mF5Qm-A",
+    };
+
+  const [selectedVideo, setSelectedVideo] = useState<YoutubeStreamItem>(defaultVideo);
 
   // Poll API route every 60 seconds to detect when a broadcast starts
   useEffect(() => {
@@ -24,6 +44,9 @@ export function CampusLiveSection({ initialStatus }: CampusLiveSectionProps) {
           const data = (await res.json()) as YoutubeLiveStatus;
           if (mounted) {
             setStatus(data);
+            if (data.latestVideo && (!selectedVideo || selectedVideo.videoId === defaultVideo.videoId)) {
+              setSelectedVideo(data.latestVideo);
+            }
           }
         }
       } catch {
@@ -36,17 +59,24 @@ export function CampusLiveSection({ initialStatus }: CampusLiveSectionProps) {
       mounted = false;
       clearInterval(intervalId);
     };
-  }, []);
+  }, [defaultVideo.videoId, selectedVideo]);
 
   const isLive = status.isLive;
   const liveVideoId = status.videoId;
   const channelUrl = status.channelUrl || "https://youtube.com/@icctv-101?si=kp51y50RG4r6icuu";
-  const watchUrl = liveVideoId
+  const watchLiveUrl = liveVideoId
     ? `https://www.youtube.com/watch?v=${liveVideoId}`
     : status.liveUrl || "https://www.youtube.com/@icctv-101/live";
 
+  const streams = status.recentStreams && status.recentStreams.length > 0
+    ? status.recentStreams
+    : [defaultVideo];
+
   return (
-    <section id="campus-online" className="mt-20 scroll-mt-24">
+    <section id="transmision" className="mt-20 scroll-mt-24 relative">
+      {/* Anchor invisible para compatibilidad con enlaces anteriores */}
+      <span id="campus-online" className="absolute -top-24 pointer-events-none" />
+
       {isLive ? (
         /* ═════════════════════════════════════════════════════════════════
            ESTADO: EN VIVO ACTIVO (Confirmado en tiempo real desde YouTube)
@@ -88,7 +118,7 @@ export function CampusLiveSection({ initialStatus }: CampusLiveSectionProps) {
               <div className="lg:col-span-4 space-y-6">
                 <div>
                   <h3 className="font-display text-2xl sm:text-3xl text-white font-bold leading-tight">
-                    Servicio en Vivo <span className="text-gold">Campus en Línea</span>
+                    Transmisión <span className="text-gold">en Vivo</span>
                   </h3>
                   <p className="text-white/70 text-sm mt-3 leading-relaxed">
                     Acompáñanos en la alabanza, la Palabra y el tiempo de oración comunitaria. ¡Sé parte de lo que Dios está haciendo hoy!
@@ -97,7 +127,7 @@ export function CampusLiveSection({ initialStatus }: CampusLiveSectionProps) {
 
                 <div className="space-y-3 pt-2">
                   <a
-                    href={watchUrl}
+                    href={watchLiveUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="w-full inline-flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white font-bold text-sm px-6 py-3.5 rounded-full transition-all shadow-md hover:shadow-xl"
@@ -123,18 +153,18 @@ export function CampusLiveSection({ initialStatus }: CampusLiveSectionProps) {
         </div>
       ) : (
         /* ═════════════════════════════════════════════════════════════════
-           ESTADO: FUERA DE LÍNEA (Sin badges falsos de "en vivo")
+           ESTADO: FUERA DE LÍNEA (Muestra el último en vivo de cada reunión)
            ═════════════════════════════════════════════════════════════════ */
         <div className="rounded-3xl bg-white border border-gray-100 shadow-xl overflow-hidden">
           <div className="p-8 sm:p-12">
             <div className="grid lg:grid-cols-12 gap-10 items-center">
               
-              {/* Información del Campus en Línea */}
+              {/* Información de Transmisiones */}
               <div className="lg:col-span-6 space-y-6">
                 <div>
                   <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold tracking-wider uppercase bg-navy/5 text-navy border border-navy/10 mb-4">
                     <Video className="w-3.5 h-3.5 text-gold" />
-                    Campus en Línea · Transmisión Digital
+                    Transmisión en YouTube · ICCTV
                   </div>
 
                   <h3 className="font-display text-2xl sm:text-3xl text-navy font-bold leading-tight">
@@ -142,22 +172,37 @@ export function CampusLiveSection({ initialStatus }: CampusLiveSectionProps) {
                   </h3>
 
                   <p className="text-gray-600 text-sm sm:text-base leading-relaxed mt-3">
-                    Nuestras transmisiones en vivo se emiten cada <strong className="text-navy font-semibold">Domingo a las 10:00 AM</strong> y en servicios especiales. Cuando comience la transmisión, podrás verla aquí en tiempo real.
+                    Nuestras reuniones se transmiten en vivo cada <strong className="text-navy font-semibold">Jueves a las 7:00 PM</strong> y <strong className="text-navy font-semibold">Domingos a las 10:00 AM</strong> a través de nuestro canal de YouTube. Podrás sintonizar cada culto en tiempo real o revivir el último en vivo aquí mismo.
                   </p>
                 </div>
 
-                {/* Tarjetas de horarios y estado */}
+                {/* Tarjetas de horarios de transmisión: JUEVES 7PM Y DOMINGO 10AM */}
                 <div className="space-y-3">
-                  <div className="flex items-center gap-4 p-4 rounded-2xl bg-off-white border border-gray-100">
-                    <div className="w-10 h-10 rounded-xl bg-gold/15 text-gold-dark flex items-center justify-center shrink-0">
-                      <Calendar className="w-5 h-5 text-gold" />
+                  <div className="grid sm:grid-cols-2 gap-3">
+                    {/* Tarjeta Jueves */}
+                    <div className="flex items-center gap-3.5 p-4 rounded-2xl bg-off-white border border-gray-100">
+                      <div className="w-10 h-10 rounded-xl bg-gold/15 text-gold-dark flex items-center justify-center shrink-0">
+                        <Clock className="w-5 h-5 text-gold" />
+                      </div>
+                      <div>
+                        <p className="font-bold text-navy text-sm">Reunión de Jueves</p>
+                        <p className="text-xs text-gray-500 font-medium">Jueves · 7:00 PM</p>
+                      </div>
                     </div>
-                    <div>
-                      <p className="font-bold text-navy text-sm">Servicio Dominical Principal</p>
-                      <p className="text-xs text-gray-500">Domingos · 10:00 AM (Hora del Centro)</p>
+
+                    {/* Tarjeta Domingo */}
+                    <div className="flex items-center gap-3.5 p-4 rounded-2xl bg-off-white border border-gray-100">
+                      <div className="w-10 h-10 rounded-xl bg-gold/15 text-gold-dark flex items-center justify-center shrink-0">
+                        <Calendar className="w-5 h-5 text-gold" />
+                      </div>
+                      <div>
+                        <p className="font-bold text-navy text-sm">Servicio Dominical</p>
+                        <p className="text-xs text-gray-500 font-medium">Domingos · 10:00 AM</p>
+                      </div>
                     </div>
                   </div>
 
+                  {/* Estado actual de la transmisión */}
                   <div className="flex items-center gap-4 p-4 rounded-2xl bg-off-white border border-gray-100">
                     <div className="w-10 h-10 rounded-xl bg-navy/10 text-navy flex items-center justify-center shrink-0">
                       <Radio className="w-5 h-5 text-navy" />
@@ -165,7 +210,7 @@ export function CampusLiveSection({ initialStatus }: CampusLiveSectionProps) {
                     <div>
                       <p className="font-bold text-navy text-sm">Estado de Transmisión</p>
                       <p className="text-xs text-gray-500">
-                        Fuera de línea en este momento · Próxima emisión el domingo
+                        Fuera de línea en este momento · Próxima emisión: Jueves 7:00 PM o Domingo 10:00 AM
                       </p>
                     </div>
                   </div>
@@ -196,35 +241,69 @@ export function CampusLiveSection({ initialStatus }: CampusLiveSectionProps) {
                 </div>
               </div>
 
-              {/* Vista previa de video / Predicación reciente */}
+              {/* Vista previa: ÚLTIMO EN VIVO TRANSMITIDO */}
               <div className="lg:col-span-6">
                 <div className="rounded-2xl overflow-hidden border border-gray-200 bg-navy text-white shadow-lg">
+                  {/* Barra superior de la vista */}
                   <div className="px-5 py-3.5 bg-navy-light flex items-center justify-between border-b border-white/10">
                     <span className="text-xs font-bold tracking-wider text-gold uppercase flex items-center gap-1.5">
-                      <Play className="w-3 h-3 fill-current" />
-                      Predicación destacada
+                      <Sparkles className="w-3.5 h-3.5" />
+                      Última reunión en vivo
                     </span>
                     <span className="text-[11px] text-white/50">Canal oficial ICCTV</span>
                   </div>
 
+                  {/* Reproductor de YouTube con el último en vivo dinámico */}
                   <div className="aspect-video w-full bg-black relative">
                     <iframe
+                      key={selectedVideo.videoId}
                       className="w-full h-full"
-                      src="https://www.youtube.com/embed/MuLpLancL80?autoplay=0&rel=0"
-                      title="ICCI Predicación Destacada"
+                      src={`https://www.youtube.com/embed/${selectedVideo.videoId}?autoplay=0&rel=0`}
+                      title={selectedVideo.title}
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                       allowFullScreen
                     />
                   </div>
 
-                  <div className="p-4 sm:p-5 bg-navy">
-                    <p className="font-bold text-white text-sm sm:text-base">
-                      La Aguja Que Desinfla Mi Ego · Pastor Oscar Sosa
+                  {/* Información del video actual */}
+                  <div className="p-4 sm:p-5 bg-navy border-b border-white/5">
+                    <p className="font-bold text-white text-base leading-snug">
+                      {selectedVideo.title}
                     </p>
-                    <p className="text-white/60 text-xs mt-1 font-light">
-                      Disfruta de este mensaje y conéctate con la Palabra de Dios mientras llega nuestra próxima transmisión en vivo.
-                    </p>
+                    {selectedVideo.subtitle && (
+                      <p className="text-white/60 text-xs mt-1 font-light">
+                        {selectedVideo.subtitle}
+                      </p>
+                    )}
                   </div>
+
+                  {/* Selector interactivo de transmisiones recientes si hay más de una */}
+                  {streams.length > 1 && (
+                    <div className="p-4 bg-navy-light/60">
+                      <p className="text-[11px] font-bold text-white/50 uppercase tracking-wider mb-2">
+                        Otras reuniones transmitidas recientemente:
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        {streams.slice(0, 4).map((s) => {
+                          const isSelected = s.videoId === selectedVideo.videoId;
+                          return (
+                            <button
+                              key={s.videoId}
+                              onClick={() => setSelectedVideo(s)}
+                              className={`text-xs px-3 py-1.5 rounded-lg text-left transition-all cursor-pointer font-medium truncate max-w-full ${
+                                isSelected
+                                  ? "bg-gold text-navy font-bold shadow-sm"
+                                  : "bg-white/5 hover:bg-white/15 text-white/80 border border-white/10"
+                              }`}
+                              title={s.title}
+                            >
+                              ▶ {s.title}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
 

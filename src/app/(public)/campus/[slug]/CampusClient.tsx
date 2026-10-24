@@ -325,23 +325,23 @@ export function CampusClient({ campus, pastorName, googleMapsUrl }: CampusClient
               })}
             </div>
 
-            {/* ── Banner Sutil y Limpio: Campus en Línea ── */}
+            {/* ── Banner Sutil y Limpio: Transmisión en YouTube ── */}
             <div className="p-5 sm:p-6 rounded-2xl bg-white border border-gray-200/80 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <div>
-                <p className="text-[11px] font-bold uppercase tracking-wider text-gold-dark">Campus en Línea</p>
+                <p className="text-[11px] font-bold uppercase tracking-wider text-gold-dark">Transmisión en YouTube · ICCTV</p>
                 <p className="text-base font-bold text-navy mt-0.5">
                   ¿No puedes acompañarnos de manera presencial?
                 </p>
                 <p className="text-xs sm:text-sm text-gray-500 font-light mt-0.5">
-                  Sigue la transmisión oficial en vivo cada domingo a las 10:00 AM desde cualquier lugar.
+                  Sigue nuestras reuniones en vivo los jueves a las 7:00 PM y domingos a las 10:00 AM desde cualquier lugar.
                 </p>
               </div>
 
               <Link
-                href="/campus#campus-online"
+                href="/campus#transmision"
                 className="inline-flex items-center gap-1.5 bg-navy hover:bg-navy-light text-white text-xs font-semibold px-5 py-2.5 rounded-full transition-colors shrink-0"
               >
-                Ir a transmisión <ChevronRight className="w-3.5 h-3.5 text-gold" />
+                Ver transmisiones <ChevronRight className="w-3.5 h-3.5 text-gold" />
               </Link>
             </div>
 

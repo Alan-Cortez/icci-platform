@@ -16,8 +16,8 @@ const QUICK_LINKS = [
   },
   {
     icon: <Wifi className="w-5 h-5" />,
-    title: "En Línea",
-    desc: "Síguenos en YouTube y únete desde donde estés.",
+    title: "En YouTube",
+    desc: "Transmisiones en vivo los jueves 7:00 PM y domingos 10:00 AM.",
     link: "https://youtube.com/@icctv-101?si=kp51y50RG4r6icuu",
     cta: "Ver canal →",
   },

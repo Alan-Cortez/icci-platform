@@ -9,7 +9,7 @@ import { getCampusImages } from "@/actions/campus";
 
 export const metadata: Metadata = {
   title: "Campus",
-  description: "Ubicaciones de ICCI en Allende, Sabinas, Múzquiz, Barroterán, Anáhuac y Durango, y Campus en Línea.",
+  description: "Ubicaciones de ICCI en Allende, Sabinas, Múzquiz, Barroterán, Anáhuac y Durango, y transmisiones en vivo por YouTube.",
 };
 export const revalidate = 0;
 
@@ -34,7 +34,7 @@ export default async function CampusListPage() {
         <SectionHeading
           subtitle="Ubicaciones"
           title="Nuestros Campus"
-          description="Encuentra el campus ICCI más cercano a ti o acompáñanos a través de nuestro Campus en Línea."
+          description="Encuentra el campus ICCI más cercano a ti o acompáñanos a través de nuestras transmisiones en vivo en YouTube."
         />
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
