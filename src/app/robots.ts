@@ -1,7 +1,8 @@
 import type { MetadataRoute } from "next";
+import { getBaseUrl } from "@/lib/constants";
 
 export default function robots(): MetadataRoute.Robots {
-  const baseUrl = process.env.AUTH_URL || "https://www.iglesiascomunidaddecristoint.com";
+  const baseUrl = getBaseUrl();
 
   return {
     rules: [

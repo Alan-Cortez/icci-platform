@@ -3,6 +3,7 @@ import { Inter, Bebas_Neue, Cormorant_Garamond } from "next/font/google";
 import "./globals.css";
 import { SessionProvider } from "next-auth/react";
 import { ChurchJsonLd } from "@/components/seo/JsonLd";
+import { getBaseUrl } from "@/lib/constants";
 
 /* ── Body / UI font ─────────────────────────────────── */
 const inter = Inter({
@@ -29,7 +30,7 @@ const cormorant = Cormorant_Garamond({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.AUTH_URL || "https://www.iglesiascomunidaddecristoint.com"),
+  metadataBase: new URL(getBaseUrl()),
   title: {
     default: "ICCI | Iglesias Comunidad De Cristo Internacional",
     template: "%s | ICCI",

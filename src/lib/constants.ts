@@ -12,6 +12,19 @@ export const SITE = {
   tiktok: "https://www.tiktok.com/@iglesiacomunidaddecristo",
 } as const;
 
+export function getBaseUrl(): string {
+  const fallback = "https://www.iglesiascomunidaddecristoint.com";
+  const raw = process.env.AUTH_URL || process.env.NEXTAUTH_URL || process.env.NEXT_PUBLIC_SITE_URL;
+  if (!raw) return fallback;
+  try {
+    const cleaned = String(raw).trim().replace(/^["']|["']$/g, "");
+    const url = new URL(cleaned.startsWith("http") ? cleaned : `https://${cleaned}`);
+    return url.origin;
+  } catch {
+    return fallback;
+  }
+}
+
 export const WEEKLY_SERVICES = [
   {
     id: "lunes-viernes",

@@ -1,8 +1,8 @@
 import type { MetadataRoute } from "next";
-import { CAMPUSES } from "@/lib/constants";
+import { CAMPUSES, getBaseUrl } from "@/lib/constants";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = process.env.AUTH_URL || "https://www.iglesiascomunidaddecristoint.com";
+  const baseUrl = getBaseUrl();
   const now = new Date();
 
   const staticRoutes = [
