@@ -3,27 +3,14 @@
 import { useState } from "react";
 import Link from "next/link";
 import {
-  Calendar,
-  Clock,
-  Mail,
   MapPin,
   Phone,
-  User,
-  X,
+  Mail,
   ChevronRight,
+  ExternalLink,
+  X,
   Instagram,
   Facebook,
-  Video,
-  Sparkles,
-  Heart,
-  Shield,
-  Church,
-  Zap,
-  Flame,
-  Compass,
-  ArrowUpRight,
-  Radio,
-  ExternalLink,
 } from "lucide-react";
 import { Button } from "@/components/ui";
 
@@ -33,76 +20,50 @@ interface CampusClientProps {
   googleMapsUrl: string;
 }
 
-// ─── Servicios Regulares Semanales (5 servicios) ─────────────────────────────
-const WEEKLY_SERVICES_DETAILED = [
+// ─── 6 Servicios y Actividades organizados de forma equilibrada ──────────────
+const CAMPUS_SERVICES = [
   {
+    day: "Lunes a viernes",
+    time: "9:00 AM - 10:00 AM",
     title: "Servicio de Oración",
     category: "Oración Matutina",
-    days: "Lunes a viernes",
-    time: "9:00 AM - 10:00 AM",
-    description: "Comenzando el día en la presencia de Dios a través de la oración e intercesión comunitaria.",
-    icon: Heart,
-    tagColor: "bg-navy/5 text-navy border-navy/10",
+    description: "Comenzando el día en la presencia de Dios a través de la oración comunitaria e intercesión.",
   },
   {
+    day: "Miércoles",
+    time: "7:00 PM",
     title: "Servicio Femenil",
     category: "Ministerio de Mujeres",
-    days: "Miércoles",
-    time: "7:00 PM",
-    description: "Un espacio de edificación, amistad y fortalecimiento de la fe diseñado especialmente para mujeres.",
-    icon: Sparkles,
-    tagColor: "bg-gold/15 text-gold-dark border-gold/30",
+    description: "Un espacio de edificación, amistad y crecimiento espiritual diseñado especialmente para mujeres.",
   },
   {
+    day: "Jueves",
+    time: "7:00 PM",
     title: "Servicio General",
     category: "Adoración & Palabra",
-    days: "Jueves",
-    time: "7:00 PM",
-    description: "Reunión de mitad de semana con alabanza, estudio bíblico y tiempo de refrigerio espiritual.",
-    icon: Church,
-    tagColor: "bg-navy/5 text-navy border-navy/10",
+    description: "Reunión de mitad de semana con tiempo de alabanza, estudio de la Palabra y refrigerio espiritual.",
   },
   {
+    day: "Sábado",
+    time: "7:00 PM",
     title: "Jóvenes Con Todo",
-    category: "Ministerio Juvenil",
-    days: "Sábado",
-    time: "7:00 PM",
-    extra: "11 años en adelante",
+    category: "Ministerio Juvenil · 11 años en adelante",
     description: "Una generación apasionada por Dios. Alabanza dinámica, mensajes relevantes y una gran comunidad.",
-    icon: Zap,
     isInteractive: true,
-    tagColor: "bg-gold text-navy font-bold shadow-xs",
   },
   {
+    day: "Sábado",
+    time: "7:00 PM",
     title: "Ministerio de Varones",
     category: "Hombres de Fe",
-    days: "Sábado",
-    time: "7:00 PM",
-    description: "Hombres unidos para crecer como líderes espirituales en su hogar, trabajo e iglesia.",
-    icon: Shield,
-    tagColor: "bg-navy/5 text-navy border-navy/10",
-  },
-];
-
-// ─── Citas Mensuales Especiales (2 actividades equilibradas) ─────────────────
-const MONTHLY_ACTIVITIES = [
-  {
-    title: "Vigilia de Oración",
-    category: "Clamor & Búsqueda",
-    cadence: "Último viernes de cada mes",
-    time: "7:00 PM",
-    description: "Noche dedicada a la búsqueda profunda de Dios, oración ferviente y llenura del Espíritu Santo.",
-    icon: Flame,
-    color: "from-amber-500/10 to-transparent border-amber-500/20 text-amber-700",
+    description: "Hombres unidos para fortalecer su fe y crecer como líderes espirituales en su hogar, trabajo e iglesia.",
   },
   {
-    title: "Jornada de Evangelización",
-    category: "Impacto Comunitario",
-    cadence: "Último domingo del mes",
+    day: "Citas Mensuales",
     time: "7:00 PM",
-    description: "Llevando el amor de Jesús a las calles, compartiendo esperanza y sirviendo activamente a nuestra comunidad.",
-    icon: Compass,
-    color: "from-gold/10 to-transparent border-gold/30 text-gold-dark",
+    title: "Vigilia & Evangelización",
+    category: "Reuniones de Impacto",
+    description: "Vigilia de oración el último viernes de cada mes y jornada de evangelización el último domingo.",
   },
 ];
 
@@ -121,7 +82,7 @@ export function CampusClient({ campus, pastorName, googleMapsUrl }: CampusClient
 
   return (
     <>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 lg:py-20 space-y-16 sm:space-y-20">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 lg:py-20 space-y-16">
 
         {/* ═══════════════════════════════════════════════════════════════════
             1. SECCIÓN SUPERIOR: LIDERAZGO PASTORAL + HUB DE INFORMACIÓN
@@ -146,10 +107,9 @@ export function CampusClient({ campus, pastorName, googleMapsUrl }: CampusClient
 
               {/* Contenido inferior */}
               <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-8 space-y-2 z-10">
-                <div className="inline-flex items-center gap-1.5 text-gold text-[11px] font-bold uppercase tracking-widest bg-navy/80 px-3.5 py-1.5 rounded-full backdrop-blur-md border border-gold/30">
-                  <User className="w-3.5 h-3.5 text-gold" />
+                <span className="inline-block text-gold text-[11px] font-bold uppercase tracking-widest bg-navy/80 px-3.5 py-1.5 rounded-full backdrop-blur-md border border-gold/30">
                   {isMain ? "Pastores Principales" : "Liderazgo Pastoral"}
-                </div>
+                </span>
                 <h2 className="font-display text-white text-2xl sm:text-3xl font-bold leading-tight">
                   {pastorName}
                 </h2>
@@ -206,7 +166,6 @@ export function CampusClient({ campus, pastorName, googleMapsUrl }: CampusClient
                   rel="noopener noreferrer"
                   className="inline-flex items-center justify-center gap-2 bg-navy hover:bg-navy-light text-white text-xs sm:text-sm font-semibold px-5 py-2.5 rounded-full transition-all shadow-xs hover:shadow-md shrink-0"
                 >
-                  <MapPin className="w-4 h-4 text-gold" />
                   Cómo llegar
                   <ExternalLink className="w-3.5 h-3.5 opacity-70" />
                 </a>
@@ -218,7 +177,7 @@ export function CampusClient({ campus, pastorName, googleMapsUrl }: CampusClient
                   href={`tel:${campus.phone.replace(/\s/g, "")}`}
                   className="p-3.5 rounded-2xl bg-off-white/70 hover:bg-off-white border border-gray-100 transition-colors flex items-center gap-3 group"
                 >
-                  <div className="w-10 h-10 rounded-xl bg-navy/5 group-hover:bg-navy flex items-center justify-center shrink-0 transition-colors text-navy">
+                  <div className="w-9 h-9 rounded-xl bg-navy/5 group-hover:bg-navy flex items-center justify-center shrink-0 transition-colors text-navy">
                     <Phone className="w-4 h-4 text-gold" />
                   </div>
                   <div className="min-w-0">
@@ -233,7 +192,7 @@ export function CampusClient({ campus, pastorName, googleMapsUrl }: CampusClient
                   href="mailto:contacto@icci.org.mx"
                   className="p-3.5 rounded-2xl bg-off-white/70 hover:bg-off-white border border-gray-100 transition-colors flex items-center gap-3 group"
                 >
-                  <div className="w-10 h-10 rounded-xl bg-navy/5 group-hover:bg-navy flex items-center justify-center shrink-0 transition-colors text-navy">
+                  <div className="w-9 h-9 rounded-xl bg-navy/5 group-hover:bg-navy flex items-center justify-center shrink-0 transition-colors text-navy">
                     <Mail className="w-4 h-4 text-gold" />
                   </div>
                   <div className="min-w-0">
@@ -248,11 +207,9 @@ export function CampusClient({ campus, pastorName, googleMapsUrl }: CampusClient
               {/* Botones de Acción Rápida */}
               <div className="pt-4 border-t border-gray-100 flex flex-wrap items-center gap-3">
                 <Button href="/oracion" variant="primary" className="font-bold flex-1 sm:flex-initial text-sm">
-                  <Heart className="w-4 h-4 mr-2" />
                   Solicitar oración
                 </Button>
                 <Button href="/eventos" variant="outline" className="font-semibold flex-1 sm:flex-initial text-sm">
-                  <Calendar className="w-4 h-4 mr-2" />
                   Próximos eventos
                 </Button>
               </div>
@@ -266,10 +223,10 @@ export function CampusClient({ campus, pastorName, googleMapsUrl }: CampusClient
             2. SECCIÓN DE HORARIOS Y ACTIVIDADES (Campus Principal)
             ═══════════════════════════════════════════════════════════════════ */}
         {isMain ? (
-          <div className="space-y-10">
+          <div className="space-y-8">
             
             {/* Encabezado de la sección */}
-            <div className="text-center max-w-2xl mx-auto space-y-2.5">
+            <div className="text-center max-w-2xl mx-auto space-y-2">
               <p className="label-eyebrow">Horarios y Citas Semanales</p>
               <div className="divider-gold mx-auto" />
               <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl text-navy uppercase tracking-tight">
@@ -281,19 +238,16 @@ export function CampusClient({ campus, pastorName, googleMapsUrl }: CampusClient
             </div>
 
             {/* ── Spotlight: Celebración Dominical Principal ── */}
-            <div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-navy via-navy to-[#081324] border-2 border-gold/40 shadow-2xl p-7 sm:p-10 text-white">
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(212,175,55,0.15),transparent_60%)] pointer-events-none" />
-
-              <div className="relative z-10 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8">
+            <div className="rounded-3xl bg-navy border border-gold/30 shadow-xl p-6 sm:p-8 text-white relative overflow-hidden">
+              <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
                 
                 {/* Lado izquierdo: Info del servicio dominical */}
-                <div className="space-y-3 max-w-2xl">
-                  <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-black uppercase tracking-widest bg-gold text-navy shadow-md">
-                    <Sparkles className="w-3.5 h-3.5 fill-current" />
+                <div className="space-y-2 max-w-2xl">
+                  <span className="inline-block px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider bg-gold text-navy">
                     Reunión Principal de la Familia ICCI
-                  </div>
+                  </span>
 
-                  <h3 className="font-display text-3xl sm:text-4xl text-white font-bold leading-tight">
+                  <h3 className="font-display text-2xl sm:text-3xl lg:text-4xl text-white font-bold leading-tight">
                     Celebración Dominical General
                   </h3>
 
@@ -303,18 +257,17 @@ export function CampusClient({ campus, pastorName, googleMapsUrl }: CampusClient
                 </div>
 
                 {/* Lado derecho: Horario y CTA */}
-                <div className="flex flex-col sm:flex-row lg:flex-col items-start sm:items-center lg:items-end gap-4 shrink-0 w-full sm:w-auto">
-                  <div className="px-6 py-3.5 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 text-left lg:text-right">
-                    <p className="text-[11px] uppercase tracking-wider text-gold font-bold">Cada Domingo</p>
+                <div className="flex flex-col sm:flex-row lg:flex-col items-start sm:items-center lg:items-end gap-3 shrink-0 w-full lg:w-auto">
+                  <div className="px-5 py-3 rounded-2xl bg-white/10 border border-white/15 text-left lg:text-right w-full sm:w-auto">
+                    <p className="text-[10px] uppercase tracking-wider text-gold font-bold">Cada Domingo</p>
                     <p className="font-display text-2xl sm:text-3xl font-black text-white">10:00 AM</p>
                     <p className="text-xs text-white/60">Hora del Centro</p>
                   </div>
 
                   <Link
                     href="/campus#campus-online"
-                    className="inline-flex items-center gap-2 bg-gold hover:bg-gold-light text-navy font-bold text-xs uppercase tracking-wider px-5 py-3 rounded-full transition-all shadow-md hover:shadow-lg"
+                    className="inline-flex items-center gap-2 bg-gold hover:bg-gold-light text-navy font-bold text-xs uppercase tracking-wider px-5 py-2.5 rounded-full transition-all shadow-md w-full sm:w-auto justify-center"
                   >
-                    <Video className="w-4 h-4" />
                     Ver opción en vivo <ChevronRight className="w-4 h-4" />
                   </Link>
                 </div>
@@ -322,140 +275,73 @@ export function CampusClient({ campus, pastorName, googleMapsUrl }: CampusClient
               </div>
             </div>
 
-            {/* ── Grilla Balanceada de Servicios Semanales ── */}
-            <div>
-              <div className="flex items-center justify-between mb-4">
-                <p className="text-xs font-bold uppercase tracking-widest text-navy">
-                  Servicios de la Semana
-                </p>
-              </div>
+            {/* ── Grilla Balanceada de Servicios (6 tarjetas simétricas, sin íconos innecesarios) ── */}
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              {CAMPUS_SERVICES.map((svc) => {
+                const isInteractive = Boolean(svc.isInteractive);
 
-              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                {WEEKLY_SERVICES_DETAILED.map((svc) => {
-                  const IconComponent = svc.icon;
-                  const isInteractive = Boolean(svc.isInteractive);
-
-                  return (
-                    <div
-                      key={svc.title}
-                      onClick={() => isInteractive && setActiveModal("Jóvenes")}
-                      className={`rounded-2xl p-6 transition-all duration-300 flex flex-col justify-between ${
-                        isInteractive
-                          ? "bg-gradient-to-b from-white to-gold/[0.04] border-2 border-gold/40 shadow-sm hover:shadow-xl hover:-translate-y-1 cursor-pointer"
-                          : "bg-white border border-gray-100 shadow-xs hover:shadow-md hover:-translate-y-0.5"
-                      }`}
-                    >
-                      <div>
-                        {/* Cabecera de la tarjeta */}
-                        <div className="flex items-center justify-between gap-3 mb-4">
-                          <span className={`text-[10px] uppercase tracking-wider px-2.5 py-1 rounded-full border ${svc.tagColor}`}>
-                            {svc.category}
-                          </span>
-
-                          <div className="w-9 h-9 rounded-xl bg-navy/5 text-navy flex items-center justify-center shrink-0">
-                            <IconComponent className="w-4 h-4 text-gold" />
-                          </div>
-                        </div>
-
-                        {/* Título y Días */}
-                        <h4 className="font-bold text-navy text-lg leading-snug">
-                          {svc.title}
-                        </h4>
-                        <p className="text-xs font-semibold text-gold-dark mt-1">
-                          {svc.days} · {svc.time}
-                        </p>
-
-                        {/* Descripción */}
-                        <p className="text-gray-600 text-xs sm:text-sm font-light leading-relaxed mt-3">
-                          {svc.description}
-                        </p>
+                return (
+                  <div
+                    key={svc.title}
+                    onClick={() => isInteractive && setActiveModal("Jóvenes")}
+                    className={`rounded-2xl p-6 bg-white border border-gray-200/80 shadow-xs hover:shadow-md hover:border-gold/50 transition-all flex flex-col justify-between ${
+                      isInteractive ? "cursor-pointer group hover:-translate-y-0.5 border-gold/40" : ""
+                    }`}
+                  >
+                    <div>
+                      {/* Día y Hora sin íconos decorativos */}
+                      <div className="flex items-center justify-between text-xs mb-3">
+                        <span className="font-bold text-navy uppercase tracking-wider bg-gray-100 px-2.5 py-1 rounded-md">
+                          {svc.day}
+                        </span>
+                        <span className="font-bold text-gold-dark">
+                          {svc.time}
+                        </span>
                       </div>
 
-                      {/* Pie de tarjeta */}
-                      {isInteractive && (
-                        <div className="pt-4 mt-4 border-t border-gold/20 flex items-center justify-between text-xs font-bold text-navy">
-                          <span className="flex items-center gap-1.5 text-gold-dark">
-                            <Zap className="w-3.5 h-3.5 text-gold fill-current" />
-                            Conocer el ministerio
-                          </span>
-                          <ChevronRight className="w-4 h-4 text-gold-dark" />
-                        </div>
-                      )}
+                      {/* Título y Categoría */}
+                      <h4 className="font-bold text-navy text-lg leading-snug">
+                        {svc.title}
+                      </h4>
+                      <p className="text-xs text-gray-400 font-medium mt-0.5">
+                        {svc.category}
+                      </p>
+
+                      {/* Descripción */}
+                      <p className="text-gray-600 text-xs sm:text-sm font-light leading-relaxed mt-3">
+                        {svc.description}
+                      </p>
                     </div>
-                  );
-                })}
-              </div>
+
+                    {/* Enlace interactivo solo si aplica */}
+                    {isInteractive && (
+                      <div className="pt-3 mt-4 border-t border-gray-100 flex items-center justify-between text-xs font-bold text-gold-dark group-hover:text-navy transition-colors">
+                        <span>Conocer ministerio</span>
+                        <ChevronRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
             </div>
 
-            {/* ── Citas Mensuales Especiales (Grid 2 columnas balanceado) ── */}
-            <div className="pt-2">
-              <div className="flex items-center justify-between mb-4">
-                <p className="text-xs font-bold uppercase tracking-widest text-navy">
-                  Citas Mensuales Especiales
+            {/* ── Banner Sutil y Limpio: Campus en Línea ── */}
+            <div className="p-5 sm:p-6 rounded-2xl bg-white border border-gray-200/80 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div>
+                <p className="text-[11px] font-bold uppercase tracking-wider text-gold-dark">Campus en Línea</p>
+                <p className="text-base font-bold text-navy mt-0.5">
+                  ¿No puedes acompañarnos de manera presencial?
                 </p>
-              </div>
-
-              <div className="grid md:grid-cols-2 gap-5">
-                {MONTHLY_ACTIVITIES.map((act) => {
-                  const Icon = act.icon;
-                  return (
-                    <div
-                      key={act.title}
-                      className="rounded-2xl p-6 bg-white border border-gray-200/80 shadow-xs hover:shadow-md transition-all flex items-start gap-4"
-                    >
-                      <div className="w-12 h-12 rounded-2xl bg-gold/15 text-gold-dark flex items-center justify-center shrink-0">
-                        <Icon className="w-6 h-6 text-gold" />
-                      </div>
-                      <div className="space-y-1 min-w-0 flex-1">
-                        <div className="flex items-center justify-between gap-2">
-                          <span className="text-[10px] font-bold uppercase tracking-wider text-gold-dark bg-gold/10 px-2 py-0.5 rounded-full">
-                            {act.category}
-                          </span>
-                          <span className="text-xs font-bold text-navy">
-                            {act.time}
-                          </span>
-                        </div>
-                        <h4 className="font-bold text-navy text-lg leading-snug">
-                          {act.title}
-                        </h4>
-                        <p className="text-xs font-semibold text-gray-500">
-                          {act.cadence}
-                        </p>
-                        <p className="text-gray-600 text-xs sm:text-sm font-light leading-relaxed pt-1">
-                          {act.description}
-                        </p>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* ── Banner Elegante: Campus en Línea ── */}
-            <div className="p-6 sm:p-8 rounded-3xl bg-navy text-white shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6 relative overflow-hidden">
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_left,rgba(212,175,55,0.1),transparent_50%)] pointer-events-none" />
-
-              <div className="relative z-10 flex items-center gap-4">
-                <div className="w-12 h-12 rounded-2xl bg-gold/15 text-gold flex items-center justify-center shrink-0">
-                  <Radio className="w-6 h-6 text-gold" />
-                </div>
-                <div>
-                  <p className="text-[11px] font-bold uppercase tracking-widest text-gold">Campus en Línea</p>
-                  <p className="font-bold text-white text-base sm:text-lg">
-                    ¿No puedes acompañarnos de manera presencial?
-                  </p>
-                  <p className="text-white/60 text-xs sm:text-sm font-light mt-0.5">
-                    Sigue nuestra transmisión oficial cada domingo a las 10:00 AM desde cualquier lugar.
-                  </p>
-                </div>
+                <p className="text-xs sm:text-sm text-gray-500 font-light mt-0.5">
+                  Sigue la transmisión oficial en vivo cada domingo a las 10:00 AM desde cualquier lugar.
+                </p>
               </div>
 
               <Link
                 href="/campus#campus-online"
-                className="relative z-10 inline-flex items-center gap-2 bg-gold hover:bg-gold-light text-navy font-bold text-xs uppercase tracking-wider px-6 py-3.5 rounded-full transition-all shadow-md hover:shadow-lg shrink-0 w-full md:w-auto justify-center"
+                className="inline-flex items-center gap-1.5 bg-navy hover:bg-navy-light text-white text-xs font-semibold px-5 py-2.5 rounded-full transition-colors shrink-0"
               >
-                <Video className="w-4 h-4" />
-                Ir a Transmisión en Vivo <ChevronRight className="w-4 h-4" />
+                Ir a transmisión <ChevronRight className="w-3.5 h-3.5 text-gold" />
               </Link>
             </div>
 
@@ -463,9 +349,6 @@ export function CampusClient({ campus, pastorName, googleMapsUrl }: CampusClient
         ) : (
           /* ── Otros Campus (Sabinas, Múzquiz, etc.) ── */
           <div className="p-8 sm:p-10 rounded-3xl bg-white border border-gray-100 shadow-lg text-center max-w-3xl mx-auto space-y-6">
-            <div className="w-14 h-14 rounded-2xl bg-gold/15 text-gold flex items-center justify-center mx-auto">
-              <Church className="w-7 h-7 text-gold" />
-            </div>
             <div className="space-y-2">
               <h3 className="font-display text-2xl sm:text-3xl text-navy font-bold">
                 Reuniones en Campus {campus.name}
@@ -576,9 +459,6 @@ export function CampusClient({ campus, pastorName, googleMapsUrl }: CampusClient
                     <div>
                       <h4 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4">Liderazgo</h4>
                       <div className="flex items-start gap-4 p-5 rounded-2xl bg-white border border-gray-100 shadow-sm">
-                        <div className="w-12 h-12 rounded-full bg-navy/5 flex items-center justify-center shrink-0">
-                          <User className="w-5 h-5 text-navy" />
-                        </div>
                         <div>
                           <p className="font-bold text-navy text-lg">Omar y Jacqueline Laborico</p>
                           <p className="text-sm text-gold font-semibold mb-2">Pastores de Jóvenes</p>
