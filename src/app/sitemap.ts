@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 import { CAMPUSES } from "@/lib/constants";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = process.env.AUTH_URL || "https://iccinternacional.vercel.app";
+  const baseUrl = process.env.AUTH_URL || "https://www.iglesiascomunidaddecristoint.com";
   const now = new Date();
 
   const staticRoutes = [

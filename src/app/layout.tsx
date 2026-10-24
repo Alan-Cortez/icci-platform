@@ -29,7 +29,7 @@ const cormorant = Cormorant_Garamond({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.AUTH_URL || "https://iccinternacional.vercel.app"),
+  metadataBase: new URL(process.env.AUTH_URL || "https://www.iglesiascomunidaddecristoint.com"),
   title: {
     default: "ICCI | Iglesias Comunidad De Cristo Internacional",
     template: "%s | ICCI",
@@ -41,7 +41,7 @@ export const metadata: Metadata = {
     title: "ICCI | Iglesias Comunidad De Cristo Internacional",
     description:
       "Somos uno, uno somos. Plataforma oficial de Iglesias Comunidad De Cristo Internacional. Campus en Allende, Sabinas, Múzquiz, Barroterán, Anáhuac y Durango.",
-    url: "https://iccinternacional.vercel.app",
+    url: "https://www.iglesiascomunidaddecristoint.com",
     siteName: "ICCI",
     locale: "es_MX",
     type: "website",

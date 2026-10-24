@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 
 export default function robots(): MetadataRoute.Robots {
-  const baseUrl = process.env.AUTH_URL || "https://iccinternacional.vercel.app";
+  const baseUrl = process.env.AUTH_URL || "https://www.iglesiascomunidaddecristoint.com";
 
   return {
     rules: [

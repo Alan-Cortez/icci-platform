@@ -1,7 +1,7 @@
 import { SITE, CAMPUSES, WEEKLY_SERVICES } from "@/lib/constants";
 
 export function ChurchJsonLd() {
-  const baseUrl = process.env.AUTH_URL || "https://iccinternacional.vercel.app";
+  const baseUrl = process.env.AUTH_URL || "https://www.iglesiascomunidaddecristoint.com";
 
   const churchSchema = {
     "@context": "https://schema.org",
