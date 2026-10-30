@@ -3,16 +3,45 @@ import { SITE, CAMPUSES, WEEKLY_SERVICES, getBaseUrl } from "@/lib/constants";
 export function ChurchJsonLd() {
   const baseUrl = getBaseUrl();
 
+  const websiteSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "@id": `${baseUrl}/#website`,
+    url: baseUrl,
+    name: "ICCI",
+    alternateName: [
+      "Iglesia Comunidad De Cristo",
+      "Iglesias Comunidad De Cristo Internacional",
+      "ICCInt",
+      "ICC",
+      "Comunidad De Cristo",
+      "ICCI Allende",
+    ],
+    description: "Sitio oficial de la Iglesia Comunidad De Cristo Internacional (ICCI / ICCInt).",
+    inLanguage: "es-MX",
+    publisher: {
+      "@id": `${baseUrl}/#church`,
+    },
+  };
+
   const churchSchema = {
     "@context": "https://schema.org",
     "@type": "Church",
     "@id": `${baseUrl}/#church`,
     name: SITE.name,
-    alternateName: SITE.shortName,
+    alternateName: [
+      "ICCI",
+      "ICCInt",
+      "ICC",
+      "Iglesia Comunidad De Cristo",
+      "Comunidad De Cristo Internacional",
+      "Comunidad De Cristo",
+      "Iglesia Cristiana en Allende Coahuila",
+    ],
     url: baseUrl,
     logo: `${baseUrl}/images/logo.png`,
     image: `${baseUrl}/og-image.jpg`,
-    description: "Somos uno, uno somos. Red de campus en el norte de México.",
+    description: "Somos uno, uno somos. Red de campus en el norte de México: Allende, Sabinas, Múzquiz, Barroterán, Anáhuac y Durango.",
     telephone: SITE.phone,
     email: SITE.email,
     address: {
@@ -89,7 +118,7 @@ export function ChurchJsonLd() {
   return (
     <script
       type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(churchSchema) }}
+      dangerouslySetInnerHTML={{ __html: JSON.stringify([websiteSchema, churchSchema]) }}
     />
   );
 }
