@@ -63,7 +63,7 @@ export function EventosClient({ initialEvents }: { initialEvents: any[] }) {
           <p className="text-gold tracking-[0.3em] uppercase text-xs font-semibold mb-4">
             Iglesias Comunidad De Cristo Internacional
           </p>
-          <h1 className="text-5xl sm:text-7xl font-black leading-none tracking-tight">
+          <h1 className="text-4xl sm:text-6xl md:text-7xl font-black leading-tight sm:leading-none tracking-tight break-words">
             Eventos
           </h1>
           <p className="mt-6 text-white/50 max-w-xl mx-auto leading-relaxed text-sm sm:text-base">
@@ -75,7 +75,7 @@ export function EventosClient({ initialEvents }: { initialEvents: any[] }) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
 
         {/* ── 1. Filtros ── */}
-        <div className="flex flex-col md:flex-row justify-between items-center gap-6 mb-12 bg-white p-2 rounded-full shadow-sm border border-gray-100 overflow-x-auto">
+        <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-12 bg-white p-2 rounded-2xl md:rounded-full shadow-sm border border-gray-100 overflow-x-auto max-w-full">
           
           {/* Categories */}
           <div className="flex items-center gap-1 min-w-max px-2">

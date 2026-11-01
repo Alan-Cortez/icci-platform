@@ -72,6 +72,7 @@
 
 html {
   scroll-behavior: smooth;
+  overflow-x: clip;
 }
 
 body {
@@ -81,6 +82,13 @@ body {
   font-size: 1rem;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+  max-width: 100vw;
+  width: 100%;
+}
+
+img, video, iframe {
+  max-width: 100%;
 }
 
 ::selection {
@@ -99,43 +107,51 @@ body {
   letter-spacing: 0.02em;
   text-transform: uppercase;
   line-height: 0.95;
+  overflow-wrap: break-word;
 }
 
 /* Serif — Cormorant Garamond: elegant subheadings, quotes */
 .font-serif {
   font-family: var(--font-serif), "Georgia", serif;
+  overflow-wrap: break-word;
 }
 
 /* Preset scales */
 .text-hero {
   font-family: var(--font-display), sans-serif;
-  font-size: clamp(3.5rem, 10vw, 8rem);
-  line-height: 0.92;
+  font-size: clamp(2.25rem, 8vw, 7rem);
+  line-height: 0.95;
   letter-spacing: 0.01em;
   text-transform: uppercase;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .text-display {
   font-family: var(--font-display), sans-serif;
-  font-size: clamp(2.5rem, 6vw, 5rem);
-  line-height: 0.95;
+  font-size: clamp(1.85rem, 5.5vw, 4.25rem);
+  line-height: 0.98;
   letter-spacing: 0.02em;
   text-transform: uppercase;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .text-serif-xl {
   font-family: var(--font-serif), serif;
-  font-size: clamp(2rem, 4vw, 3.5rem);
+  font-size: clamp(1.65rem, 4vw, 3.25rem);
   font-weight: 600;
   line-height: 1.15;
   letter-spacing: -0.01em;
+  overflow-wrap: break-word;
 }
 
 .text-serif-lg {
   font-family: var(--font-serif), serif;
-  font-size: clamp(1.5rem, 3vw, 2.5rem);
+  font-size: clamp(1.35rem, 3vw, 2.25rem);
   font-weight: 500;
   line-height: 1.2;
+  overflow-wrap: break-word;
 }
 
 /* ═══════════════════════════════════════════════════════════

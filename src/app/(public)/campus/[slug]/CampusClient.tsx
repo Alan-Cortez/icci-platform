@@ -382,18 +382,18 @@ export function CampusClient({ campus, pastorName, googleMapsUrl }: CampusClient
           ═══════════════════════════════════════════════════════════════════ */}
       {activeModal && (
         <div
-          className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6"
+          className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-6"
           style={{ background: "rgba(5,12,28,0.8)", backdropFilter: "blur(12px)" }}
           onClick={(e) => e.target === e.currentTarget && setActiveModal(null)}
         >
           <div 
-            className="bg-white w-full max-w-5xl rounded-[2rem] flex flex-col md:flex-row shadow-2xl overflow-hidden relative"
-            style={{ maxHeight: "90vh", animation: "modalIn .4s cubic-bezier(.16,1,.3,1) both" }}
+            className="bg-white w-full max-w-5xl rounded-[1.5rem] sm:rounded-[2rem] flex flex-col md:flex-row shadow-2xl overflow-hidden relative max-h-[92vh] sm:max-h-[90vh]"
+            style={{ animation: "modalIn .4s cubic-bezier(.16,1,.3,1) both" }}
           >
             {/* Close Button */}
             <button
               onClick={() => setActiveModal(null)}
-              className="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-black/10 hover:bg-black/20 flex items-center justify-center text-gray-700 hover:text-black transition-all duration-200 backdrop-blur-md cursor-pointer"
+              className="absolute top-3 right-3 sm:top-4 sm:right-4 z-10 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-black/10 hover:bg-black/20 flex items-center justify-center text-gray-700 hover:text-black transition-all duration-200 backdrop-blur-md cursor-pointer"
               aria-label="Cerrar"
             >
               <X className="w-5 h-5" />
@@ -402,7 +402,7 @@ export function CampusClient({ campus, pastorName, googleMapsUrl }: CampusClient
             {activeModal === "Jóvenes" ? (
               <>
                 {/* ── Left Side: Hero Image & Overlay ── */}
-                <div className="w-full md:w-2/5 relative min-h-[250px] md:min-h-full shrink-0">
+                <div className="w-full md:w-2/5 relative h-48 sm:h-64 md:h-auto min-h-[160px] md:min-h-full shrink-0">
                   <img 
                     src="/images/jovenes.jpg" 
                     alt="Jóvenes Con Todo" 
@@ -410,9 +410,9 @@ export function CampusClient({ campus, pastorName, googleMapsUrl }: CampusClient
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-navy via-navy/40 to-transparent" />
                   
-                  <div className="absolute bottom-8 left-8 right-8">
-                    <p className="text-gold text-xs font-bold uppercase tracking-[0.2em] mb-2">Ministerio</p>
-                    <h3 className="text-4xl md:text-5xl font-black text-white tracking-tight leading-none mb-4">
+                  <div className="absolute bottom-4 left-4 right-4 sm:bottom-8 sm:left-8 sm:right-8">
+                    <p className="text-gold text-xs font-bold uppercase tracking-[0.2em] mb-1 sm:mb-2">Ministerio</p>
+                    <h3 className="text-2xl sm:text-4xl md:text-5xl font-black text-white tracking-tight leading-none mb-3 sm:mb-4">
                       Jóvenes<br/>Con Todo
                     </h3>
                     <div className="flex gap-3">
@@ -447,7 +447,7 @@ export function CampusClient({ campus, pastorName, googleMapsUrl }: CampusClient
                 </div>
 
                 {/* ── Right Side: Content Scrollable ── */}
-                <div className="w-full md:w-3/5 overflow-y-auto p-8 md:p-12 scrollbar-hide bg-off-white">
+                <div className="w-full md:w-3/5 overflow-y-auto p-5 sm:p-8 md:p-12 scrollbar-hide bg-off-white">
                   <div className="max-w-xl space-y-10">
                     <div>
                       <h4 className="text-2xl font-bold text-navy mb-4">Nuestra Visión</h4>

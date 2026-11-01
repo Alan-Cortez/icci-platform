@@ -265,16 +265,16 @@ export function CampusGallery({ photos, campusName }: { photos: BankPhoto[]; cam
           </p>
 
           {/* Quick stats */}
-          <div className="mt-8 inline-grid grid-cols-3 divide-x divide-gray-200 bg-white rounded-2xl border border-gray-100 shadow-sm">
+          <div className="mt-8 inline-grid grid-cols-3 divide-x divide-gray-200 bg-white rounded-2xl border border-gray-100 shadow-sm max-w-full">
             {[
               { icon: Camera, value: String(photos.length), label: "Fotos" },
               { icon: Images, value: String(allAlbums.length), label: "Álbumes" },
               { icon: Calendar, value: latest ? shortDate(latest.dateKey) : "—", label: "Último culto" },
             ].map((s) => (
-              <div key={s.label} className="px-4 sm:px-8 py-3.5 text-center">
+              <div key={s.label} className="px-2.5 sm:px-8 py-3.5 text-center">
                 <s.icon className="w-4 h-4 text-gold mx-auto mb-1" />
                 <p className="font-bold text-navy text-sm sm:text-lg leading-none">{s.value}</p>
-                <p className="text-[10px] sm:text-xs text-gray-500 mt-1 uppercase tracking-wider">{s.label}</p>
+                <p className="text-[9px] sm:text-xs text-gray-500 mt-1 uppercase tracking-wider">{s.label}</p>
               </div>
             ))}
           </div>
@@ -553,7 +553,7 @@ export function CampusGallery({ photos, campusName }: { photos: BankPhoto[]; cam
 
             {/* Imagen Principal Centrada */}
             <div
-              className="relative w-full flex-1 flex items-center justify-center p-4 sm:p-8"
+              className="relative w-full flex-1 flex items-center justify-center p-2 sm:p-6 lg:p-8"
               onClick={(e) => {
                 if (e.target === e.currentTarget) closeTheater();
               }}
@@ -561,7 +561,7 @@ export function CampusGallery({ photos, campusName }: { photos: BankPhoto[]; cam
               <img
                 src={currentPhoto.imageUrl}
                 alt={currentAlbum.title}
-                className="max-h-[75vh] lg:max-h-[82vh] max-w-full object-contain drop-shadow-2xl transition-all duration-200"
+                className="max-h-[50vh] sm:max-h-[65vh] lg:max-h-[82vh] max-w-full object-contain drop-shadow-2xl transition-all duration-200"
               />
 
               {/* Botones de navegación Anterior / Siguiente flotantes */}
@@ -569,20 +569,20 @@ export function CampusGallery({ photos, campusName }: { photos: BankPhoto[]; cam
                 <>
                   <button
                     onClick={prevPhoto}
-                    className="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-black/50 hover:bg-black/80 border border-white/20 text-white flex items-center justify-center transition-all cursor-pointer backdrop-blur-md shadow-lg"
+                    className="absolute left-2 sm:left-6 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-12 sm:h-12 rounded-full bg-black/60 hover:bg-black/90 border border-white/20 text-white flex items-center justify-center transition-all cursor-pointer backdrop-blur-md shadow-lg"
                     aria-label="Foto anterior"
                     title="Foto anterior (Flecha izquierda)"
                   >
-                    <ChevronLeft className="w-6 h-6" />
+                    <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6" />
                   </button>
 
                   <button
                     onClick={nextPhoto}
-                    className="absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-black/50 hover:bg-black/80 border border-white/20 text-white flex items-center justify-center transition-all cursor-pointer backdrop-blur-md shadow-lg"
+                    className="absolute right-2 sm:right-6 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-12 sm:h-12 rounded-full bg-black/60 hover:bg-black/90 border border-white/20 text-white flex items-center justify-center transition-all cursor-pointer backdrop-blur-md shadow-lg"
                     aria-label="Siguiente foto"
                     title="Siguiente foto (Flecha derecha)"
                   >
-                    <ChevronRight className="w-6 h-6" />
+                    <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6" />
                   </button>
                 </>
               )}

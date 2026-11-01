@@ -78,7 +78,7 @@ export default function OracionPage() {
         
         <div className="max-w-7xl mx-auto relative z-10 text-center">
           <Badge variant="gold" className="mb-6">CUIDADO PASTORAL</Badge>
-          <h1 className="text-5xl sm:text-6xl md:text-7xl font-display text-white mb-6 leading-tight">
+          <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-display text-white mb-6 leading-tight break-words">
             Queremos orar <span className="text-gold italic">contigo</span>
           </h1>
           <p className="text-gray-300 max-w-2xl mx-auto text-lg md:text-xl leading-relaxed mb-10 font-light">

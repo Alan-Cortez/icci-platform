@@ -165,8 +165,8 @@ export function Header({ session }: { session?: any }) {
       {/* Mobile menu */}
       <div
         className={cn(
-          "lg:hidden overflow-hidden transition-all duration-300 border-t border-gray-100",
-          mobileOpen ? "max-h-[28rem] opacity-100" : "max-h-0 opacity-0"
+          "lg:hidden overflow-y-auto transition-all duration-300 border-t border-gray-100",
+          mobileOpen ? "max-h-[calc(100vh-4.5rem)] opacity-100" : "max-h-0 opacity-0 pointer-events-none"
         )}
       >
         <nav className="px-4 py-4 space-y-1 bg-white">

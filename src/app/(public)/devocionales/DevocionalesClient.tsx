@@ -131,7 +131,7 @@ export function DevocionalesClient({ initialDevotionals }: { initialDevotionals:
           <p className="text-gold tracking-[0.3em] uppercase text-xs font-semibold mb-4">
             Iglesias Comunidad De Cristo Internacional
           </p>
-          <h1 className="text-5xl sm:text-7xl font-black leading-none tracking-tight">
+          <h1 className="text-4xl sm:text-6xl md:text-7xl font-black leading-tight sm:leading-none tracking-tight break-words">
             Devocionales
           </h1>
           <p className="mt-6 text-white/50 max-w-xl mx-auto leading-relaxed text-sm sm:text-base">

@@ -68,7 +68,7 @@ export function ConocenosClient() {
           <p className="text-gold tracking-[0.3em] uppercase text-xs font-semibold mb-4">
             Iglesias Comunidad De Cristo Internacional
           </p>
-          <h1 className="text-5xl sm:text-7xl font-black leading-none tracking-tight">
+          <h1 className="text-4xl sm:text-6xl md:text-7xl font-black leading-tight sm:leading-none tracking-tight break-words">
             Conócenos
           </h1>
           <p className="mt-6 text-white/50 max-w-xl mx-auto leading-relaxed">
@@ -88,7 +88,7 @@ export function ConocenosClient() {
                 Nuestra historia
               </p>
               <div className="h-0.5 w-10 bg-gold mb-8" />
-              <h2 className="text-4xl sm:text-5xl font-black mb-10 leading-tight text-navy">
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-black mb-8 leading-tight text-navy">
                 Nuestra historia
               </h2>
               <div className="space-y-5 text-gray-600 leading-relaxed text-base">
@@ -146,7 +146,7 @@ export function ConocenosClient() {
             Liderazgo
           </p>
           <div className="h-0.5 w-10 bg-gold mb-8" />
-          <h2 className="text-4xl sm:text-5xl font-black mb-14">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black mb-10 sm:mb-14">
             Pastores principales
           </h2>
         </div>
@@ -163,7 +163,7 @@ export function ConocenosClient() {
               <div
                 key={pastor.id}
                 className="relative group rounded-2xl overflow-hidden cursor-pointer border border-white/10 hover:border-gold/40 transition-all duration-500 flex-shrink-0 snap-start"
-                style={{ height: "420px", width: "300px" }}
+                style={{ height: "420px", width: "min(300px, 82vw)" }}
                 onClick={() =>
                   setActivePastor(activePastor === pastor.id ? null : pastor.id)
                 }
@@ -232,7 +232,7 @@ export function ConocenosClient() {
                 Hacia dónde vamos
               </p>
               <div className="h-0.5 w-10 bg-gold mb-8" />
-              <h2 className="text-5xl sm:text-6xl font-black mb-6 leading-none text-navy">
+              <h2 className="text-3xl sm:text-5xl md:text-6xl font-black mb-4 sm:mb-6 leading-none text-navy">
                 VISIÓN
               </h2>
               <p className="text-gray-600 leading-relaxed max-w-lg">
@@ -255,7 +255,7 @@ export function ConocenosClient() {
                 Por qué existimos
               </p>
               <div className="h-0.5 w-10 bg-gold mb-8" />
-              <h2 className="text-5xl sm:text-6xl font-black mb-6 leading-none text-navy">
+              <h2 className="text-3xl sm:text-5xl md:text-6xl font-black mb-4 sm:mb-6 leading-none text-navy">
                 MISIÓN
               </h2>
               <p className="text-gray-600 leading-relaxed max-w-lg">

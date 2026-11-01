@@ -95,7 +95,7 @@ export function WeeklySchedule({ events, upcomingEvent }: WeeklyScheduleProps) {
                       >
                         {/* Izquierda: Día y Título */}
                         <div className="flex items-center gap-3 sm:gap-4 min-w-0">
-                          <div className={`w-24 shrink-0 text-center py-2 px-2 rounded-xl border text-[11px] font-bold uppercase tracking-wider ${
+                          <div className={`w-20 sm:w-24 shrink-0 text-center py-2 px-1.5 sm:px-2 rounded-xl border text-[10px] sm:text-[11px] font-bold uppercase tracking-wider ${
                             isSunday
                               ? "bg-gold text-navy border-gold shadow-sm"
                               : "bg-navy/5 text-navy border-navy/10 group-hover:bg-navy group-hover:text-white group-hover:border-navy transition-colors"

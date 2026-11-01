@@ -156,7 +156,7 @@ export function CampusLiveSection({ initialStatus }: CampusLiveSectionProps) {
            ESTADO: FUERA DE LÍNEA (Muestra el último en vivo de cada reunión)
            ═════════════════════════════════════════════════════════════════ */
         <div className="rounded-3xl bg-white border border-gray-100 shadow-xl overflow-hidden">
-          <div className="p-8 sm:p-12">
+          <div className="p-5 sm:p-8 lg:p-12">
             <div className="grid lg:grid-cols-12 gap-10 items-center">
               
               {/* Información de Transmisiones */}

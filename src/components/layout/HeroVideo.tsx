@@ -114,8 +114,8 @@ export function HeroVideo() {
 
             {/* Hero headline — Bebas Neue: constrained size so it stays in col */}
             <h1
-              className="font-display text-white leading-none uppercase"
-              style={{ fontSize: "clamp(3rem, 7vw, 6rem)" }}
+              className="font-display text-white leading-none uppercase break-words"
+              style={{ fontSize: "clamp(2.4rem, 8vw, 5.5rem)" }}
             >
               Bienvenido
               <br />
