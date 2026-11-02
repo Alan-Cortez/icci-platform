@@ -11,7 +11,7 @@ export const SITE = {
   spotify: "https://open.spotify.com/intl-es/artist/2E4z1JBFkgPCmW1r6ygv9q?si=d9-NlfrwRCqw64bYKUOrVw",
   tiktok: "https://www.tiktok.com/@iglesiacomunidaddecristo",
   googleMaps: "https://maps.app.goo.gl/kdYsYmnt3WYbnxPf8",
-  googleReview: "https://search.google.com/local/writereview?placeid=ChIJCTVVrnTGT_WGEUTyezuxxJgP",
+  googleReview: "https://maps.app.goo.gl/kdYsYmnt3WYbnxPf8",
 } as const;
 
 export function getBaseUrl(): string {
