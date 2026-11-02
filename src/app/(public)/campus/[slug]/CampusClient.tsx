@@ -13,6 +13,7 @@ import {
   Facebook,
 } from "lucide-react";
 import { Button } from "@/components/ui";
+import { GoogleReviewCard } from "@/components/common/GoogleReviewCard";
 
 interface CampusClientProps {
   campus: any;
@@ -374,6 +375,11 @@ export function CampusClient({ campus, pastorName, googleMapsUrl }: CampusClient
             </div>
           </div>
         )}
+
+        {/* ── Tarjeta Interactiva: Calificar y dejar opinión en Google ── */}
+        <div className="mt-12 sm:mt-16">
+          <GoogleReviewCard campusName={isMain ? "Sede Central · Allende" : `Campus ${campus.name}`} />
+        </div>
 
       </div>
 

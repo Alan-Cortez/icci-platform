@@ -10,6 +10,8 @@ export const SITE = {
   youtube: "https://youtube.com/@icctv-101?si=kp51y50RG4r6icuu",
   spotify: "https://open.spotify.com/intl-es/artist/2E4z1JBFkgPCmW1r6ygv9q?si=d9-NlfrwRCqw64bYKUOrVw",
   tiktok: "https://www.tiktok.com/@iglesiacomunidaddecristo",
+  googleMaps: "https://maps.app.goo.gl/kdYsYmnt3WYbnxPf8",
+  googleReview: "https://search.google.com/local/writereview?placeid=ChIJCTVVrnTGT_WGEUTyezuxxJgP",
 } as const;
 
 export function getBaseUrl(): string {

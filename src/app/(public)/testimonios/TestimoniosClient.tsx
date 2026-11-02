@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useSession, signIn } from "next-auth/react";
 import { createTestimony } from "@/actions/testimonies";
 import { CommentSection } from "@/components/layout/CommentSection";
+import { GoogleReviewCard } from "@/components/common/GoogleReviewCard";
 import { Card, Button } from "@/components/ui";
 import { Heart, MessageCircle, Send, Loader2, Quote, CheckCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -225,6 +226,11 @@ export function TestimoniosClient({ initialTestimonies }: TestimoniosClientProps
             )}
           </div>
 
+        </div>
+
+        {/* ── Google Reviews Callout ── */}
+        <div className="mt-14 pb-16">
+          <GoogleReviewCard campusName="Campus Allende · Sede Central" />
         </div>
       </div>
     </div>

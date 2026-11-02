@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, Star } from "lucide-react";
+import { SITE } from "@/lib/constants";
 
 // ─── Testimonies ─────────────────────────────────────────────────────────────
 
@@ -128,19 +129,29 @@ export function HomeSections({ featuredTestimonies = [] }: HomeSectionsProps) {
                 Sé parte de nuestra casa, haz amigos y conéctate con personas
                 que aman a Jesús. Nos encantaría escuchar tu historia.
               </p>
-              <div className="flex flex-wrap gap-3">
+              <div className="flex flex-wrap items-center gap-2.5">
                 <Link
                   href="/testimonios"
-                  className="text-sm border-2 border-white/40 text-white px-5 py-2 rounded-full hover:bg-white hover:text-navy transition-colors font-medium"
+                  className="text-xs sm:text-sm border-2 border-white/40 text-white px-4 sm:px-5 py-2 rounded-full hover:bg-white hover:text-navy transition-colors font-medium"
                 >
                   Ver historias
                 </Link>
                 <Link
                   href="/testimonios"
-                  className="text-sm bg-gold text-navy px-5 py-2 rounded-full hover:bg-gold-light transition-colors font-semibold"
+                  className="text-xs sm:text-sm bg-gold text-navy px-4 sm:px-5 py-2 rounded-full hover:bg-gold-light transition-colors font-semibold"
                 >
                   Comparte la tuya
                 </Link>
+                <a
+                  href={SITE.googleReview}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-xs text-gold hover:text-gold-light font-bold inline-flex items-center gap-1.5 px-3 py-2 rounded-full bg-white/10 border border-white/15 hover:bg-white/20 transition-all"
+                  title="Calificar en Google"
+                >
+                  <Star className="w-3.5 h-3.5 fill-current" />
+                  <span>Calificar en Google</span>
+                </a>
               </div>
             </div>
           </div>
