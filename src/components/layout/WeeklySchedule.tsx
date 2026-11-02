@@ -177,15 +177,24 @@ export function WeeklySchedule({ events, upcomingEvent }: WeeklyScheduleProps) {
                     </div>
                   )}
 
-                  {/* Imagen de portada del evento */}
+                  {/* Imagen de portada del evento (adaptable a posters verticales y banners horizontales) */}
                   {currentEvent.image ? (
-                    <div className="w-full rounded-2xl overflow-hidden aspect-[16/9] bg-navy-muted shadow-lg border border-white/10 mb-5 shrink-0 relative">
+                    <div className="w-full rounded-2xl overflow-hidden aspect-[16/9] sm:aspect-[16/10] bg-navy shadow-lg border border-white/10 mb-5 shrink-0 relative flex items-center justify-center">
+                      {/* Fondo ambiental difuminado */}
+                      <img
+                        src={currentEvent.image}
+                        alt=""
+                        aria-hidden="true"
+                        className="absolute inset-0 w-full h-full object-cover blur-xl opacity-40 scale-110 pointer-events-none"
+                      />
+                      <div className="absolute inset-0 bg-navy/20" />
+                      {/* Imagen íntegra en primer plano sin recortes */}
                       <img
                         src={currentEvent.image}
                         alt={currentEvent.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        className="relative z-10 max-w-full max-h-full object-contain p-2 group-hover:scale-102 transition-transform duration-500 drop-shadow-md"
                       />
-                      <div className="absolute top-3 left-3">
+                      <div className="absolute top-3 left-3 z-20">
                         <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest bg-gold text-navy shadow-md">
                           {isFeatured ? (
                             <>
