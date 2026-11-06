@@ -17,6 +17,8 @@ import {
   X,
   ExternalLink,
   ShieldCheck,
+  Cake,
+  Layers,
 } from "lucide-react";
 import { SITE } from "@/lib/constants";
 import { AdminLogoutButton } from "@/components/admin/AdminLogoutButton";
@@ -31,6 +33,8 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   MessageCircle,
   Camera,
   Settings,
+  Cake,
+  Layers,
 };
 
 export interface NavModule {

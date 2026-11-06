@@ -19,7 +19,9 @@ export const users = sqliteTable("user", {
   emailVerified: integer("emailVerified", { mode: "timestamp_ms" }),
   image: text("image"),
   // Platform fields
-  role: text("role").$type<"user" | "admin" | "superadmin">().default("user").notNull(),
+  role: text("role").$type<"user" | "admin" | "superadmin" | "pastor" | "leader">().default("user").notNull(),
+  ministryId: text("ministryId"),
+  phone: text("phone"),
   isActive: integer("isActive", { mode: "boolean" }).default(true).notNull(),
   campusId: text("campusId"),
   createdAt: integer("createdAt", { mode: "timestamp_ms" }).$defaultFn(() => new Date()),
@@ -117,9 +119,35 @@ export const ministries = sqliteTable("ministry", {
   description: text("description").notNull(),
   schedule: text("schedule"),
   leader: text("leader"),
+  leaderId: text("leaderId"),
   image: text("image"),
   isActive: integer("isActive", { mode: "boolean" }).default(true).notNull(),
   createdAt: integer("createdAt", { mode: "timestamp_ms" }).$defaultFn(() => new Date()),
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CHURCH MEMBERS & BIRTHDAYS
+// ─────────────────────────────────────────────────────────────────────────────
+
+export const members = sqliteTable("member", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  name: text("name").notNull(),
+  paternalSurname: text("paternalSurname"),
+  maternalSurname: text("maternalSurname"),
+  birthDay: integer("birthDay"),
+  birthMonth: integer("birthMonth"),
+  phone: text("phone"),
+  gender: text("gender"),
+  photo: text("photo"),
+  campusId: text("campusId").references(() => campuses.id, {
+    onDelete: "set null",
+  }),
+  ministryId: text("ministryId").references(() => ministries.id, {
+    onDelete: "set null",
+  }),
+  isActive: integer("isActive", { mode: "boolean" }).default(true).notNull(),
+  createdAt: integer("createdAt", { mode: "timestamp_ms" }).$defaultFn(() => new Date()),
+  updatedAt: integer("updatedAt", { mode: "timestamp_ms" }),
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -131,6 +159,9 @@ export const events = sqliteTable("event", {
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
   campusId: text("campusId").references(() => campuses.id, {
+    onDelete: "set null",
+  }),
+  ministryId: text("ministryId").references(() => ministries.id, {
     onDelete: "set null",
   }),
   title: text("title").notNull(),
@@ -385,3 +416,5 @@ export type PrayerRequest = typeof prayerRequests.$inferSelect;
 export type Baptism = typeof baptisms.$inferSelect;
 export type Donation = typeof donations.$inferSelect;
 export type SiteSetting = typeof siteSettings.$inferSelect;
+export type Member = typeof members.$inferSelect;
+export type NewMember = typeof members.$inferInsert;

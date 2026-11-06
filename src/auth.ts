@@ -29,6 +29,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         if (dbUser) {
           token.role = dbUser.role as UserRole;
           token.id = dbUser.id;
+          token.ministryId = dbUser.ministryId;
         }
       }
 
@@ -39,6 +40,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         });
         if (dbUser) {
           token.role = dbUser.role as UserRole;
+          token.ministryId = dbUser.ministryId;
         }
       }
 
@@ -48,6 +50,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (session.user) {
         session.user.id = token.id as string;
         session.user.role = token.role as UserRole;
+        session.user.ministryId = token.ministryId as string | null | undefined;
       }
       return session;
     },

@@ -8,8 +8,9 @@ export default auth((req) => {
 
   // ── Protect all /admin routes (including /admin/login) ────────────────
   if (pathname.startsWith("/admin")) {
-    // Must be logged in and have admin or superadmin role
-    if (!isLoggedIn || (role !== "admin" && role !== "superadmin")) {
+    const adminRoles: UserRole[] = ["admin", "superadmin", "pastor", "leader"];
+    // Must be logged in and have an administrative role
+    if (!isLoggedIn || !adminRoles.includes(role)) {
       return Response.redirect(new URL("/", req.nextUrl));
     }
 
@@ -18,8 +19,13 @@ export default auth((req) => {
       return Response.redirect(new URL("/admin", req.nextUrl));
     }
 
-    // Only superadmin can access /admin/usuarios
-    if (pathname.startsWith("/admin/usuarios") && role !== "superadmin") {
+    // Only superadmin and pastors/admins can access /admin/usuarios and /admin/configuracion
+    if (
+      (pathname.startsWith("/admin/usuarios") || pathname.startsWith("/admin/configuracion")) &&
+      role !== "superadmin" &&
+      role !== "admin" &&
+      role !== "pastor"
+    ) {
       return Response.redirect(new URL("/admin", req.nextUrl));
     }
 

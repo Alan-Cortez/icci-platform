@@ -13,8 +13,9 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   }
 
   const role = session.user.role;
+  const adminRoles = ["admin", "superadmin", "pastor", "leader"];
 
-  if (role !== "admin" && role !== "superadmin") {
+  if (!adminRoles.includes(role)) {
     redirect("/");
   }
 
@@ -26,6 +27,8 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   const allModules: NavModule[] = [
     { href: "/admin", label: "Dashboard", icon: "LayoutDashboard" },
     { href: "/admin/eventos", label: "Eventos", icon: "Calendar" },
+    { href: "/admin/cumpleanos", label: "Cumpleaños", icon: "Cake" },
+    { href: "/admin/ministerios", label: "Ministerios", icon: "Layers" },
     { href: "/admin/devocionales", label: "Devocionales", icon: "BookOpen" },
     { href: "/admin/galeria", label: "Banco de Fotos", icon: "Camera" },
     {
@@ -45,9 +48,11 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   ];
 
   const visibleModules =
-    role === "superadmin"
+    role === "superadmin" || role === "pastor" || role === "admin"
       ? allModules
-      : allModules.filter((m) => m.href !== "/admin/usuarios");
+      : allModules.filter(
+          (m) => m.href !== "/admin/usuarios" && m.href !== "/admin/configuracion"
+        );
 
   return (
     <div className="min-h-screen bg-[#f4f6f9] flex flex-col lg:flex-row">
