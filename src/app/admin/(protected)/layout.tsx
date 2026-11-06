@@ -26,7 +26,8 @@ export default async function AdminLayout({ children }: { children: React.ReactN
 
   const allModules: NavModule[] = [
     { href: "/admin", label: "Dashboard", icon: "LayoutDashboard" },
-    { href: "/admin/eventos", label: "Eventos", icon: "Calendar" },
+    { href: "/admin/eventos", label: "Eventos Web", icon: "Calendar" },
+    { href: "/admin/planeacion", label: "Planeación", icon: "CalendarRange" },
     { href: "/admin/cumpleanos", label: "Cumpleaños", icon: "Cake" },
     { href: "/admin/ministerios", label: "Ministerios", icon: "Layers" },
     { href: "/admin/devocionales", label: "Devocionales", icon: "BookOpen" },

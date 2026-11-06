@@ -188,6 +188,29 @@ export const events = sqliteTable("event", {
   createdAt: integer("createdAt", { mode: "timestamp_ms" }).$defaultFn(() => new Date()),
 });
 
+export const planningEvents = sqliteTable("planning_event", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  title: text("title").notNull(),
+  description: text("description"),
+  date: integer("date", { mode: "timestamp_ms" }).notNull(),
+  timeStr: text("timeStr"),
+  ministryId: text("ministryId").references(() => ministries.id, {
+    onDelete: "set null",
+  }),
+  campusId: text("campusId").references(() => campuses.id, {
+    onDelete: "set null",
+  }),
+  responsible: text("responsible"),
+  status: text("status")
+    .$type<"scheduled" | "completed" | "cancelled">()
+    .default("scheduled")
+    .notNull(),
+  createdAt: integer("createdAt", { mode: "timestamp_ms" }).$defaultFn(() => new Date()),
+  updatedAt: integer("updatedAt", { mode: "timestamp_ms" }),
+});
+
 export const eventRegistrations = sqliteTable("event_registration", {
   id: text("id")
     .primaryKey()
@@ -418,3 +441,5 @@ export type Donation = typeof donations.$inferSelect;
 export type SiteSetting = typeof siteSettings.$inferSelect;
 export type Member = typeof members.$inferSelect;
 export type NewMember = typeof members.$inferInsert;
+export type PlanningEvent = typeof planningEvents.$inferSelect;
+export type NewPlanningEvent = typeof planningEvents.$inferInsert;

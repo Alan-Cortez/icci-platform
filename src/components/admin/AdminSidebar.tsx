@@ -19,6 +19,7 @@ import {
   ShieldCheck,
   Cake,
   Layers,
+  CalendarRange,
 } from "lucide-react";
 import { SITE } from "@/lib/constants";
 import { AdminLogoutButton } from "@/components/admin/AdminLogoutButton";
@@ -35,6 +36,7 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   Settings,
   Cake,
   Layers,
+  CalendarRange,
 };
 
 export interface NavModule {
