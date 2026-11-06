@@ -43,7 +43,7 @@ export default async function CampusDetailPage({ params }: Props) {
     : `Campus ${campus.name}`;
 
   const pastorName = campus.isMain
-    ? "Pastores Óscar y Raquel Sosa"
+    ? "Apóstol Óscar y Pastora Raquel Sosa"
     : campus.pastor;
 
   // Never let a gallery/DB hiccup break the whole campus page

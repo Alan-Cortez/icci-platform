@@ -87,7 +87,7 @@ export const CAMPUSES = [
     name: "Allende",
     state: "Coahuila",
     isMain: true,
-    pastor: "Pastor Principal",
+    pastor: "Apóstol Óscar y Pastora Raquel Sosa",
     address: "Calle Benito Juárez #1705 Norte, Allende, Coahuila",
     phone: "+52 862 101 3598",
     description: "Campus principal de ICCI, corazón de nuestra comunidad de fe en el norte de Coahuila.",

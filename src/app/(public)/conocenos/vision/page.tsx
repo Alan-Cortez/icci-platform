@@ -70,7 +70,7 @@ export default function VisionPage() {
             Visión ICC
           </h1>
           <p className="text-gray-600 text-sm sm:text-base leading-relaxed">
-            Fundamento espiritual establecido a través del Pastor Teodoro Oscar Sosa Espinoza en Allende, Coahuila.
+            Fundamento espiritual establecido a través del Apóstol Teodoro Oscar Sosa Espinoza en Allende, Coahuila.
           </p>
         </div>
 

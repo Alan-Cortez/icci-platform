@@ -109,7 +109,7 @@ export function CampusClient({ campus, pastorName, googleMapsUrl }: CampusClient
               {/* Contenido inferior */}
               <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-8 space-y-2 z-10">
                 <span className="inline-block text-gold text-[11px] font-bold uppercase tracking-widest bg-navy/80 px-3.5 py-1.5 rounded-full backdrop-blur-md border border-gold/30">
-                  {isMain ? "Pastores Principales" : "Liderazgo Pastoral"}
+                  {isMain ? "Apóstol Óscar" : "Liderazgo Pastoral"}
                 </span>
                 <h2 className="font-display text-white text-2xl sm:text-3xl font-bold leading-tight">
                   {pastorName}

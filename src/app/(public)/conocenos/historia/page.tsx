@@ -58,7 +58,7 @@ export default function HistoriaPage() {
             Una visión nacida en el corazón de Dios
           </h1>
           <p className="text-gray-600 text-sm sm:text-base leading-relaxed font-medium">
-            Por el Pastor Teodoro Oscar Sosa Espinoza • Iglesia Comunidad de Cristo Internacional
+            Por el Apóstol Teodoro Oscar Sosa Espinoza • Iglesia Comunidad de Cristo Internacional
           </p>
         </div>
 
@@ -73,7 +73,7 @@ export default function HistoriaPage() {
               &ldquo;No comenzamos porque teníamos todos los recursos; comenzamos porque teníamos una palabra de Dios. Y cuando Dios entrega una visión, también prepara la provisión para cumplirla.&rdquo;
             </blockquote>
             <p className="text-gold font-bold text-xs sm:text-sm uppercase tracking-widest pt-2">
-              — Pastor Teodoro Oscar Sosa Espinoza
+              — Apóstol Teodoro Oscar Sosa Espinoza
             </p>
           </div>
         </div>

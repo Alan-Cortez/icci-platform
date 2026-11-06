@@ -10,11 +10,11 @@ export const metadata: Metadata = {
 
 const pastores = [
   {
-    name: "Pastores Oscar y Raquel Sosa",
-    title: "Pastores Principales – ICCI",
+    name: "Apóstol Óscar y Pastora Raquel Sosa",
+    title: "Apóstol y Cobertura Pastoral – ICCI",
     campus: "Allende, Coahuila (Sede Principal)",
     description:
-      "Fundadores y visionarios con una dirección clara y un corazón para servir, lideran la red de campus ICCI con sabiduría, dedicación y pasión por la adoración. Su llamado es guiar a cada familia hacia un encuentro genuino con Dios.",
+      "Fundadores y visionarios con una dirección clara y un corazón para servir, lideran la red de campus ICCI con sabiduría, dedicación y pasión por la adoración. Su llamado apostólico es guiar a cada familia hacia un encuentro genuino con Dios.",
     initials: "OS",
   },
   {

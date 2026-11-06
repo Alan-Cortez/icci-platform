@@ -9,10 +9,10 @@ import { ChevronRight, ShieldCheck, Sparkles, BookOpen } from "lucide-react";
 const PASTORS = [
   {
     id: "pastores-generales",
-    name: "Pastores Oscar y Raquel Sosa",
-    role: "Pastores Principales",
+    name: "Apóstol Óscar y Pastora Raquel Sosa",
+    role: "Apóstol y Cobertura Pastoral",
     desc:
-      "Fundadores y visionarios de Iglesias Comunidad De Cristo Internacional. Su liderazgo y pasión por la adoración han guiado la red de campus hacia un crecimiento sostenido y profundo.",
+      "Fundadores y visionarios de Iglesias Comunidad De Cristo Internacional. Su liderazgo apostólico y pasión por la adoración han guiado la red de campus hacia un crecimiento sostenido y profundo.",
     img: "/images/pastores-sosa.jpg",
   },
   {
@@ -98,13 +98,13 @@ export function ConocenosClient() {
                   &ldquo;No comenzamos porque teníamos todos los recursos; comenzamos porque teníamos una palabra de Dios. Y cuando Dios entrega una visión, también prepara la provisión para cumplirla.&rdquo;
                 </blockquote>
                 <p className="text-xs text-gold-dark font-bold uppercase tracking-wider mt-2">
-                  — Pastor Teodoro Oscar Sosa Espinoza
+                  — Apóstol Teodoro Oscar Sosa Espinoza
                 </p>
               </div>
 
               <div className="space-y-4 text-gray-700 leading-relaxed text-base">
                 <p>
-                  En <strong>2010</strong>, en medio de uno de los momentos más desafiantes y violentos en el norte del país, Dios puso una asignación sagrada en el corazón del Pastor Oscar Sosa en Allende, Coahuila: levantar una antorcha de esperanza y salvación donde reinaba el temor.
+                  En <strong>2010</strong>, en medio de uno de los momentos más desafiantes y violentos en el norte del país, Dios puso una asignación sagrada en el corazón del Apóstol Oscar Sosa en Allende, Coahuila: levantar una antorcha de esperanza y salvación donde reinaba el temor.
                 </p>
                 <p>
                   El primer servicio comenzó con solo <strong>cinco personas</strong>, pero con la entrega como si hubiera mil. Al siguiente domingo llegaron 12 personas por su propia iniciativa, y en menos de seis meses la congregación superaba las 90 personas buscando a Dios.
@@ -154,7 +154,7 @@ export function ConocenosClient() {
           </p>
           <div className="h-0.5 w-10 bg-gold mb-8" />
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-black mb-10 sm:mb-14">
-            Pastores principales
+            Liderazgo pastoral y apostólico
           </h2>
         </div>
 
