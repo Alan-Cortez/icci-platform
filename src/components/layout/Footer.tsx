@@ -29,7 +29,7 @@ export function Footer() {
             </p>
 
             <p className="text-white/50 text-sm leading-relaxed max-w-lg font-light">
-              Una iglesia cristiana con propósito y visión, edificando familias y extendiendo el reino de Dios desde Allende, Coahuila hacia todo el norte de México.
+              Sitio oficial de ICCI (Iglesias Comunidad De Cristo Internacional / ICC / ICCInt). Una iglesia cristiana con propósito y visión, edificando familias y extendiendo el Reino de Dios desde Allende, Coahuila hacia todo el norte de México.
             </p>
 
             {/* Social pills */}

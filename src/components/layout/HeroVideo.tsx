@@ -117,6 +117,7 @@ export function HeroVideo() {
               className="font-display text-white leading-none uppercase break-words"
               style={{ fontSize: "clamp(2.4rem, 8vw, 5.5rem)" }}
             >
+              <span className="sr-only">ICCI - Iglesia Comunidad De Cristo Internacional Oficial</span>
               Bienvenido
               <br />
               <span className="text-gold">a {SITE.shortName}</span>

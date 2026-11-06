@@ -103,6 +103,8 @@ export function ChurchJsonLd() {
       },
     ],
     sameAs: [
+      SITE.googleMaps,
+      "https://www.google.com/maps/place/IGLESIA+COMUNIDAD+DE+CRISTO/@28.359426,-100.8602304,17z/data=!4m6!3m5!1s0x86f54fc674ae5535:0xf98c4b13b7bf244!8m2!3d28.359426!4d-100.8576555!16s%2Fg%2F11lchfrhck",
       SITE.facebook,
       SITE.youtube,
       SITE.spotify,
