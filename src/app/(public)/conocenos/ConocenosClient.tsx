@@ -252,8 +252,8 @@ export function ConocenosClient() {
                   </p>
                   {/* Pilares ARDE */}
                   <div className="pt-2">
-                    <span className="block text-[11px] font-bold uppercase tracking-wider text-gold mb-2 flex items-center gap-1.5">
-                      <Sparkles className="w-3.5 h-3.5" /> Pilares Visión ARDE
+                    <span className="block text-[11px] font-bold uppercase tracking-wider text-gold mb-2">
+                      Pilares Visión ARDE
                     </span>
                     <div className="grid grid-cols-2 gap-2 text-xs">
                       <div className="p-2 rounded-lg bg-off-white border border-gray-100 flex items-center gap-1.5">

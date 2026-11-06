@@ -62,8 +62,7 @@ export default function MisionPage() {
           <div className="absolute bottom-0 left-0 w-60 h-60 bg-gold/5 rounded-full blur-2xl pointer-events-none" />
 
           <div className="relative z-10 space-y-5 text-center max-w-3xl mx-auto">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider bg-gold text-navy mx-auto">
-              <Sparkles className="w-3.5 h-3.5 fill-current" />
+            <span className="inline-block px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider bg-gold text-navy mx-auto">
               Declaración de Misión
             </span>
             <h2 className="text-xl sm:text-2xl md:text-3xl font-light font-serif italic text-white/95 leading-relaxed">

@@ -297,7 +297,7 @@ export function CampusLiveSection({ initialStatus }: CampusLiveSectionProps) {
                               }`}
                               title={s.title}
                             >
-                              ▶ {s.title}
+                              <span className="font-semibold">{s.title}</span>
                             </button>
                           );
                         })}

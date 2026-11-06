@@ -13,7 +13,7 @@ import { eq } from "drizzle-orm";
 const email = process.argv[2];
 
 if (!email) {
-  console.error("❌ Debes proporcionar un email.");
+  console.error("Error: Debes proporcionar un email.");
   console.error("   Uso: npx tsx scripts/make-admin.ts <email>");
   process.exit(1);
 }
@@ -24,14 +24,14 @@ async function main() {
   });
 
   if (!user) {
-    console.error(`❌ No existe un usuario con el email: ${email}`);
+    console.error(`Error: No existe un usuario con el email: ${email}`);
     console.error("   El usuario debe iniciar sesión al menos una vez antes de ser promovido.");
     process.exit(1);
   }
 
   await db.update(users).set({ role: "superadmin" }).where(eq(users.email, email));
 
-  console.log(`✅ ${email} ahora es superadmin.`);
+  console.log(`[OK] ${email} ahora es superadmin.`);
   console.log("   Cierra sesión y vuelve a entrar para que el cambio tome efecto.");
 }
 

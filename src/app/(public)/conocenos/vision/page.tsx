@@ -81,8 +81,7 @@ export default function VisionPage() {
 
           <div className="relative z-10 space-y-6">
             <div className="flex items-center gap-2">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider bg-gold text-navy">
-                <Sparkles className="w-3.5 h-3.5 fill-current" />
+              <span className="inline-block px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider bg-gold text-navy">
                 Declaración Oficial
               </span>
               <span className="text-white/60 text-xs">Iglesia Comunidad de Cristo</span>
@@ -131,8 +130,7 @@ export default function VisionPage() {
         {/* ── 3. Pilares de la Visión ARDE ── */}
         <div className="mb-16">
           <div className="text-center mb-10">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-gold/15 text-gold-dark mb-2 border border-gold/30">
-              <Flame className="w-3.5 h-3.5 text-gold fill-gold" />
+            <span className="inline-block px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-gold/15 text-gold-dark mb-2 border border-gold/30">
               Visión ARDE
             </span>
             <h3 className="font-bold text-navy text-2xl sm:text-3xl">

@@ -13,7 +13,7 @@ import {
 } from "@/db/schema";
 
 async function seed() {
-  console.log("🌱 Iniciando seed de la base de datos ICCI...");
+  console.log("Iniciando seed de la base de datos ICCI...");
 
   // ─── Campus ──────────────────────────────────────────────────────────────
   for (const campus of CAMPUSES) {
@@ -33,7 +33,7 @@ async function seed() {
       })
       .onConflictDoNothing();
   }
-  console.log(`   ✅ Campus: ${CAMPUSES.length}`);
+  console.log(`   [OK] Campus: ${CAMPUSES.length}`);
 
   // ─── Campus schedules ────────────────────────────────────────────────────
   for (const [index, schedule] of SCHEDULES.entries()) {
@@ -48,7 +48,7 @@ async function seed() {
       })
       .onConflictDoNothing();
   }
-  console.log(`   ✅ Horarios: ${SCHEDULES.length}`);
+  console.log(`   [OK] Horarios: ${SCHEDULES.length}`);
 
   // ─── Ministries ──────────────────────────────────────────────────────────
   for (const ministry of MINISTRIES) {
@@ -65,7 +65,7 @@ async function seed() {
       })
       .onConflictDoNothing();
   }
-  console.log(`   ✅ Ministerios: ${MINISTRIES.length}`);
+  console.log(`   [OK] Ministerios: ${MINISTRIES.length}`);
 
   // ─── Events ──────────────────────────────────────────────────────────────
   const now = new Date();
@@ -241,15 +241,15 @@ async function seed() {
       },
     ])
     .onConflictDoNothing();
-  console.log("   ✅ Configuración del sitio");
+  console.log("   [OK] Configuración del sitio");
 
-  console.log("\n✨ Seed completado exitosamente.");
+  console.log("\nSeed completado exitosamente.");
   console.log(
     "   Para configurar el superadmin, pon tu email en SUPER_ADMIN_EMAIL en .env"
   );
 }
 
 seed().catch((err) => {
-  console.error("❌ Error en seed:", err);
+  console.error("Error en seed:", err);
   process.exit(1);
 });

@@ -51,8 +51,7 @@ export default function HistoriaPage() {
 
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto mb-12">
-          <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-gold/15 text-gold-dark mb-4 border border-gold/30">
-            <Sparkles className="w-3.5 h-3.5 fill-current" />
+          <span className="inline-block px-3.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-gold/15 text-gold-dark mb-4 border border-gold/30">
             Documental • Testimonio Fundacional
           </span>
           <h1 className="text-3xl sm:text-5xl font-black text-navy leading-tight tracking-tight mb-4">
@@ -223,9 +222,8 @@ export default function HistoriaPage() {
 
         {/* ── Resumen de Hitos Cronológicos ── */}
         <div className="mt-16 bg-white rounded-3xl p-8 sm:p-12 border border-gray-100 shadow-sm">
-          <h3 className="font-bold text-navy text-2xl mb-8 text-center flex items-center justify-center gap-2">
-            <Flame className="w-6 h-6 text-gold" />
-            Línea del tiempo de la fe
+          <h3 className="font-bold text-navy text-2xl mb-8 text-center">
+            Línea del tiempo de nuestra historia
           </h3>
           <div className="relative border-l-2 border-gold/30 ml-4 sm:ml-6 space-y-8 pl-6 sm:pl-8">
             {timelineHighlights.map((h, i) => (
