@@ -118,7 +118,7 @@ export const metadata: Metadata = {
     },
   },
   verification: {
-    google: "googled4f0374d4dc7b94f.html",
+    google: "uEjCI93mzV845Z-y1EuMWDJiyyNswb5i-vRATw5f-fE",
   },
 };
 
@@ -126,6 +126,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="es" className={`${inter.variable} ${bebasNeue.variable} ${cormorant.variable} h-full`}>
       <head>
+        <meta name="google-site-verification" content="uEjCI93mzV845Z-y1EuMWDJiyyNswb5i-vRATw5f-fE" />
         <ChurchJsonLd />
       </head>
       <body className="min-h-full flex flex-col antialiased">
