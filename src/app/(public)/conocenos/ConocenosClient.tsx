@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, ShieldCheck, Sparkles, BookOpen } from "lucide-react";
 
 // ─── Pastors data ─────────────────────────────────────────────────────────────
 
@@ -222,55 +222,109 @@ export function ConocenosClient() {
       </section>
 
 
-      {/* ── 4. Visión & Misión — OFF-WHITE ─────────────────────────────────── */}
-      <section className="bg-off-white py-28">
+      {/* ── 4. Visión, Misión & Promesa — OFF-WHITE ─────────────────────────── */}
+      <section className="bg-off-white py-24 sm:py-28">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-20">
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-stretch">
             {/* Visión */}
-            <div>
-              <p className="text-gold tracking-[0.3em] uppercase text-xs font-semibold mb-3">
-                Hacia dónde vamos
-              </p>
-              <div className="h-0.5 w-10 bg-gold mb-8" />
-              <h2 className="text-3xl sm:text-5xl md:text-6xl font-black mb-4 sm:mb-6 leading-none text-navy">
-                VISIÓN
-              </h2>
-              <p className="text-gray-600 leading-relaxed max-w-lg">
-                Edificar una iglesia grande, Cristocéntrica, basada en la
-                Biblia, con un mover fresco de Dios, que equipa a las personas
-                para liderar en cada área de la vida, planta nuevas iglesias y
-                sirve a las naciones.
-              </p>
-              <Link
-                href="/conocenos/vision"
-                className="inline-flex items-center gap-2 mt-8 bg-navy text-white px-6 py-3 rounded-full text-sm font-semibold hover:bg-navy-light transition-all"
-              >
-                Conoce la Visión <ChevronRight className="w-4 h-4" />
-              </Link>
+            <div className="bg-white p-8 sm:p-12 rounded-3xl border border-gray-100 shadow-sm flex flex-col justify-between">
+              <div>
+                <p className="text-gold tracking-[0.3em] uppercase text-xs font-semibold mb-3">
+                  Hacia dónde vamos • ADN Espiritual
+                </p>
+                <div className="h-0.5 w-10 bg-gold mb-6" />
+                <h2 className="text-3xl sm:text-4xl md:text-5xl font-black mb-4 leading-none text-navy">
+                  VISIÓN ICC
+                </h2>
+                <div className="space-y-4 text-gray-700 leading-relaxed text-base">
+                  <p className="font-medium text-navy/90">
+                    El establecimiento de una iglesia con una <strong className="text-navy">experiencia Restauradora, carismática y misionera</strong>, guiada por la Revelación divina para alcanzar al pueblo hispano local e internacional en general.
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    Teniendo como base y fundamento la proclamación del Evangelio del Reino, para la Restauración y Evangelización de los perdidos y la edificación del Cuerpo de Cristo, viviendo bajo el Gobierno establecido por Dios en todas las áreas de la vida.
+                  </p>
+                  <blockquote className="border-l-2 border-gold pl-4 py-1 text-xs text-gray-500 italic">
+                    &ldquo;La visión de la iglesia Comunidad de Cristo es definitivamente la visión de Dios y el ADN de la iglesia. Nunca se pondrá en venta, al antojo de la gente o diluirse; esta es Visión de Dios.&rdquo;
+                  </blockquote>
+                </div>
+              </div>
+              <div className="pt-8">
+                <Link
+                  href="/conocenos/vision"
+                  className="inline-flex items-center gap-2 bg-navy text-white px-6 py-3 rounded-full text-sm font-semibold hover:bg-navy-light transition-all shadow-md"
+                >
+                  Conoce la Visión completa <ChevronRight className="w-4 h-4" />
+                </Link>
+              </div>
             </div>
 
             {/* Misión */}
-            <div>
-              <p className="text-gold tracking-[0.3em] uppercase text-xs font-semibold mb-3">
-                Por qué existimos
-              </p>
-              <div className="h-0.5 w-10 bg-gold mb-8" />
-              <h2 className="text-3xl sm:text-5xl md:text-6xl font-black mb-4 sm:mb-6 leading-none text-navy">
-                MISIÓN
-              </h2>
-              <p className="text-gray-600 leading-relaxed max-w-lg">
-                Glorificar y disfrutar a Dios cumpliendo el Gran Mandamiento y
-                la Gran Comisión: amar a Dios, amar al prójimo y hacer
-                discípulos en todas las naciones.
-              </p>
-              <Link
-                href="/conocenos/mision"
-                className="inline-flex items-center gap-2 mt-8 border-2 border-navy text-navy px-6 py-3 rounded-full text-sm font-semibold hover:bg-navy hover:text-white transition-all"
-              >
-                Nuestra misión <ChevronRight className="w-4 h-4" />
-              </Link>
+            <div className="bg-white p-8 sm:p-12 rounded-3xl border border-gray-100 shadow-sm flex flex-col justify-between">
+              <div>
+                <p className="text-gold tracking-[0.3em] uppercase text-xs font-semibold mb-3">
+                  Por qué existimos • Nuestro Fundamento
+                </p>
+                <div className="h-0.5 w-10 bg-gold mb-6" />
+                <h2 className="text-3xl sm:text-4xl md:text-5xl font-black mb-4 leading-none text-navy">
+                  MISIÓN ICC
+                </h2>
+                <div className="space-y-4 text-gray-700 leading-relaxed text-base">
+                  <p className="font-medium text-navy/90">
+                    Proclamar con autoridad el <strong className="text-navy">Evangelio del Reino</strong> para la salvación de los perdidos, restaurar de manera integral a las familias y levantar discípulos maduros.
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    Edificar el Cuerpo de Cristo a través del poder transformador del Espíritu Santo y la Palabra de Dios, aprendiendo a vivir bajo el gobierno, orden y principios celestiales con alcance local, regional e internacional.
+                  </p>
+                  <div className="grid grid-cols-2 gap-3 pt-2">
+                    <div className="p-3 rounded-xl bg-off-white border border-gray-100">
+                      <span className="block text-[11px] font-bold text-gold uppercase tracking-wider">Restauración</span>
+                      <span className="text-xs text-gray-600">Sanidad integral para toda la familia</span>
+                    </div>
+                    <div className="p-3 rounded-xl bg-off-white border border-gray-100">
+                      <span className="block text-[11px] font-bold text-gold uppercase tracking-wider">Evangelización</span>
+                      <span className="text-xs text-gray-600">Alcanzar a nuestra comunidad y las naciones</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="pt-8">
+                <Link
+                  href="/conocenos/mision"
+                  className="inline-flex items-center gap-2 border-2 border-navy text-navy px-6 py-3 rounded-full text-sm font-semibold hover:bg-navy hover:text-white transition-all"
+                >
+                  Nuestra misión completa <ChevronRight className="w-4 h-4" />
+                </Link>
+              </div>
             </div>
           </div>
+
+          {/* ── 5. Nuestra Promesa Divina (Isaías 54:17) ── */}
+          <div className="mt-14 relative overflow-hidden rounded-3xl bg-gradient-to-br from-navy via-navy to-navy-light text-white p-8 sm:p-12 border border-gold/30 shadow-2xl">
+            {/* Background glow & accents */}
+            <div className="absolute top-0 right-0 w-80 h-80 bg-gold/10 rounded-full blur-3xl pointer-events-none" />
+            <div className="absolute bottom-0 left-0 w-60 h-60 bg-gold/5 rounded-full blur-2xl pointer-events-none" />
+
+            <div className="relative z-10 max-w-4xl mx-auto text-center space-y-6">
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gold/15 border border-gold/40 text-gold text-xs font-bold uppercase tracking-widest">
+                <ShieldCheck className="w-4 h-4" />
+                Nuestra Promesa Divina
+              </div>
+
+              <blockquote className="font-serif text-xl sm:text-2xl md:text-3xl italic font-normal text-white leading-relaxed tracking-wide">
+                &ldquo;Ninguna arma forjada contra ti prosperará, y condenarás toda lengua que se levante contra ti en juicio. Esta es la herencia de los siervos de Jehová, y su salvación de mí vendrá, dijo Jehová.&rdquo;
+              </blockquote>
+
+              <div className="pt-2">
+                <p className="text-gold font-bold text-base sm:text-lg tracking-wider uppercase">
+                  Isaías 54:17 (RVR1960)
+                </p>
+                <p className="text-white/60 text-xs sm:text-sm font-light mt-1">
+                  Promesa y fundamento espiritual de Dios para Iglesias Comunidad De Cristo Internacional
+                </p>
+              </div>
+            </div>
+          </div>
+
         </div>
       </section>
 
