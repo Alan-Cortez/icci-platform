@@ -85,55 +85,62 @@ export function ConocenosClient() {
             {/* Text */}
             <div>
               <p className="text-gold tracking-[0.3em] uppercase text-xs font-semibold mb-3">
-                Nuestra historia
+                Testimonio Fundacional • Desde 2010
               </p>
               <div className="h-0.5 w-10 bg-gold mb-8" />
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-black mb-8 leading-tight text-navy">
-                Nuestra historia
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-black mb-6 leading-tight text-navy">
+                Una visión nacida en el corazón de Dios
               </h2>
-              <div className="space-y-5 text-gray-600 leading-relaxed text-base">
-                <p>
-                  ICCI nació del corazón de Dios y del deseo de edificar
-                  comunidades de fe sólidas en el noreste de México. Desde
-                  Allende, Coahuila, la iglesia ha crecido con raíces
-                  profundas en la Biblia y un corazón misionero.
-                </p>
-                <p>
-                  A lo largo de los años, Dios ha levantado campus en múltiples
-                  ciudades de Coahuila, unidas por la misma visión: llevar el
-                  evangelio con excelencia y transformar vidas con el poder de
-                  Cristo.
-                </p>
-                <p>
-                  Hoy, Iglesias Comunidad De Cristo Internacional es una red de
-                  campus comprometidos con la Gran Comisión — plantando fe,
-                  restaurando familias y edificando comunidad.
+
+              {/* Frase distintiva */}
+              <div className="bg-white p-5 rounded-2xl border-l-4 border-gold shadow-sm mb-6">
+                <blockquote className="font-serif italic text-navy text-base sm:text-lg leading-relaxed">
+                  &ldquo;No comenzamos porque teníamos todos los recursos; comenzamos porque teníamos una palabra de Dios. Y cuando Dios entrega una visión, también prepara la provisión para cumplirla.&rdquo;
+                </blockquote>
+                <p className="text-xs text-gold-dark font-bold uppercase tracking-wider mt-2">
+                  — Pastor Teodoro Oscar Sosa Espinoza
                 </p>
               </div>
 
-              {/* Sub-section: Propósito */}
-              <div className="mt-14">
-                <h3 className="text-2xl font-black mb-4 text-navy">Propósito</h3>
-                <p className="text-gray-600 leading-relaxed">
-                  Ayudamos a las personas a{" "}
-                  <strong className="text-navy">conocer a Dios</strong>,
-                  encontrar libertad, descubrir su propósito y hacer la
-                  diferencia.
+              <div className="space-y-4 text-gray-700 leading-relaxed text-base">
+                <p>
+                  En <strong>2010</strong>, en medio de uno de los momentos más desafiantes y violentos en el norte del país, Dios puso una asignación sagrada en el corazón del Pastor Oscar Sosa en Allende, Coahuila: levantar una antorcha de esperanza y salvación donde reinaba el temor.
                 </p>
+                <p>
+                  El primer servicio comenzó con solo <strong>cinco personas</strong>, pero con la entrega como si hubiera mil. Al siguiente domingo llegaron 12 personas por su propia iniciativa, y en menos de seis meses la congregación superaba las 90 personas buscando a Dios.
+                </p>
+                <p>
+                  Hoy, Comunidad de Cristo Internacional es una red que trasciende fronteras con presencia en <strong>Coahuila, Nuevo León y Durango</strong>, llevando el Evangelio con amor práctico a las familias y brindando cobertura pastoral a nuevos ministerios.
+                </p>
+              </div>
+
+              <div className="mt-8 flex flex-wrap gap-4 items-center">
+                <Link
+                  href="/conocenos/historia"
+                  className="inline-flex items-center gap-2 bg-navy text-white px-6 py-3 rounded-full text-sm font-semibold hover:bg-navy-light transition-all shadow-md cursor-pointer"
+                >
+                  Leer testimonio completo <ChevronRight className="w-4 h-4" />
+                </Link>
+                <span className="text-xs text-gray-500 font-medium">
+                  Presencia en 3 estados • 6 campus activos
+                </span>
               </div>
             </div>
 
             {/* YouTube embed */}
             <div className="sticky top-24">
-              <div className="rounded-2xl overflow-hidden shadow-2xl aspect-video bg-navy-light border border-navy/10">
+              <div className="rounded-3xl overflow-hidden shadow-2xl aspect-video bg-navy-light border border-navy/10 relative">
                 <iframe
                   className="w-full h-full"
                   src="https://www.youtube.com/embed/6t1sApLp0ro?controls=1&rel=0"
-                  title="Video de la iglesia"
+                  title="Testimonio de la iglesia Comunidad de Cristo Internacional"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
                 />
               </div>
+              <p className="text-xs text-center text-gray-500 mt-3 italic">
+                Documental oficial: La historia de fe y milagros detrás de ICCI.
+              </p>
             </div>
           </div>
         </div>
