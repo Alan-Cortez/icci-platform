@@ -77,7 +77,7 @@ export function HeroVideo() {
           loop
           muted
           playsInline
-          preload="auto"
+          preload="metadata"
           poster="/hero-poster.jpg"
           className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${
             loaded ? "opacity-100" : "opacity-0"
