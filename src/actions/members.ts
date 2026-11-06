@@ -18,7 +18,21 @@ async function requireAuthRole() {
 export async function getMembers() {
   await requireAuthRole();
   return db
-    .select()
+    .select({
+      id: members.id,
+      name: members.name,
+      paternalSurname: members.paternalSurname,
+      maternalSurname: members.maternalSurname,
+      birthDay: members.birthDay,
+      birthMonth: members.birthMonth,
+      phone: members.phone,
+      gender: members.gender,
+      ministryId: members.ministryId,
+      campusId: members.campusId,
+      isActive: members.isActive,
+      createdAt: members.createdAt,
+      updatedAt: members.updatedAt,
+    })
     .from(members)
     .orderBy(asc(members.name), asc(members.paternalSurname));
 }

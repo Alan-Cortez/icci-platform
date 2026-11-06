@@ -7,9 +7,40 @@ export const metadata = { title: "Cumpleaños y Directorio de Miembros | ICCI Ad
 
 export default async function AdminCumpleanosPage() {
   const [allMembers, allMinistries] = await Promise.all([
-    db.select().from(members).orderBy(asc(members.name), asc(members.paternalSurname)),
-    db.select().from(ministries).orderBy(asc(ministries.name)),
+    db
+      .select({
+        id: members.id,
+        name: members.name,
+        paternalSurname: members.paternalSurname,
+        maternalSurname: members.maternalSurname,
+        birthDay: members.birthDay,
+        birthMonth: members.birthMonth,
+        phone: members.phone,
+        gender: members.gender,
+        ministryId: members.ministryId,
+        campusId: members.campusId,
+        isActive: members.isActive,
+        createdAt: members.createdAt,
+        updatedAt: members.updatedAt,
+      })
+      .from(members)
+      .orderBy(asc(members.name), asc(members.paternalSurname)),
+    db
+      .select({
+        id: ministries.id,
+        name: ministries.name,
+        slug: ministries.slug,
+        category: ministries.category,
+        description: ministries.description,
+        schedule: ministries.schedule,
+        leader: ministries.leader,
+        leaderId: ministries.leaderId,
+        isActive: ministries.isActive,
+        createdAt: ministries.createdAt,
+      })
+      .from(ministries)
+      .orderBy(asc(ministries.name)),
   ]);
 
-  return <CumpleanosClient initialMembers={allMembers} ministriesList={allMinistries} />;
+  return <CumpleanosClient initialMembers={allMembers as any} ministriesList={allMinistries as any} />;
 }
