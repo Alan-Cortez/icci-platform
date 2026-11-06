@@ -243,9 +243,30 @@ export function ConocenosClient() {
                   <p className="text-sm text-gray-600">
                     Teniendo como base y fundamento la proclamación del Evangelio del Reino, para la Restauración y Evangelización de los perdidos y la edificación del Cuerpo de Cristo, viviendo bajo el Gobierno establecido por Dios en todas las áreas de la vida.
                   </p>
-                  <blockquote className="border-l-2 border-gold pl-4 py-1 text-xs text-gray-500 italic">
-                    &ldquo;La visión de la iglesia Comunidad de Cristo es definitivamente la visión de Dios y el ADN de la iglesia. Nunca se pondrá en venta, al antojo de la gente o diluirse; esta es Visión de Dios.&rdquo;
-                  </blockquote>
+                  {/* Pilares ARDE */}
+                  <div className="pt-2">
+                    <span className="block text-[11px] font-bold uppercase tracking-wider text-gold mb-2 flex items-center gap-1.5">
+                      <Sparkles className="w-3.5 h-3.5" /> Pilares Visión ARDE
+                    </span>
+                    <div className="grid grid-cols-2 gap-2 text-xs">
+                      <div className="p-2 rounded-lg bg-off-white border border-gray-100 flex items-center gap-1.5">
+                        <span className="w-5 h-5 rounded bg-navy text-gold text-[10px] font-black flex items-center justify-center shrink-0">A</span>
+                        <span className="font-semibold text-navy">Alcanzar</span>
+                      </div>
+                      <div className="p-2 rounded-lg bg-off-white border border-gray-100 flex items-center gap-1.5">
+                        <span className="w-5 h-5 rounded bg-navy text-gold text-[10px] font-black flex items-center justify-center shrink-0">R</span>
+                        <span className="font-semibold text-navy">Restaurar</span>
+                      </div>
+                      <div className="p-2 rounded-lg bg-off-white border border-gray-100 flex items-center gap-1.5">
+                        <span className="w-5 h-5 rounded bg-navy text-gold text-[10px] font-black flex items-center justify-center shrink-0">D</span>
+                        <span className="font-semibold text-navy">Discipular</span>
+                      </div>
+                      <div className="p-2 rounded-lg bg-off-white border border-gray-100 flex items-center gap-1.5">
+                        <span className="w-5 h-5 rounded bg-navy text-gold text-[10px] font-black flex items-center justify-center shrink-0">E</span>
+                        <span className="font-semibold text-navy">Enviar</span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
               <div className="pt-8">

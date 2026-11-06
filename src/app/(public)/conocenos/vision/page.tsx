@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ChevronLeft, ShieldCheck, Sparkles, HeartHandshake, Flame, Globe2, Crown, CheckCircle2 } from "lucide-react";
+import { ChevronLeft, ShieldCheck, Sparkles, Compass, HeartHandshake, BookOpen, Send, CheckCircle2, Flame } from "lucide-react";
 import { SectionHeading } from "@/components/ui";
 
 export const metadata: Metadata = {
@@ -10,28 +10,36 @@ export const metadata: Metadata = {
 
 const pillars = [
   {
+    letter: "A",
+    icon: Compass,
+    title: "Alcanzar",
+    subtitle: "Evangelismo y Alcance",
+    description:
+      "Llevar el mensaje de salvación a cada persona, compartiendo el amor y la gracia de Jesucristo en nuestra comunidad local y a nivel internacional.",
+  },
+  {
+    letter: "R",
     icon: HeartHandshake,
-    title: "Experiencia Restauradora",
+    title: "Restaurar",
+    subtitle: "Sanidad y Familia",
     description:
-      "Una iglesia dedicada a sanar, reconciliar y levantar a las personas y familias caídas mediante el amor incondicional y el poder restaurador de Cristo.",
+      "Ser un ministerio de sanidad donde las personas y familias encuentren la restauración integral que solo Dios puede dar a través de Su Espíritu y Su amor.",
   },
   {
-    icon: Flame,
-    title: "Experiencia Carismática",
+    letter: "D",
+    icon: BookOpen,
+    title: "Discipular",
+    subtitle: "Crecimiento y Gobierno de Dios",
     description:
-      "Guiados en todo momento por la revelación divina de la Palabra y el mover genuino del Espíritu Santo con alabanza viva y dones espirituales.",
+      "Formar seguidores de Cristo maduros y arraigados en la Palabra, aprendiendo a vivir bajo el orden, gobierno y principios del Reino en todas las áreas de la vida.",
   },
   {
-    icon: Globe2,
-    title: "Corazón Misionero",
+    letter: "E",
+    icon: Send,
+    title: "Enviar",
+    subtitle: "Liderazgo y Misiones",
     description:
-      "Alcanzar al pueblo hispano a nivel local, regional e internacional con la proclamación del Evangelio del Reino y la plantación de nuevas obras.",
-  },
-  {
-    icon: Crown,
-    title: "Gobierno Teocrático",
-    description:
-      "Aprender a vivir bajo el orden, soberanía y principios del Reino de Dios, aplicándolos en todas las áreas de la vida a través de las autoridades delegadas.",
+      "Comisionar líderes y servidores empoderados para que impacten su entorno, planten nuevas obras y cumplan el propósito misionero de Dios en el mundo.",
   },
 ];
 
@@ -120,24 +128,51 @@ export default function VisionPage() {
           </div>
         </div>
 
-        {/* ── 3. Pilares de la Visión ── */}
+        {/* ── 3. Pilares de la Visión ARDE ── */}
         <div className="mb-16">
-          <h3 className="font-bold text-navy text-2xl text-center mb-8">
-            Pilares fundamentales de la visión
-          </h3>
+          <div className="text-center mb-10">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-gold/15 text-gold-dark mb-2 border border-gold/30">
+              <Flame className="w-3.5 h-3.5 text-gold fill-gold" />
+              Visión ARDE
+            </span>
+            <h3 className="font-bold text-navy text-2xl sm:text-3xl">
+              Pilares fundamentales de la visión
+            </h3>
+            <p className="text-gray-500 text-sm mt-1 max-w-lg mx-auto">
+              Cuatro pilares de acción que guían cada ministerio, campus y servicio en nuestra iglesia.
+            </p>
+          </div>
+
           <div className="grid sm:grid-cols-2 gap-6">
             {pillars.map((pillar) => (
               <div
                 key={pillar.title}
-                className="relative p-7 rounded-2xl border border-gray-100 bg-white hover:border-gold/30 hover:shadow-lg transition-all duration-300 flex flex-col justify-between"
+                className="relative p-7 sm:p-8 rounded-2xl border border-gray-100 bg-white hover:border-gold/40 hover:shadow-xl transition-all duration-300 flex flex-col justify-between overflow-hidden group"
               >
-                <div className="flex items-center gap-3.5 mb-3">
-                  <div className="w-10 h-10 rounded-xl bg-gold/15 flex items-center justify-center text-navy shrink-0">
-                    <pillar.icon className="w-5 h-5 text-gold-dark" />
+                {/* Huge Watermark Letter */}
+                <span className="absolute -top-3 right-4 text-7xl sm:text-8xl font-black text-navy/[0.04] group-hover:text-gold/15 transition-colors select-none pointer-events-none">
+                  {pillar.letter}
+                </span>
+
+                <div className="relative z-10">
+                  <div className="flex items-center gap-3.5 mb-3">
+                    <div className="w-12 h-12 rounded-xl bg-gold/15 flex items-center justify-center text-navy shrink-0 group-hover:bg-gold group-hover:text-navy transition-colors">
+                      <pillar.icon className="w-6 h-6 text-gold-dark group-hover:text-navy transition-colors" />
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="w-6 h-6 rounded-md bg-navy text-gold text-xs font-black flex items-center justify-center">
+                          {pillar.letter}
+                        </span>
+                        <h4 className="font-black text-navy text-xl sm:text-2xl">{pillar.title}</h4>
+                      </div>
+                      <span className="text-[11px] font-bold uppercase tracking-wider text-gold-dark block mt-0.5">
+                        {pillar.subtitle}
+                      </span>
+                    </div>
                   </div>
-                  <h4 className="font-bold text-navy text-lg">{pillar.title}</h4>
+                  <p className="text-gray-600 leading-relaxed text-sm pt-2">{pillar.description}</p>
                 </div>
-                <p className="text-gray-600 leading-relaxed text-sm">{pillar.description}</p>
               </div>
             ))}
           </div>
