@@ -189,3 +189,46 @@ export async function deleteCampus(id: string) {
     return { success: false, error: "No se pudo eliminar el campus." };
   }
 }
+
+/**
+ * Uploads an image file from a device (phone/desktop) to Vercel Blob
+ * and returns its public URL.
+ */
+export async function uploadCampusImage(formData: FormData): Promise<{ success: boolean; url?: string; error?: string }> {
+  try {
+    await requireAdminOrPastor();
+    const file = formData.get("file") as File | null;
+    if (!file || !(file instanceof File) || file.size === 0) {
+      return { success: false, error: "No se seleccionó ningún archivo de imagen." };
+    }
+
+    const { uploadImage } = await import("@/lib/upload");
+    const url = await uploadImage(file);
+    if (!url) {
+      return { success: false, error: "No se pudo subir la imagen al servidor." };
+    }
+
+    return { success: true, url };
+  } catch (error: any) {
+    console.error("uploadCampusImage error:", error);
+    return { success: false, error: error?.message || "Error al procesar la subida de imagen." };
+  }
+}
+
+/**
+ * Quick update of a campus photo field ('image' or 'pastorImage') directly.
+ */
+export async function updateCampusPhotoField(id: string, field: "image" | "pastorImage", url: string | null) {
+  try {
+    await requireAdminOrPastor();
+    await db.update(campuses).set({ [field]: url }).where(eq(campuses.id, id));
+    revalidatePath("/admin/campus");
+    revalidatePath("/campus");
+    revalidatePath(`/campus/${id}`);
+    revalidatePath("/");
+    return { success: true };
+  } catch (error: any) {
+    console.error("updateCampusPhotoField error:", error);
+    return { success: false, error: "No se pudo actualizar la foto." };
+  }
+}

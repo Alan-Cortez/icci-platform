@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Link from "next/link";
 import { Card, Button, Badge } from "@/components/ui";
 import {
@@ -17,8 +17,17 @@ import {
   Sparkles,
   Camera,
   Search,
+  UploadCloud,
+  CheckCircle2,
 } from "lucide-react";
-import { updateCampus, createCampus, deleteCampus } from "@/actions/campuses";
+import {
+  updateCampus,
+  createCampus,
+  deleteCampus,
+  uploadCampusImage,
+  updateCampusPhotoField,
+} from "@/actions/campuses";
+import { compressImage } from "@/lib/compress";
 import { cn } from "@/lib/utils";
 import type { Campus, CampusSchedule } from "@/db/schema";
 
@@ -59,7 +68,82 @@ export function CampusClient({
   });
   const [editingSchedules, setEditingSchedules] = useState<ScheduleItem[]>([]);
 
+  // Device Upload States
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const [uploadingPastorImage, setUploadingPastorImage] = useState(false);
+  const [cardUploading, setCardUploading] = useState<{ id: string; field: "image" | "pastorImage" } | null>(null);
+  const imageInputRef = useRef<HTMLInputElement>(null);
+  const pastorImageInputRef = useRef<HTMLInputElement>(null);
+
   const states = ["all", "Coahuila", "Nuevo León", "Durango"];
+
+  async function handleFileSelect(
+    e: React.ChangeEvent<HTMLInputElement>,
+    targetField: "image" | "pastorImage"
+  ) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      alert("Por favor selecciona un archivo de imagen válido (JPG, PNG, WEBP, etc.)");
+      return;
+    }
+
+    if (targetField === "image") setUploadingImage(true);
+    else setUploadingPastorImage(true);
+
+    try {
+      const compressed = await compressImage(file);
+      const fd = new FormData();
+      fd.set("file", compressed);
+      const res = await uploadCampusImage(fd);
+
+      if (res.success && res.url) {
+        setFormData((prev) => ({ ...prev, [targetField]: res.url! }));
+      } else {
+        alert(res.error || "No se pudo subir la foto.");
+      }
+    } catch (err: any) {
+      console.error("Upload error:", err);
+      alert("Error al subir la foto: " + (err?.message || "Intenta de nuevo"));
+    } finally {
+      if (targetField === "image") setUploadingImage(false);
+      else setUploadingPastorImage(false);
+      e.target.value = "";
+    }
+  }
+
+  async function handleCardQuickUpload(
+    campusId: string,
+    field: "image" | "pastorImage",
+    file: File
+  ) {
+    if (!file || !file.type.startsWith("image/")) return;
+    setCardUploading({ id: campusId, field });
+    try {
+      const compressed = await compressImage(file);
+      const fd = new FormData();
+      fd.set("file", compressed);
+      const uploadRes = await uploadCampusImage(fd);
+      if (uploadRes.success && uploadRes.url) {
+        const updateRes = await updateCampusPhotoField(campusId, field, uploadRes.url);
+        if (updateRes.success) {
+          setCampusesList((prev) =>
+            prev.map((c) => (c.id === campusId ? { ...c, [field]: uploadRes.url } : c))
+          );
+        } else {
+          alert("No se pudo actualizar la foto.");
+        }
+      } else {
+        alert(uploadRes.error || "No se pudo subir la imagen.");
+      }
+    } catch (err: any) {
+      console.error("Quick upload error:", err);
+      alert("Error al subir imagen: " + (err?.message || "Error"));
+    } finally {
+      setCardUploading(null);
+    }
+  }
 
   function openCreateModal() {
     setEditingCampus(null);
@@ -324,7 +408,7 @@ export function CampusClient({
             >
               <div>
                 {/* Imagen del Campus */}
-                <div className="relative h-48 bg-navy/90 overflow-hidden">
+                <div className="relative h-48 bg-navy/90 overflow-hidden group">
                   {campus.image ? (
                     <img
                       src={campus.image}
@@ -338,7 +422,7 @@ export function CampusClient({
                     </div>
                   )}
 
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent" />
 
                   {/* Badges superiores */}
                   <div className="absolute top-3 left-3 right-3 flex items-center justify-between">
@@ -352,6 +436,37 @@ export function CampusClient({
                     )}
                   </div>
 
+                  {/* Botón flotante para subir fachada desde el dispositivo */}
+                  <div className="absolute top-3 right-3">
+                    <label
+                      className="cursor-pointer px-2.5 py-1 rounded-lg bg-black/60 hover:bg-black/85 text-white text-[11px] font-semibold flex items-center gap-1.5 backdrop-blur-xs transition-colors shadow-xs"
+                      title="Subir foto de fachada/portada desde este dispositivo"
+                    >
+                      {cardUploading?.id === campus.id && cardUploading?.field === "image" ? (
+                        <>
+                          <Loader2 className="w-3.5 h-3.5 animate-spin text-gold" />
+                          <span>Subiendo...</span>
+                        </>
+                      ) : (
+                        <>
+                          <UploadCloud className="w-3.5 h-3.5 text-gold" />
+                          <span>Subir Fachada</span>
+                        </>
+                      )}
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        disabled={cardUploading !== null}
+                        onChange={(e) => {
+                          const f = e.target.files?.[0];
+                          if (f) handleCardQuickUpload(campus.id, "image", f);
+                          e.target.value = "";
+                        }}
+                      />
+                    </label>
+                  </div>
+
                   {/* Título en la imagen */}
                   <div className="absolute bottom-3 left-4 right-4">
                     <h3 className="text-2xl font-bold text-white drop-shadow-md">
@@ -363,17 +478,42 @@ export function CampusClient({
                 {/* Contenido */}
                 <div className="p-5 space-y-4">
                   <div className="flex items-center gap-3">
-                    {campus.pastorImage ? (
-                      <img
-                        src={campus.pastorImage}
-                        alt={campus.pastor}
-                        className="w-12 h-12 rounded-full object-cover object-top border-2 border-gold shrink-0 shadow-xs"
-                      />
-                    ) : (
-                      <div className="w-12 h-12 rounded-full bg-navy/5 text-navy font-bold flex items-center justify-center border border-navy/10 shrink-0 text-xs">
-                        {campus.pastor.charAt(0).toUpperCase()}
-                      </div>
-                    )}
+                    <div className="relative shrink-0">
+                      {campus.pastorImage ? (
+                        <img
+                          src={campus.pastorImage}
+                          alt={campus.pastor}
+                          className="w-13 h-13 rounded-full object-cover object-top border-2 border-gold shadow-xs"
+                        />
+                      ) : (
+                        <div className="w-13 h-13 rounded-full bg-navy/5 text-navy font-bold flex items-center justify-center border border-navy/10 text-xs">
+                          {campus.pastor.charAt(0).toUpperCase()}
+                        </div>
+                      )}
+
+                      {/* Botón rápido para subir foto del pastor/a desde dispositivo */}
+                      <label
+                        className="cursor-pointer absolute -bottom-1 -right-1 p-1.5 bg-navy text-gold rounded-full border border-white hover:scale-110 transition-transform shadow-xs flex items-center justify-center"
+                        title="Subir foto de pastor/a desde dispositivo"
+                      >
+                        {cardUploading?.id === campus.id && cardUploading?.field === "pastorImage" ? (
+                          <Loader2 className="w-3 h-3 animate-spin text-gold" />
+                        ) : (
+                          <Camera className="w-3 h-3" />
+                        )}
+                        <input
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          disabled={cardUploading !== null}
+                          onChange={(e) => {
+                            const f = e.target.files?.[0];
+                            if (f) handleCardQuickUpload(campus.id, "pastorImage", f);
+                            e.target.value = "";
+                          }}
+                        />
+                      </label>
+                    </div>
                     <div>
                       <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400 block mb-0.5">
                         Pastor(es)
@@ -588,58 +728,147 @@ export function CampusClient({
               </div>
 
               {/* Fotos del Campus y Pastor */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 bg-gray-50 rounded-2xl border border-gray-200/80">
-                {/* Foto 1: Fachada / Banner */}
-                <div className="space-y-2">
-                  <label className="block text-xs font-bold uppercase tracking-wider text-gray-700">
-                    Foto 1: Banner / Fachada / Ciudad
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.image}
-                    onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-                    placeholder="https://... (enlace a foto de portada)"
-                    className="w-full px-3.5 py-2 rounded-xl border border-gray-200 text-xs focus:outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold bg-white"
-                  />
-                  {formData.image ? (
-                    <div className="relative h-24 rounded-xl overflow-hidden border border-gray-200">
-                      <img src={formData.image} alt="Vista previa portada" className="w-full h-full object-cover" />
-                      <span className="absolute bottom-1 right-1.5 text-[9px] font-bold bg-black/60 text-white px-1.5 py-0.5 rounded">
-                        Portada
-                      </span>
-                    </div>
-                  ) : (
-                    <div className="h-24 rounded-xl border border-dashed border-gray-300 flex items-center justify-center text-gray-400 text-xs">
-                      Sin vista previa de portada
-                    </div>
-                  )}
+              <div className="p-4 bg-gray-50 rounded-2xl border border-gray-200/80 space-y-3">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+                  <p className="text-xs font-black uppercase tracking-wider text-navy flex items-center gap-1.5">
+                    <UploadCloud className="w-4 h-4 text-gold" /> Fotos del Campus (Subir desde dispositivo)
+                  </p>
+                  <span className="text-[11px] text-gray-500">
+                    Sube directamente desde tu celular, tablet o computadora
+                  </span>
                 </div>
 
-                {/* Foto 2: Pastor / Pastora */}
-                <div className="space-y-2">
-                  <label className="block text-xs font-bold uppercase tracking-wider text-gray-700">
-                    Foto 2: Foto del Pastor / Pastora
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.pastorImage}
-                    onChange={(e) => setFormData({ ...formData, pastorImage: e.target.value })}
-                    placeholder="https://... (enlace a foto del pastor/a)"
-                    className="w-full px-3.5 py-2 rounded-xl border border-gray-200 text-xs focus:outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold bg-white"
-                  />
-                  {formData.pastorImage ? (
-                    <div className="h-24 rounded-xl border border-gray-200 bg-navy/5 flex items-center justify-center p-2">
-                      <img
-                        src={formData.pastorImage}
-                        alt="Vista previa pastor"
-                        className="w-20 h-20 rounded-full object-cover object-top border-2 border-gold shadow-xs"
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {/* Foto 1: Fachada / Banner */}
+                  <div className="bg-white p-3.5 rounded-xl border border-gray-200/90 space-y-3 flex flex-col justify-between">
+                    <div>
+                      <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-2">
+                        Foto 1: Fachada / Banner / Portada
+                      </label>
+
+                      {formData.image ? (
+                        <div className="relative h-28 rounded-xl overflow-hidden border border-gray-200 group">
+                          <img
+                            src={formData.image}
+                            alt="Vista previa portada"
+                            className="w-full h-full object-cover"
+                          />
+                          <span className="absolute bottom-1 left-1.5 text-[9px] font-bold bg-black/60 text-white px-1.5 py-0.5 rounded">
+                            Portada cargada
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => setFormData({ ...formData, image: "" })}
+                            className="absolute top-1.5 right-1.5 p-1 bg-red-600/90 hover:bg-red-600 text-white rounded-full transition-colors shadow-xs"
+                            title="Quitar foto"
+                          >
+                            <X className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="h-28 rounded-xl border border-dashed border-gray-300 flex flex-col items-center justify-center text-gray-400 text-xs p-3 text-center">
+                          <Camera className="w-6 h-6 mb-1 text-gray-300" />
+                          <span>Sin foto de fachada</span>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="space-y-2 pt-1">
+                      <label className="cursor-pointer w-full py-2 px-3 rounded-xl bg-navy hover:bg-navy/90 text-white text-xs font-bold flex items-center justify-center gap-2 transition-all shadow-xs">
+                        {uploadingImage ? (
+                          <>
+                            <Loader2 className="w-4 h-4 animate-spin text-gold" />
+                            <span>Subiendo desde dispositivo...</span>
+                          </>
+                        ) : (
+                          <>
+                            <UploadCloud className="w-4 h-4 text-gold" />
+                            <span>{formData.image ? "Cambiar foto desde dispositivo" : "Subir foto desde dispositivo"}</span>
+                          </>
+                        )}
+                        <input
+                          ref={imageInputRef}
+                          type="file"
+                          accept="image/*"
+                          disabled={uploadingImage}
+                          onChange={(e) => handleFileSelect(e, "image")}
+                          className="hidden"
+                        />
+                      </label>
+
+                      <input
+                        type="text"
+                        value={formData.image}
+                        onChange={(e) => setFormData({ ...formData, image: e.target.value })}
+                        placeholder="O pegar URL web directa..."
+                        className="w-full px-3 py-1.5 rounded-lg border border-gray-200 text-[11px] focus:outline-none focus:ring-1 focus:ring-gold bg-gray-50"
                       />
                     </div>
-                  ) : (
-                    <div className="h-24 rounded-xl border border-dashed border-gray-300 flex items-center justify-center text-gray-400 text-xs">
-                      Sin vista previa de pastor/a
+                  </div>
+
+                  {/* Foto 2: Pastor / Pastora */}
+                  <div className="bg-white p-3.5 rounded-xl border border-gray-200/90 space-y-3 flex flex-col justify-between">
+                    <div>
+                      <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-2">
+                        Foto 2: Pastor / Pastora del Campus
+                      </label>
+
+                      {formData.pastorImage ? (
+                        <div className="relative h-28 rounded-xl border border-gray-200 bg-navy/5 flex items-center justify-center p-2">
+                          <img
+                            src={formData.pastorImage}
+                            alt="Vista previa pastor"
+                            className="w-20 h-20 rounded-full object-cover object-top border-2 border-gold shadow-xs"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => setFormData({ ...formData, pastorImage: "" })}
+                            className="absolute top-1.5 right-1.5 p-1 bg-red-600/90 hover:bg-red-600 text-white rounded-full transition-colors shadow-xs"
+                            title="Quitar foto"
+                          >
+                            <X className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="h-28 rounded-xl border border-dashed border-gray-300 flex flex-col items-center justify-center text-gray-400 text-xs p-3 text-center">
+                          <Camera className="w-6 h-6 mb-1 text-gray-300" />
+                          <span>Sin foto de pastor/a</span>
+                        </div>
+                      )}
                     </div>
-                  )}
+
+                    <div className="space-y-2 pt-1">
+                      <label className="cursor-pointer w-full py-2 px-3 rounded-xl bg-navy hover:bg-navy/90 text-white text-xs font-bold flex items-center justify-center gap-2 transition-all shadow-xs">
+                        {uploadingPastorImage ? (
+                          <>
+                            <Loader2 className="w-4 h-4 animate-spin text-gold" />
+                            <span>Subiendo desde dispositivo...</span>
+                          </>
+                        ) : (
+                          <>
+                            <UploadCloud className="w-4 h-4 text-gold" />
+                            <span>{formData.pastorImage ? "Cambiar foto desde dispositivo" : "Subir foto desde dispositivo"}</span>
+                          </>
+                        )}
+                        <input
+                          ref={pastorImageInputRef}
+                          type="file"
+                          accept="image/*"
+                          disabled={uploadingPastorImage}
+                          onChange={(e) => handleFileSelect(e, "pastorImage")}
+                          className="hidden"
+                        />
+                      </label>
+
+                      <input
+                        type="text"
+                        value={formData.pastorImage}
+                        onChange={(e) => setFormData({ ...formData, pastorImage: e.target.value })}
+                        placeholder="O pegar URL web directa..."
+                        className="w-full px-3 py-1.5 rounded-lg border border-gray-200 text-[11px] focus:outline-none focus:ring-1 focus:ring-gold bg-gray-50"
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
 
