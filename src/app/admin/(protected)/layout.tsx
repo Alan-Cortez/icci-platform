@@ -30,6 +30,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     { href: "/admin/planeacion", label: "Planeación", icon: "CalendarRange" },
     { href: "/admin/cumpleanos", label: "Cumpleaños", icon: "Cake" },
     { href: "/admin/ministerios", label: "Ministerios", icon: "Layers" },
+    { href: "/admin/campus", label: "Campus", icon: "MapPin" },
     { href: "/admin/devocionales", label: "Devocionales", icon: "BookOpen" },
     { href: "/admin/galeria", label: "Banco de Fotos", icon: "Camera" },
     {
