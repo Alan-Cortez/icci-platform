@@ -55,6 +55,7 @@ export function CampusClient({
     email: "",
     description: "",
     image: "",
+    pastorImage: "",
   });
   const [editingSchedules, setEditingSchedules] = useState<ScheduleItem[]>([]);
 
@@ -72,6 +73,7 @@ export function CampusClient({
       email: "",
       description: "",
       image: "",
+      pastorImage: "",
     });
     setEditingSchedules([
       { title: "Servicio general", days: "Domingo", time: "10:00 AM" },
@@ -92,6 +94,7 @@ export function CampusClient({
       email: c.email || "",
       description: c.description,
       image: c.image || "",
+      pastorImage: c.pastorImage || "",
     });
 
     const currentSchedules = schedulesList
@@ -150,6 +153,7 @@ export function CampusClient({
             email: formData.email.trim() || null,
             description: formData.description.trim(),
             image: formData.image.trim() || null,
+            pastorImage: formData.pastorImage.trim() || null,
           },
           editingSchedules
         );
@@ -169,6 +173,7 @@ export function CampusClient({
                     email: formData.email.trim() || null,
                     description: formData.description.trim(),
                     image: formData.image.trim() || null,
+                    pastorImage: formData.pastorImage.trim() || null,
                   }
                 : formData.isMain
                 ? { ...item, isMain: false }
@@ -208,6 +213,7 @@ export function CampusClient({
             email: formData.email.trim() || undefined,
             description: formData.description.trim(),
             image: formData.image.trim() || undefined,
+            pastorImage: formData.pastorImage.trim() || undefined,
           },
           editingSchedules
         );
@@ -356,11 +362,24 @@ export function CampusClient({
 
                 {/* Contenido */}
                 <div className="p-5 space-y-4">
-                  <div>
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400 block mb-0.5">
-                      Pastor(es)
-                    </span>
-                    <p className="text-sm font-bold text-navy">{campus.pastor}</p>
+                  <div className="flex items-center gap-3">
+                    {campus.pastorImage ? (
+                      <img
+                        src={campus.pastorImage}
+                        alt={campus.pastor}
+                        className="w-12 h-12 rounded-full object-cover object-top border-2 border-gold shrink-0 shadow-xs"
+                      />
+                    ) : (
+                      <div className="w-12 h-12 rounded-full bg-navy/5 text-navy font-bold flex items-center justify-center border border-navy/10 shrink-0 text-xs">
+                        {campus.pastor.charAt(0).toUpperCase()}
+                      </div>
+                    )}
+                    <div>
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400 block mb-0.5">
+                        Pastor(es)
+                      </span>
+                      <p className="text-sm font-bold text-navy">{campus.pastor}</p>
+                    </div>
                   </div>
 
                   <div>
@@ -568,18 +587,60 @@ export function CampusClient({
                 />
               </div>
 
-              {/* Foto URL */}
-              <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">
-                  URL de Imagen / Fachada del Campus
-                </label>
-                <input
-                  type="text"
-                  value={formData.image}
-                  onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-                  placeholder="https://... (enlace a foto de portada)"
-                  className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold"
-                />
+              {/* Fotos del Campus y Pastor */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 bg-gray-50 rounded-2xl border border-gray-200/80">
+                {/* Foto 1: Fachada / Banner */}
+                <div className="space-y-2">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-gray-700">
+                    Foto 1: Banner / Fachada / Ciudad
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.image}
+                    onChange={(e) => setFormData({ ...formData, image: e.target.value })}
+                    placeholder="https://... (enlace a foto de portada)"
+                    className="w-full px-3.5 py-2 rounded-xl border border-gray-200 text-xs focus:outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold bg-white"
+                  />
+                  {formData.image ? (
+                    <div className="relative h-24 rounded-xl overflow-hidden border border-gray-200">
+                      <img src={formData.image} alt="Vista previa portada" className="w-full h-full object-cover" />
+                      <span className="absolute bottom-1 right-1.5 text-[9px] font-bold bg-black/60 text-white px-1.5 py-0.5 rounded">
+                        Portada
+                      </span>
+                    </div>
+                  ) : (
+                    <div className="h-24 rounded-xl border border-dashed border-gray-300 flex items-center justify-center text-gray-400 text-xs">
+                      Sin vista previa de portada
+                    </div>
+                  )}
+                </div>
+
+                {/* Foto 2: Pastor / Pastora */}
+                <div className="space-y-2">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-gray-700">
+                    Foto 2: Foto del Pastor / Pastora
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.pastorImage}
+                    onChange={(e) => setFormData({ ...formData, pastorImage: e.target.value })}
+                    placeholder="https://... (enlace a foto del pastor/a)"
+                    className="w-full px-3.5 py-2 rounded-xl border border-gray-200 text-xs focus:outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold bg-white"
+                  />
+                  {formData.pastorImage ? (
+                    <div className="h-24 rounded-xl border border-gray-200 bg-navy/5 flex items-center justify-center p-2">
+                      <img
+                        src={formData.pastorImage}
+                        alt="Vista previa pastor"
+                        className="w-20 h-20 rounded-full object-cover object-top border-2 border-gold shadow-xs"
+                      />
+                    </div>
+                  ) : (
+                    <div className="h-24 rounded-xl border border-dashed border-gray-300 flex items-center justify-center text-gray-400 text-xs">
+                      Sin vista previa de pastor/a
+                    </div>
+                  )}
+                </div>
               </div>
 
               {/* Descripción */}

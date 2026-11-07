@@ -1,12 +1,15 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { Calendar, Clock, Mail, MapPin, Phone, User } from "lucide-react";
-import { Button, Card, SectionHeading } from "@/components/ui";
-import { SCHEDULES, CAMPUSES } from "@/lib/constants";
+import { CAMPUSES } from "@/lib/constants";
 import { CampusClient } from "./CampusClient";
 import { CampusGallery } from "@/components/campus/CampusGallery";
 import { getServicePhotos } from "@/actions/gallery";
 import { getCampusImages } from "@/actions/campus";
+import { db } from "@/db";
+import { campuses, campusSchedules } from "@/db/schema";
+import { eq, or, asc } from "drizzle-orm";
+
+export const revalidate = 60;
 
 // Google Maps link for the real address
 const GOOGLE_MAPS_URL =
@@ -17,12 +20,22 @@ interface Props {
 }
 
 export async function generateStaticParams() {
+  const dbCampuses = await db.select({ slug: campuses.slug, id: campuses.id }).from(campuses).catch(() => []);
+  if (dbCampuses.length > 0) {
+    return dbCampuses.map((c) => ({ slug: c.slug || c.id }));
+  }
   return CAMPUSES.map((c) => ({ slug: c.id }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const campus = CAMPUSES.find((c) => c.id === slug);
+  const [dbCampus] = await db
+    .select()
+    .from(campuses)
+    .where(or(eq(campuses.slug, slug), eq(campuses.id, slug)))
+    .catch(() => []);
+
+  const campus = dbCampus || CAMPUSES.find((c) => c.id === slug);
   if (!campus) return { title: "Campus no encontrado" };
   return {
     title: campus.isMain
@@ -34,60 +47,79 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function CampusDetailPage({ params }: Props) {
   const { slug } = await params;
-  const campus = CAMPUSES.find((c) => c.id === slug);
+
+  // 1. Fetch campus from DB
+  const [dbCampus] = await db
+    .select()
+    .from(campuses)
+    .where(or(eq(campuses.slug, slug), eq(campuses.id, slug)))
+    .catch(() => []);
+
+  const campus = dbCampus || CAMPUSES.find((c) => c.id === slug);
   if (!campus) notFound();
 
-  // For the main campus use the real church name and photo header
+  // 2. Fetch schedules for this specific campus from DB
+  const schedules = await db
+    .select()
+    .from(campusSchedules)
+    .where(eq(campusSchedules.campusId, campus.id))
+    .orderBy(asc(campusSchedules.sortOrder))
+    .catch(() => []);
+
   const displayName = campus.isMain
     ? "Iglesias Comunidad de Cristo Internacional"
     : `Campus ${campus.name}`;
 
-  const pastorName = campus.isMain
-    ? "Apóstol Óscar y Pastora Raquel Sosa"
-    : campus.pastor;
+  const pastorName = campus.pastor || (campus.isMain ? "Apóstol Óscar y Pastora Raquel Sosa" : "Pastor de Campus");
 
-  // Never let a gallery/DB hiccup break the whole campus page
   const photos = await getServicePhotos(campus.id).catch(() => []);
   const customImages = await getCampusImages();
-  const heroImage = customImages[campus.id] || `/images/campus-${campus.id}.jpg`;
+
+  // Use DB banner image first, then customImages, then default fallback
+  const heroImage =
+    campus.image || customImages[campus.id] || `/images/campus-${campus.id}.jpg`;
 
   return (
     <div>
-      {/* ── Hero header ── */}
-      <section className="relative overflow-hidden min-h-[260px] flex items-end">
-        {/* Background: photo for all campuses */}
-        <>
-          <div
-            className="absolute inset-0 bg-cover bg-center bg-navy"
-            style={{ backgroundImage: `url('${heroImage}')` }}
-          />
-          {/* Overlays to ensure text readability */}
-          <div className="absolute inset-0 bg-gradient-to-r from-navy/85 via-navy/70 to-navy/40" />
-          <div className="absolute inset-0 bg-gradient-to-t from-navy/90 via-transparent to-transparent" />
-        </>
+      {/* ── Hero header (Banner / Fachada / Ciudad) ── */}
+      <section className="relative overflow-hidden min-h-[280px] sm:min-h-[340px] flex items-end">
+        <div
+          className="absolute inset-0 bg-cover bg-center bg-navy"
+          style={{ backgroundImage: `url('${heroImage}')` }}
+        />
+        {/* Overlays to ensure text readability */}
+        <div className="absolute inset-0 bg-gradient-to-r from-navy/90 via-navy/75 to-navy/40" />
+        <div className="absolute inset-0 bg-gradient-to-t from-navy via-navy/50 to-transparent" />
 
         {/* Text */}
         <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           {campus.isMain && (
-            <span className="inline-block text-xs font-bold tracking-[0.2em] uppercase text-gold border border-gold/40 px-3 py-1 rounded-full mb-4">
-              Campus Principal
+            <span className="inline-block text-xs font-bold tracking-[0.2em] uppercase text-gold border border-gold/40 px-3 py-1 rounded-full mb-4 bg-navy/60 backdrop-blur-xs">
+              Sede Central
             </span>
           )}
-          <h1 className="font-display text-white leading-none uppercase"
-            style={{ fontSize: "clamp(2rem, 5vw, 3.5rem)" }}>
+          <h1
+            className="font-display text-white leading-none uppercase"
+            style={{ fontSize: "clamp(2rem, 5vw, 3.5rem)" }}
+          >
             {displayName}
           </h1>
-          <p className="font-serif text-white/60 italic font-light mt-2 text-lg">
+          <p className="font-serif text-white/70 italic font-light mt-2 text-lg">
             {campus.state}
           </p>
-          <p className="text-white/70 mt-4 max-w-2xl leading-relaxed font-light">
+          <p className="text-white/80 mt-4 max-w-2xl leading-relaxed font-light">
             {campus.description}
           </p>
         </div>
       </section>
 
       {/* ── Info cards (Interactive) ── */}
-      <CampusClient campus={campus} pastorName={pastorName} googleMapsUrl={GOOGLE_MAPS_URL} />
+      <CampusClient
+        campus={campus}
+        schedules={schedules}
+        pastorName={pastorName}
+        googleMapsUrl={GOOGLE_MAPS_URL}
+      />
 
       {/* ── Fotos de cultos (se administran desde /admin/galeria) ── */}
       <CampusGallery photos={photos} campusName={campus.name} />

@@ -17,6 +17,7 @@ import { GoogleReviewCard } from "@/components/common/GoogleReviewCard";
 
 interface CampusClientProps {
   campus: any;
+  schedules?: any[];
   pastorName: string;
   googleMapsUrl: string;
 }
@@ -68,15 +69,16 @@ const CAMPUS_SERVICES = [
   },
 ];
 
-export function CampusClient({ campus, pastorName, googleMapsUrl }: CampusClientProps) {
+export function CampusClient({ campus, schedules = [], pastorName, googleMapsUrl }: CampusClientProps) {
   const [activeModal, setActiveModal] = useState<string | null>(null);
 
-  let pastorImg = null;
-  if (pastorName.includes("Oscar") || pastorName.includes("Óscar")) {
-    pastorImg = "/images/pastores-sosa.jpg";
-  }
-
   const isMain = campus.isMain;
+  const pastorImg =
+    campus.pastorImage ||
+    (isMain || pastorName.includes("Oscar") || pastorName.includes("Óscar")
+      ? "/images/pastores-sosa.jpg"
+      : null);
+
   const mapsHref = isMain
     ? googleMapsUrl
     : `https://maps.google.com/?q=${encodeURIComponent(campus.address)}`;
@@ -347,8 +349,55 @@ export function CampusClient({ campus, pastorName, googleMapsUrl }: CampusClient
             </div>
 
           </div>
+        ) : schedules && schedules.length > 0 ? (
+          /* ── Otros Campus con Horarios Configurados ── */
+          <div className="space-y-8">
+            <div className="text-center max-w-2xl mx-auto space-y-2">
+              <p className="label-eyebrow">Horarios y Citas Semanales</p>
+              <div className="divider-gold mx-auto" />
+              <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl text-navy uppercase tracking-tight">
+                Servicios y Actividades en {campus.name}
+              </h2>
+              <p className="text-gray-500 text-sm sm:text-base font-light">
+                ¡Te esperamos con los brazos abiertos en nuestras reuniones semanales!
+              </p>
+            </div>
+
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 max-w-4xl mx-auto">
+              {schedules.map((svc: any) => (
+                <div
+                  key={svc.id || svc.title}
+                  className="rounded-2xl p-6 bg-white border border-gray-200/80 shadow-xs hover:shadow-md transition-all flex flex-col justify-between"
+                >
+                  <div>
+                    <div className="flex items-center justify-between text-xs mb-3">
+                      <span className="font-bold text-navy uppercase tracking-wider bg-gray-100 px-2.5 py-1 rounded-md">
+                        {svc.days}
+                      </span>
+                      <span className="font-bold text-gold-dark font-mono">
+                        {svc.time}
+                      </span>
+                    </div>
+                    <h4 className="font-bold text-navy text-lg leading-snug">
+                      {svc.title}
+                    </h4>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="text-center pt-2">
+              <a
+                href={`tel:${campus.phone?.replace(/\s/g, "")}`}
+                className="inline-flex items-center gap-2 bg-navy hover:bg-navy-light text-white text-xs font-semibold px-6 py-3 rounded-full transition-colors shadow-sm"
+              >
+                <Phone className="w-4 h-4 text-gold" />
+                Llamar al campus: {campus.phone}
+              </a>
+            </div>
+          </div>
         ) : (
-          /* ── Otros Campus (Sabinas, Múzquiz, etc.) ── */
+          /* ── Otros Campus sin horarios específicos ── */
           <div className="p-8 sm:p-10 rounded-3xl bg-white border border-gray-100 shadow-lg text-center max-w-3xl mx-auto space-y-6">
             <div className="space-y-2">
               <h3 className="font-display text-2xl sm:text-3xl text-navy font-bold">

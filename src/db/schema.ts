@@ -89,6 +89,7 @@ export const campuses = sqliteTable("campus", {
   longitude: text("longitude"),
   description: text("description").notNull(),
   image: text("image"),
+  pastorImage: text("pastorImage"),
   isActive: integer("isActive", { mode: "boolean" }).default(true).notNull(),
   createdAt: integer("createdAt", { mode: "timestamp_ms" }).$defaultFn(() => new Date()),
 });

@@ -109,6 +109,7 @@ export async function createCampus(
     email?: string;
     description: string;
     image?: string;
+    pastorImage?: string;
   },
   schedules?: Array<{ title: string; days: string; time: string; sortOrder?: number }>
 ) {
@@ -136,6 +137,7 @@ export async function createCampus(
         email: data.email?.trim() || null,
         description: data.description.trim(),
         image: data.image?.trim() || null,
+        pastorImage: data.pastorImage?.trim() || null,
         isActive: true,
         createdAt: new Date(),
       })
