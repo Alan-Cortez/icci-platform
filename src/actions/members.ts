@@ -4,19 +4,25 @@ import { db } from "@/db";
 import { members, type NewMember } from "@/db/schema";
 import { eq, asc, and } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
-import { auth } from "@/auth";
+import { getCurrentAdminUser } from "@/lib/admin-auth";
+import { EVENT_WRITER_ROLES } from "@/lib/roles";
 
-async function requireAuthRole() {
-  const session = await auth();
-  const allowed = ["superadmin", "admin", "pastor", "leader"];
-  if (!session || !allowed.includes(session.user.role)) {
-    throw new Error("No autorizado");
+async function requireMemberReader() {
+  const user = await getCurrentAdminUser();
+  if (!user) throw new Error("No autorizado");
+  return user;
+}
+
+async function requireMemberWriter() {
+  const user = await getCurrentAdminUser();
+  if (!user || !EVENT_WRITER_ROLES.includes(user.role)) {
+    throw new Error("Solo lectura en directorio de miembros");
   }
-  return session.user;
+  return user;
 }
 
 export async function getMembers() {
-  await requireAuthRole();
+  await requireMemberReader();
   return db
     .select({
       id: members.id,
@@ -38,7 +44,7 @@ export async function getMembers() {
 }
 
 export async function createMember(data: Omit<NewMember, "id" | "createdAt" | "updatedAt">) {
-  await requireAuthRole();
+  await requireMemberWriter();
   try {
     const [created] = await db
       .insert(members)
@@ -60,7 +66,7 @@ export async function updateMember(
   id: number,
   data: Partial<Omit<NewMember, "id" | "createdAt">>
 ) {
-  await requireAuthRole();
+  await requireMemberWriter();
   try {
     await db
       .update(members)
@@ -78,10 +84,7 @@ export async function updateMember(
 }
 
 export async function deleteMember(id: number) {
-  const user = await requireAuthRole();
-  if (user.role !== "superadmin" && user.role !== "admin" && user.role !== "pastor") {
-    return { success: false, error: "Permisos insuficientes para eliminar miembros." };
-  }
+  await requireMemberWriter();
 
   try {
     await db.delete(members).where(eq(members.id, id));

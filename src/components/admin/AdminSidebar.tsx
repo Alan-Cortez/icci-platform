@@ -21,9 +21,11 @@ import {
   Layers,
   CalendarRange,
   MapPin,
+  BookMarked,
 } from "lucide-react";
 import { SITE } from "@/lib/constants";
 import { AdminLogoutButton } from "@/components/admin/AdminLogoutButton";
+import { getRoleLabel } from "@/lib/roles";
 import { cn } from "@/lib/utils";
 
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
@@ -39,6 +41,7 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   Layers,
   CalendarRange,
   MapPin,
+  BookMarked,
 };
 
 export interface NavModule {
@@ -165,13 +168,7 @@ export function AdminSidebar({ modules, user }: AdminSidebarProps) {
             <div className="flex items-center gap-1 mt-0.5">
               <ShieldCheck className="w-3 h-3 text-gold shrink-0" />
               <span className="text-[10px] text-gold font-semibold uppercase tracking-wider">
-                {user.role === "superadmin"
-                  ? "Super Admin"
-                  : user.role === "pastor"
-                  ? "Pastor"
-                  : user.role === "leader"
-                  ? "Líder de Ministerio"
-                  : "Admin"}
+                {getRoleLabel(user.role)}
               </span>
             </div>
           </div>

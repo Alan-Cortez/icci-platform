@@ -35,10 +35,14 @@ function to24h(value: string): string {
 export function EventForm({
   event,
   ministriesList = [],
+  campusesList = [],
+  defaultCampusId = "",
   onCancel,
 }: {
   event?: any;
   ministriesList?: { id: string; name: string }[];
+  campusesList?: { id: string; name: string }[];
+  defaultCampusId?: string;
   onCancel: () => void;
 }) {
   const [loading, setLoading] = useState(false);
@@ -165,9 +169,23 @@ export function EventForm({
             />
           </div>
 
-          <div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Input label="Ubicación (Ej: Auditorio Principal)" name="location" defaultValue={event?.location} required />
-            <input type="hidden" name="campus" value="allende" />
+            <div>
+              <label className="block text-sm font-semibold text-navy mb-2">Campus Anfitrión</label>
+              <select
+                name="campusId"
+                defaultValue={event?.campusId ?? defaultCampusId ?? ""}
+                className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white transition-colors"
+              >
+                <option value="">General / Todos los Campus</option>
+                {campusesList.map((c) => (
+                  <option key={c.id} value={c.id}>
+                    Campus {c.name}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
 
           <div>

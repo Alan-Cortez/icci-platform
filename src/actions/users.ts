@@ -5,33 +5,33 @@ import { users, ministries } from "@/db/schema";
 import type { UserRole } from "@/types/next-auth";
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
-import { auth } from "@/auth";
 import { redirect } from "next/navigation";
+import { getCurrentAdminUser } from "@/lib/admin-auth";
+import { isFullAdminRole } from "@/lib/roles";
 
-async function requireSuperAdminOrPastor() {
-  const session = await auth();
-  if (
-    !session ||
-    (session.user.role !== "superadmin" &&
-      session.user.role !== "admin" &&
-      session.user.role !== "pastor")
-  ) {
+async function requireFullAdmin() {
+  const currentUser = await getCurrentAdminUser();
+  if (!currentUser || !isFullAdminRole(currentUser.role)) {
     redirect("/admin");
   }
-  return session.user;
+  return currentUser;
 }
 
 export async function getUsers() {
-  await requireSuperAdminOrPastor();
+  await requireFullAdmin();
   return db.select().from(users);
 }
 
 export async function updateUserRole(
   userId: string,
   role: UserRole,
-  ministryId?: string | null
+  options?: {
+    ministryId?: string | null;
+    campusId?: string | null;
+    canManagePreachings?: boolean;
+  }
 ) {
-  const currentUser = await requireSuperAdminOrPastor();
+  const currentUser = await requireFullAdmin();
 
   try {
     const target = await db.query.users.findFirst({ where: eq(users.id, userId) });
@@ -45,17 +45,22 @@ export async function updateUserRole(
       return { success: false, error: "Solo el Super Admin puede promover a Super Admin." };
     }
 
-    const assignedMinistryId = role === "leader" ? (ministryId || null) : null;
+    const assignedMinistryId = role === "leader" ? options?.ministryId || null : null;
+    const assignedCampusId = role === "pastor_campus" ? options?.campusId || null : null;
+    const canManagePreachings =
+      role === "pastor" ? Boolean(options?.canManagePreachings) : isFullAdminRole(role) || role === "pastor_campus";
 
     await db
       .update(users)
       .set({
         role,
         ministryId: assignedMinistryId,
+        campusId: assignedCampusId,
+        canManagePreachings,
       })
       .where(eq(users.id, userId));
 
-    // If assigned as leader of a ministry, update the ministry's leader fields
+    // If assigned as leader of a ministry, sync the ministry's leader fields
     if (role === "leader" && assignedMinistryId) {
       await db
         .update(ministries)
@@ -71,6 +76,7 @@ export async function updateUserRole(
     revalidatePath("/admin");
     revalidatePath("/admin/usuarios");
     revalidatePath("/admin/ministerios");
+    revalidatePath("/admin/predicaciones");
     return { success: true };
   } catch (error) {
     console.error("Error updating user role:", error);
@@ -79,7 +85,7 @@ export async function updateUserRole(
 }
 
 export async function toggleUserActive(userId: string) {
-  const currentUser = await requireSuperAdminOrPastor();
+  await requireFullAdmin();
 
   try {
     const user = await db.query.users.findFirst({ where: eq(users.id, userId) });

@@ -5,11 +5,20 @@ import { planningEvents, type NewPlanningEvent } from "@/db/schema";
 import { eq, desc } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { getCurrentAdminUser, getAccessibleMinistryIds } from "@/lib/admin-auth";
+import { canWritePlanningRole } from "@/lib/roles";
 
 async function requireAuthRole() {
   const user = await getCurrentAdminUser();
   if (!user) {
     throw new Error("No autorizado");
+  }
+  return user;
+}
+
+async function requirePlanningWriter() {
+  const user = await requireAuthRole();
+  if (!canWritePlanningRole(user.role)) {
+    throw new Error("Solo lectura en planeación");
   }
   return user;
 }
@@ -31,7 +40,7 @@ export async function createPlanningEvent(data: {
   responsible?: string;
   status?: "scheduled" | "completed" | "cancelled";
 }) {
-  const user = await requireAuthRole();
+  const user = await requirePlanningWriter();
   const accessible = await getAccessibleMinistryIds(user);
 
   let targetMinistryId = data.ministryId || null;
@@ -77,7 +86,7 @@ export async function updatePlanningEvent(
   id: string,
   data: Partial<Omit<NewPlanningEvent, "id" | "createdAt">>
 ) {
-  const user = await requireAuthRole();
+  const user = await requirePlanningWriter();
   const accessible = await getAccessibleMinistryIds(user);
 
   try {
@@ -121,7 +130,7 @@ export async function updatePlanningEvent(
 }
 
 export async function deletePlanningEvent(id: string) {
-  const user = await requireAuthRole();
+  const user = await requirePlanningWriter();
   const accessible = await getAccessibleMinistryIds(user);
 
   try {

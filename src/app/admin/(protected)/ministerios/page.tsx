@@ -3,13 +3,15 @@ import { ministries, ministryMembers, members, users } from "@/db/schema";
 import { MinisteriosClient } from "./MinisteriosClient";
 import { asc, eq, inArray } from "drizzle-orm";
 import { requireRole, getAccessibleMinistryIds } from "@/lib/admin-auth";
+import { ADMIN_PANEL_ROLES } from "@/lib/roles";
 
 export const metadata = { title: "Gestión de Ministerios y Liderazgo | ICCI Admin" };
 
 export default async function AdminMinisteriosPage() {
-  const user = await requireRole(["superadmin", "admin", "pastor", "leader"], "/admin");
+  const user = await requireRole(ADMIN_PANEL_ROLES, "/admin");
   const accessibleIds = await getAccessibleMinistryIds(user);
   const isLeaderView = user.role === "leader";
+  const isReadOnly = user.role === "pastor";
 
   const [allMinistries, allUsers, allMembers, rawAssignments] = await Promise.all([
     accessibleIds === null
@@ -84,6 +86,7 @@ export default async function AdminMinisteriosPage() {
       initialAssignments={initialAssignments}
       userRole={user.role}
       isLeaderView={isLeaderView}
+      isReadOnly={isReadOnly}
     />
   );
 }

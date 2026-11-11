@@ -37,6 +37,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           token.role = synced.role;
           token.id = dbUser.id;
           token.ministryId = synced.ministryId;
+          token.campusId = dbUser.campusId;
+          token.canManagePreachings = Boolean(dbUser.canManagePreachings);
         }
       }
 
@@ -54,6 +56,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           });
           token.role = synced.role;
           token.ministryId = synced.ministryId;
+          token.campusId = dbUser.campusId;
+          token.canManagePreachings = Boolean(dbUser.canManagePreachings);
         }
       }
 
@@ -64,6 +68,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         session.user.id = token.id as string;
         session.user.role = token.role as UserRole;
         session.user.ministryId = token.ministryId as string | null | undefined;
+        session.user.campusId = token.campusId as string | null | undefined;
+        session.user.canManagePreachings = Boolean(token.canManagePreachings);
       }
       return session;
     },

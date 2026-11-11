@@ -3,11 +3,13 @@ import { members, ministries } from "@/db/schema";
 import { CumpleanosClient } from "./CumpleanosClient";
 import { asc } from "drizzle-orm";
 import { requireRole } from "@/lib/admin-auth";
+import { EVENT_WRITER_ROLES } from "@/lib/roles";
 
 export const metadata = { title: "Cumpleaños y Directorio de Miembros | ICCI Admin" };
 
 export default async function AdminCumpleanosPage() {
-  await requireRole(["superadmin", "admin", "pastor"], "/admin");
+  const user = await requireRole([...EVENT_WRITER_ROLES, "pastor"], "/admin");
+  const isReadOnly = user.role === "pastor";
   const [allMembers, allMinistries] = await Promise.all([
     db
       .select({
@@ -44,5 +46,11 @@ export default async function AdminCumpleanosPage() {
       .orderBy(asc(ministries.name)),
   ]);
 
-  return <CumpleanosClient initialMembers={allMembers as any} ministriesList={allMinistries as any} />;
+  return (
+    <CumpleanosClient
+      initialMembers={allMembers as any}
+      ministriesList={allMinistries as any}
+      isReadOnly={isReadOnly}
+    />
+  );
 }

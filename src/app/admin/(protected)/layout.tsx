@@ -4,6 +4,7 @@ import { prayerRequests, testimonies } from "@/db/schema";
 import { eq, count } from "drizzle-orm";
 import { AdminSidebar, type NavModule } from "@/components/admin/AdminSidebar";
 import { getCurrentAdminUser } from "@/lib/admin-auth";
+import { isFullAdminRole } from "@/lib/roles";
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const user = await getCurrentAdminUser();
@@ -13,15 +14,22 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   }
 
   const role = user.role;
-  const isLeader = role === "leader";
-
   let visibleModules: NavModule[];
 
-  if (isLeader) {
+  if (role === "leader") {
     visibleModules = [
       { href: "/admin", label: "Mi Panel", icon: "LayoutDashboard" },
       { href: "/admin/planeacion", label: "Planeación / Calendario", icon: "CalendarRange" },
       { href: "/admin/ministerios", label: "Mi Ministerio", icon: "Layers" },
+    ];
+  } else if (role === "pastor") {
+    visibleModules = [
+      { href: "/admin", label: "Inicio", icon: "LayoutDashboard" },
+      { href: "/admin/eventos", label: "Eventos Web", icon: "Calendar" },
+      { href: "/admin/planeacion", label: "Planeación", icon: "CalendarRange" },
+      { href: "/admin/predicaciones", label: "Predicaciones", icon: "BookMarked" },
+      { href: "/admin/ministerios", label: "Ministerios", icon: "Layers" },
+      { href: "/admin/cumpleanos", label: "Cumpleaños", icon: "Cake" },
     ];
   } else {
     const [[pendingPrayers], [pendingTestimonies]] = await Promise.all([
@@ -29,13 +37,18 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       db.select({ count: count() }).from(testimonies).where(eq(testimonies.status, "pending")),
     ]);
 
-    visibleModules = [
+    const baseModules: NavModule[] = [
       { href: "/admin", label: "Dashboard", icon: "LayoutDashboard" },
       { href: "/admin/eventos", label: "Eventos Web", icon: "Calendar" },
       { href: "/admin/planeacion", label: "Planeación", icon: "CalendarRange" },
+      { href: "/admin/predicaciones", label: "Predicaciones", icon: "BookMarked" },
       { href: "/admin/cumpleanos", label: "Cumpleaños", icon: "Cake" },
       { href: "/admin/ministerios", label: "Ministerios", icon: "Layers" },
-      { href: "/admin/campus", label: "Campus", icon: "MapPin" },
+      {
+        href: "/admin/campus",
+        label: role === "pastor_campus" ? "Mi Campus" : "Campus",
+        icon: "MapPin",
+      },
       { href: "/admin/devocionales", label: "Devocionales", icon: "BookOpen" },
       { href: "/admin/galeria", label: "Banco de Fotos", icon: "Camera" },
       {
@@ -50,9 +63,16 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         icon: "Heart",
         badge: pendingTestimonies?.count || 0,
       },
-      { href: "/admin/usuarios", label: "Usuarios", icon: "Users" },
-      { href: "/admin/configuracion", label: "Configuración", icon: "Settings" },
     ];
+
+    if (isFullAdminRole(role)) {
+      baseModules.push(
+        { href: "/admin/usuarios", label: "Usuarios", icon: "Users" },
+        { href: "/admin/configuracion", label: "Configuración", icon: "Settings" }
+      );
+    }
+
+    visibleModules = baseModules;
   }
 
   return (

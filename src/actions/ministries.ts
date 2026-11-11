@@ -5,6 +5,7 @@ import { ministries, ministryMembers, members, users, type NewMinistry } from "@
 import { eq, asc, and, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { getCurrentAdminUser, getAccessibleMinistryIds } from "@/lib/admin-auth";
+import { EVENT_WRITER_ROLES } from "@/lib/roles";
 
 function slugify(text: string) {
   return text
@@ -20,8 +21,7 @@ function slugify(text: string) {
 
 async function requireAdminOrPastor() {
   const user = await getCurrentAdminUser();
-  const allowed = ["superadmin", "admin", "pastor"];
-  if (!user || !allowed.includes(user.role)) {
+  if (!user || !EVENT_WRITER_ROLES.includes(user.role)) {
     throw new Error("No autorizado");
   }
   return user;
@@ -159,6 +159,10 @@ export async function updateMinistry(
   if (!user) return { success: false, error: "No autorizado" };
 
   try {
+    if (user.role === "pastor") {
+      return { success: false, error: "Acceso de solo lectura en ministerios." };
+    }
+
     if (user.role === "leader") {
       const accessible = await getAccessibleMinistryIds(user);
       if (!accessible || !accessible.includes(id)) {
@@ -226,7 +230,7 @@ export async function deleteMinistry(id: string) {
 
 async function canManageMinistryTeam(ministryId: string) {
   const user = await getCurrentAdminUser();
-  if (!user) return null;
+  if (!user || user.role === "pastor") return null;
   const accessible = await getAccessibleMinistryIds(user);
   if (accessible !== null && !accessible.includes(ministryId)) {
     return null;

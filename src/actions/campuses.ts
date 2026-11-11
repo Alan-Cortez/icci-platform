@@ -4,7 +4,8 @@ import { db } from "@/db";
 import { campuses, campusSchedules, type NewCampus } from "@/db/schema";
 import { eq, asc } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
-import { auth } from "@/auth";
+import { getCurrentAdminUser } from "@/lib/admin-auth";
+import { EVENT_WRITER_ROLES, isFullAdminRole } from "@/lib/roles";
 
 function slugify(text: string) {
   return text
@@ -19,12 +20,11 @@ function slugify(text: string) {
 }
 
 async function requireAdminOrPastor() {
-  const session = await auth();
-  const allowed = ["superadmin", "admin", "pastor"];
-  if (!session || !allowed.includes(session.user.role)) {
+  const user = await getCurrentAdminUser();
+  if (!user || !EVENT_WRITER_ROLES.includes(user.role)) {
     throw new Error("No autorizado");
   }
-  return session.user;
+  return user;
 }
 
 export async function getCampuses() {
@@ -52,7 +52,10 @@ export async function updateCampus(
   data: Partial<Omit<NewCampus, "id" | "createdAt">>,
   schedules?: Array<{ title: string; days: string; time: string; sortOrder?: number }>
 ) {
-  await requireAdminOrPastor();
+  const user = await requireAdminOrPastor();
+  if (user.role === "pastor_campus" && user.campusId && user.campusId !== id) {
+    return { success: false, error: "Solo puedes editar el campus asignado a tu cargo." };
+  }
 
   try {
     // If setting isMain to true, unset isMain for all other campuses
@@ -113,7 +116,10 @@ export async function createCampus(
   },
   schedules?: Array<{ title: string; days: string; time: string; sortOrder?: number }>
 ) {
-  await requireAdminOrPastor();
+  const user = await requireAdminOrPastor();
+  if (!isFullAdminRole(user.role)) {
+    return { success: false, error: "Solo Administración o Pastor General pueden crear nuevos campus." };
+  }
 
   try {
     const slug = slugify(data.name);
@@ -220,7 +226,10 @@ export async function uploadCampusImage(formData: FormData): Promise<{ success: 
  */
 export async function updateCampusPhotoField(id: string, field: "image" | "pastorImage", url: string | null) {
   try {
-    await requireAdminOrPastor();
+    const user = await requireAdminOrPastor();
+    if (user.role === "pastor_campus" && user.campusId && user.campusId !== id) {
+      return { success: false, error: "Solo puedes editar fotos de tu campus asignado." };
+    }
     await db.update(campuses).set({ [field]: url }).where(eq(campuses.id, id));
     revalidatePath("/admin/campus");
     revalidatePath("/campus");

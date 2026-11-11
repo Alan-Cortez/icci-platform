@@ -4,6 +4,7 @@ import { auth } from "@/auth";
 import { db } from "@/db";
 import { users, ministries } from "@/db/schema";
 import { syncUserRoleFromMinistries } from "@/lib/role-sync";
+import { ADMIN_PANEL_ROLES } from "@/lib/roles";
 import type { UserRole } from "@/types/next-auth";
 
 export interface AdminUserSession {
@@ -13,13 +14,13 @@ export interface AdminUserSession {
   image: string | null;
   role: UserRole;
   ministryId: string | null;
+  campusId: string | null;
+  canManagePreachings: boolean;
 }
 
-const ADMIN_PANEL_ROLES: UserRole[] = ["superadmin", "admin", "pastor", "leader"];
-
 /**
- * Fetches the authenticated user directly from DB so role and ministry
- * assignments take effect immediately without waiting for JWT refresh.
+ * Fetches the authenticated user directly from DB so role, campus,
+ * preaching permissions, and ministry assignments take effect immediately.
  */
 export async function getCurrentAdminUser(): Promise<AdminUserSession | null> {
   const session = await auth();
@@ -53,13 +54,13 @@ export async function getCurrentAdminUser(): Promise<AdminUserSession | null> {
     image: dbUser.image,
     role: synced.role,
     ministryId: synced.ministryId,
+    campusId: dbUser.campusId,
+    canManagePreachings: Boolean(dbUser.canManagePreachings),
   };
 }
 
 /**
  * Enforces role access on admin server pages.
- * - Unauthenticated/non-admin users are sent to "/".
- * - Leaders accessing admin-only sections are redirected to fallbackRedirect ("/admin").
  */
 export async function requireRole(
   allowedRoles: UserRole[] = ADMIN_PANEL_ROLES,
@@ -76,11 +77,12 @@ export async function requireRole(
 }
 
 /**
- * Returns `null` if the user has full access to all ministries (superadmin, admin, pastor),
- * or an array of ministry IDs assigned to a leader.
+ * Returns `null` if the user has visibility of all ministries
+ * (`superadmin`, `admin`, `pastor_general`, `pastor_campus`, `pastor`),
+ * or an array of ministry IDs assigned to a `leader`.
  */
 export async function getAccessibleMinistryIds(user: AdminUserSession): Promise<string[] | null> {
-  if (user.role === "superadmin" || user.role === "admin" || user.role === "pastor") {
+  if (user.role !== "leader") {
     return null;
   }
 

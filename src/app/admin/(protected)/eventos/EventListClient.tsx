@@ -41,9 +41,15 @@ function getMonthLabel(ts: number | Date | null): string {
 export function EventListClient({
   initialEvents,
   ministriesList = [],
+  campusesList = [],
+  canEditEvents = true,
+  defaultCampusId = "",
 }: {
   initialEvents: any[];
   ministriesList?: { id: string; name: string }[];
+  campusesList?: { id: string; name: string }[];
+  canEditEvents?: boolean;
+  defaultCampusId?: string;
 }) {
   const router = useRouter();
   const [showForm, setShowForm] = useState(false);
@@ -105,21 +111,30 @@ export function EventListClient({
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl sm:text-3xl font-black text-navy mb-1 flex items-center gap-2.5">
-            <Calendar className="w-7 h-7 text-gold" /> Gestión de Eventos
+            <Calendar className="w-7 h-7 text-gold" />{" "}
+            {canEditEvents ? "Gestión de Eventos" : "Eventos Web (Consulta)"}
           </h1>
           <p className="text-gray-500 text-sm">
-            Crea, edita, destaca u oculta los próximos eventos de la iglesia.
+            {canEditEvents
+              ? "Crea, edita, destaca u oculta los próximos eventos de la iglesia."
+              : "Vista de lectura de los próximos eventos publicados en el sitio web."}
           </p>
         </div>
-        <Button
-          onClick={() => {
-            setEditingEvent(null);
-            setShowForm(true);
-          }}
-          className="flex items-center gap-2"
-        >
-          <Plus className="w-5 h-5" /> Nuevo Evento
-        </Button>
+        {canEditEvents ? (
+          <Button
+            onClick={() => {
+              setEditingEvent(null);
+              setShowForm(true);
+            }}
+            className="flex items-center gap-2"
+          >
+            <Plus className="w-5 h-5" /> Nuevo Evento
+          </Button>
+        ) : (
+          <span className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-gray-100 text-gray-600 text-xs font-bold border border-gray-200">
+            <Eye className="w-3.5 h-3.5 text-gray-500" /> Solo lectura
+          </span>
+        )}
       </div>
 
       {/* Barra de filtros y búsqueda */}
@@ -210,52 +225,60 @@ export function EventListClient({
                 </div>
               </div>
 
-              <div className="mt-auto flex items-center gap-2 pt-4 border-t border-gray-100">
-                <button
-                  onClick={() => handleEdit(event)}
-                  className="flex-1 flex items-center justify-center gap-1.5 py-2 text-xs font-bold text-navy bg-gray-100 hover:bg-gray-200 rounded-xl transition-colors cursor-pointer"
-                >
-                  <Pencil className="w-3.5 h-3.5" /> Editar
-                </button>
-                <button
-                  onClick={() => handleToggleFeatured(event)}
-                  disabled={busyId === event.id}
-                  title={event.featured ? "Quitar destacado" : "Destacar evento"}
-                  className={cn(
-                    "p-2 rounded-xl border transition-colors cursor-pointer",
-                    event.featured
-                      ? "bg-gold/15 border-gold/40 text-gold-dark"
-                      : "bg-white border-gray-200 text-gray-400 hover:text-gold"
-                  )}
-                >
-                  <Star className={cn("w-4 h-4", event.featured && "fill-gold")} />
-                </button>
-                <button
-                  onClick={() => handleTogglePublished(event)}
-                  disabled={busyId === event.id}
-                  title={event.isPublished ? "Ocultar del sitio público" : "Publicar en el sitio"}
-                  className={cn(
-                    "p-2 rounded-xl border transition-colors cursor-pointer",
-                    event.isPublished
-                      ? "bg-white border-gray-200 text-gray-500 hover:text-navy"
-                      : "bg-amber-50 border-amber-200 text-amber-700"
-                  )}
-                >
-                  {event.isPublished ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
-                </button>
-                <button
-                  onClick={() => handleDelete(event.id)}
-                  disabled={busyId === event.id}
-                  title="Eliminar evento"
-                  className="p-2 text-red-500 bg-red-50 hover:bg-red-100 rounded-xl transition-colors disabled:opacity-50 cursor-pointer"
-                >
-                  {busyId === event.id ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                  ) : (
-                    <Trash2 className="w-4 h-4" />
-                  )}
-                </button>
-              </div>
+              {canEditEvents ? (
+                <div className="mt-auto flex items-center gap-2 pt-4 border-t border-gray-100">
+                  <button
+                    onClick={() => handleEdit(event)}
+                    className="flex-1 flex items-center justify-center gap-1.5 py-2 text-xs font-bold text-navy bg-gray-100 hover:bg-gray-200 rounded-xl transition-colors cursor-pointer"
+                  >
+                    <Pencil className="w-3.5 h-3.5" /> Editar
+                  </button>
+                  <button
+                    onClick={() => handleToggleFeatured(event)}
+                    disabled={busyId === event.id}
+                    title={event.featured ? "Quitar destacado" : "Destacar evento"}
+                    className={cn(
+                      "p-2 rounded-xl border transition-colors cursor-pointer",
+                      event.featured
+                        ? "bg-gold/15 border-gold/40 text-gold-dark"
+                        : "bg-white border-gray-200 text-gray-400 hover:text-gold"
+                    )}
+                  >
+                    <Star className={cn("w-4 h-4", event.featured && "fill-gold")} />
+                  </button>
+                  <button
+                    onClick={() => handleTogglePublished(event)}
+                    disabled={busyId === event.id}
+                    title={event.isPublished ? "Ocultar del sitio público" : "Publicar en el sitio"}
+                    className={cn(
+                      "p-2 rounded-xl border transition-colors cursor-pointer",
+                      event.isPublished
+                        ? "bg-white border-gray-200 text-gray-500 hover:text-navy"
+                        : "bg-amber-50 border-amber-200 text-amber-700"
+                    )}
+                  >
+                    {event.isPublished ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
+                  </button>
+                  <button
+                    onClick={() => handleDelete(event.id)}
+                    disabled={busyId === event.id}
+                    title="Eliminar evento"
+                    className="p-2 text-red-500 bg-red-50 hover:bg-red-100 rounded-xl transition-colors disabled:opacity-50 cursor-pointer"
+                  >
+                    {busyId === event.id ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <Trash2 className="w-4 h-4" />
+                    )}
+                  </button>
+                </div>
+              ) : (
+                event.description && (
+                  <p className="mt-auto pt-3 border-t border-gray-100 text-xs text-gray-500 line-clamp-2">
+                    {event.description}
+                  </p>
+                )
+              )}
             </div>
           </Card>
         ))}
@@ -271,10 +294,12 @@ export function EventListClient({
         )}
       </div>
 
-      {showForm && (
+      {showForm && canEditEvents && (
         <EventForm
           event={editingEvent}
           ministriesList={ministriesList}
+          campusesList={campusesList}
+          defaultCampusId={defaultCampusId}
           onCancel={() => {
             setShowForm(false);
             setEditingEvent(null);

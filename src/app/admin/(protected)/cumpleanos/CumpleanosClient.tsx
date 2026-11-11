@@ -38,9 +38,11 @@ const MONTH_NAMES = [
 export function CumpleanosClient({
   initialMembers,
   ministriesList,
+  isReadOnly = false,
 }: {
   initialMembers: Member[];
   ministriesList: Ministry[];
+  isReadOnly?: boolean;
 }) {
   const [membersList, setMembersList] = useState<Member[]>(initialMembers);
   const [search, setSearch] = useState("");
@@ -256,12 +258,14 @@ export function CumpleanosClient({
             Control de fechas de nacimiento, felicitaciones directas por WhatsApp y directorio congregacional.
           </p>
         </div>
-        <Button
-          onClick={openCreateModal}
-          className="bg-gold hover:bg-gold-dark text-navy font-bold flex items-center gap-2 shadow-xs"
-        >
-          <UserPlus className="w-4 h-4" /> Registrar Miembro
-        </Button>
+        {!isReadOnly && (
+          <Button
+            onClick={openCreateModal}
+            className="bg-gold hover:bg-gold-dark text-navy font-bold flex items-center gap-2 shadow-xs"
+          >
+            <UserPlus className="w-4 h-4" /> Registrar Miembro
+          </Button>
+        )}
       </div>
 
       {/* Tarjetas de Estadísticas */}
@@ -518,22 +522,26 @@ export function CumpleanosClient({
                           </a>
                         )}
 
-                        <button
-                          onClick={() => openEditModal(member)}
-                          className="p-1.5 rounded-lg text-gray-400 hover:text-navy hover:bg-gray-100 transition-colors"
-                          title="Editar miembro"
-                        >
-                          <Edit3 className="w-4 h-4" />
-                        </button>
+                        {!isReadOnly && (
+                          <>
+                            <button
+                              onClick={() => openEditModal(member)}
+                              className="p-1.5 rounded-lg text-gray-400 hover:text-navy hover:bg-gray-100 transition-colors"
+                              title="Editar miembro"
+                            >
+                              <Edit3 className="w-4 h-4" />
+                            </button>
 
-                        <button
-                          onClick={() => handleDelete(member.id)}
-                          disabled={isUpdating === member.id}
-                          className="p-1.5 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors disabled:opacity-50"
-                          title="Eliminar miembro"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
+                            <button
+                              onClick={() => handleDelete(member.id)}
+                              disabled={isUpdating === member.id}
+                              className="p-1.5 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors disabled:opacity-50"
+                              title="Eliminar miembro"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </>
+                        )}
                       </div>
                     </td>
                   </tr>

@@ -19,11 +19,15 @@ export const users = sqliteTable("user", {
   emailVerified: integer("emailVerified", { mode: "timestamp_ms" }),
   image: text("image"),
   // Platform fields
-  role: text("role").$type<"user" | "admin" | "superadmin" | "pastor" | "leader">().default("user").notNull(),
+  role: text("role")
+    .$type<"user" | "admin" | "superadmin" | "pastor_general" | "pastor_campus" | "pastor" | "leader">()
+    .default("user")
+    .notNull(),
   ministryId: text("ministryId"),
   phone: text("phone"),
   isActive: integer("isActive", { mode: "boolean" }).default(true).notNull(),
   campusId: text("campusId"),
+  canManagePreachings: integer("canManagePreachings", { mode: "boolean" }).default(false).notNull(),
   createdAt: integer("createdAt", { mode: "timestamp_ms" }).$defaultFn(() => new Date()),
 });
 
@@ -232,6 +236,25 @@ export const planningEvents = sqliteTable("planning_event", {
     .$type<"scheduled" | "completed" | "cancelled">()
     .default("scheduled")
     .notNull(),
+  createdAt: integer("createdAt", { mode: "timestamp_ms" }).$defaultFn(() => new Date()),
+  updatedAt: integer("updatedAt", { mode: "timestamp_ms" }),
+});
+
+export const preachingSchedules = sqliteTable("preaching_schedule", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  campusId: text("campusId").references(() => campuses.id, {
+    onDelete: "set null",
+  }),
+  date: integer("date", { mode: "timestamp_ms" }).notNull(),
+  serviceName: text("serviceName").notNull(),
+  timeStr: text("timeStr"),
+  preacherName: text("preacherName").notNull(),
+  preacherUserId: text("preacherUserId"),
+  topic: text("topic"),
+  notes: text("notes"),
+  createdBy: text("createdBy"),
   createdAt: integer("createdAt", { mode: "timestamp_ms" }).$defaultFn(() => new Date()),
   updatedAt: integer("updatedAt", { mode: "timestamp_ms" }),
 });
@@ -470,3 +493,5 @@ export type Member = typeof members.$inferSelect;
 export type NewMember = typeof members.$inferInsert;
 export type PlanningEvent = typeof planningEvents.$inferSelect;
 export type NewPlanningEvent = typeof planningEvents.$inferInsert;
+export type PreachingSchedule = typeof preachingSchedules.$inferSelect;
+export type NewPreachingSchedule = typeof preachingSchedules.$inferInsert;

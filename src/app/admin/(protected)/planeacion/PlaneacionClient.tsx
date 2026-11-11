@@ -80,6 +80,7 @@ export function PlaneacionClient({
   accessibleMinistryIds: string[] | null;
 }) {
   const isLeader = userRole === "leader";
+  const isReadOnlyPastor = userRole === "pastor";
   const now = new Date();
 
   const [eventsList, setEventsList] = useState<PlanningEvent[]>(initialEvents);
@@ -129,6 +130,7 @@ export function PlaneacionClient({
   }
 
   function canEditEvent(ev: PlanningEvent): boolean {
+    if (isReadOnlyPastor) return false;
     if (accessibleMinistryIds === null) return true;
     return Boolean(ev.ministryId && accessibleMinistryIds.includes(ev.ministryId));
   }
@@ -465,12 +467,18 @@ export function PlaneacionClient({
             </button>
           </div>
 
-          <Button
-            onClick={() => openCreateModal()}
-            className="bg-gold hover:bg-gold-dark text-navy font-bold flex items-center gap-2 shadow-xs"
-          >
-            <Plus className="w-4 h-4" /> Nueva Actividad
-          </Button>
+          {!isReadOnlyPastor ? (
+            <Button
+              onClick={() => openCreateModal()}
+              className="bg-gold hover:bg-gold-dark text-navy font-bold flex items-center gap-2 shadow-xs"
+            >
+              <Plus className="w-4 h-4" /> Nueva Actividad
+            </Button>
+          ) : (
+            <span className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-gray-100 text-gray-600 text-xs font-bold border border-gray-200">
+              <Eye className="w-3.5 h-3.5 text-gray-500" /> Solo lectura
+            </span>
+          )}
         </div>
       </div>
 
@@ -652,14 +660,16 @@ export function PlaneacionClient({
                           </span>
                         )}
 
-                        <button
-                          type="button"
-                          onClick={() => openCreateModal(cell.dateKey!)}
-                          className="opacity-0 group-hover:opacity-100 focus:opacity-100 p-1 rounded-md hover:bg-gold/20 text-navy transition-opacity cursor-pointer"
-                          title={`Agendar el ${cell.day} de ${MONTHS_ES[selectedMonth]}`}
-                        >
-                          <Plus className="w-3.5 h-3.5" />
-                        </button>
+                        {!isReadOnlyPastor && (
+                          <button
+                            type="button"
+                            onClick={() => openCreateModal(cell.dateKey!)}
+                            className="opacity-0 group-hover:opacity-100 focus:opacity-100 p-1 rounded-md hover:bg-gold/20 text-navy transition-opacity cursor-pointer"
+                            title={`Agendar el ${cell.day} de ${MONTHS_ES[selectedMonth]}`}
+                          >
+                            <Plus className="w-3.5 h-3.5" />
+                          </button>
+                        )}
                       </div>
                     </div>
 

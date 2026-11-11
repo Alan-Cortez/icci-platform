@@ -7,11 +7,12 @@ import { eq, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { uploadImage } from "@/lib/upload";
 import { getCurrentAdminUser } from "@/lib/admin-auth";
+import { canWriteEventsRole } from "@/lib/roles";
 
 async function requireEventAdmin() {
   const user = await getCurrentAdminUser();
-  if (!user || !["superadmin", "admin", "pastor"].includes(user.role)) {
-    throw new Error("No autorizado");
+  if (!user || !canWriteEventsRole(user.role)) {
+    throw new Error("No autorizado para modificar eventos");
   }
   return user;
 }
@@ -169,6 +170,7 @@ export async function deleteEvent(id: string) {
 
 export async function toggleEventPublished(id: string, isPublished: boolean) {
   try {
+    await requireEventAdmin();
     await db.update(events).set({ isPublished }).where(eq(events.id, id));
     revalidatePath("/admin");
     revalidatePath("/admin/eventos");
@@ -182,6 +184,7 @@ export async function toggleEventPublished(id: string, isPublished: boolean) {
 
 export async function toggleEventFeatured(id: string, featured: boolean) {
   try {
+    await requireEventAdmin();
     await db.update(events).set({ featured }).where(eq(events.id, id));
     revalidatePath("/admin");
     revalidatePath("/admin/eventos");

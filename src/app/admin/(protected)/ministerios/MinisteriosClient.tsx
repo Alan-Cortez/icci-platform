@@ -65,6 +65,7 @@ export function MinisteriosClient({
   initialAssignments,
   userRole,
   isLeaderView = false,
+  isReadOnly = false,
 }: {
   initialMinistries: Ministry[];
   usersList: SimpleUser[];
@@ -72,6 +73,7 @@ export function MinisteriosClient({
   initialAssignments: MinistryAssignment[];
   userRole: string;
   isLeaderView?: boolean;
+  isReadOnly?: boolean;
 }) {
   const [ministriesList, setMinistriesList] = useState<Ministry[]>(initialMinistries);
   const [assignments, setAssignments] = useState<MinistryAssignment[]>(initialAssignments);
@@ -372,7 +374,7 @@ export function MinisteriosClient({
               : "Asigna pastores, líderes con correo y contacto, y registra los miembros que sirven en cada ministerio."}
           </p>
         </div>
-        {!isLeaderView && (
+        {!isLeaderView && !isReadOnly && (
           <Button
             onClick={openCreateModal}
             className="bg-gold hover:bg-gold-dark text-navy font-bold flex items-center gap-2 shadow-xs"
@@ -544,15 +546,17 @@ export function MinisteriosClient({
               {/* Acciones */}
               <div className="pt-4 mt-3 border-t border-gray-100 flex items-center justify-between gap-2">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => openEditModal(min)}
-                    className="text-xs font-bold flex items-center gap-1.5"
-                  >
-                    <Edit3 className="w-3.5 h-3.5" />{" "}
-                    {isLeaderView ? "Editar Info" : "Editar / Asignar"}
-                  </Button>
+                  {!isReadOnly && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => openEditModal(min)}
+                      className="text-xs font-bold flex items-center gap-1.5"
+                    >
+                      <Edit3 className="w-3.5 h-3.5" />{" "}
+                      {isLeaderView ? "Editar Info" : "Editar / Asignar"}
+                    </Button>
+                  )}
 
                   <Button
                     size="sm"
@@ -563,7 +567,7 @@ export function MinisteriosClient({
                   </Button>
                 </div>
 
-                {!isLeaderView && userRole === "superadmin" && (
+                {!isLeaderView && !isReadOnly && userRole === "superadmin" && (
                   <button
                     onClick={() => handleDelete(min.id)}
                     disabled={isUpdating === min.id}
@@ -899,6 +903,7 @@ export function MinisteriosClient({
             </div>
 
             {/* Formulario para agregar hermano al ministerio */}
+            {!isReadOnly && (
             <form
               onSubmit={handleAddMember}
               className="p-4 bg-gray-50 rounded-2xl border border-gray-200/80 space-y-3 mb-6"
@@ -1010,6 +1015,7 @@ export function MinisteriosClient({
                 </Button>
               </div>
             </form>
+            )}
 
             {/* Lista de Miembros Asignados */}
             <div className="space-y-2.5">
@@ -1065,32 +1071,34 @@ export function MinisteriosClient({
                         </div>
                       </div>
 
-                      <div className="flex items-center gap-2 shrink-0">
-                        <select
-                          value={a.role}
-                          disabled={teamBusy}
-                          onChange={(e) =>
-                            handleChangeMemberRole(
-                              a.id,
-                              e.target.value as "pastor" | "lider" | "servidor"
-                            )
-                          }
-                          className="px-2.5 py-1.5 rounded-lg border border-gray-200 text-xs bg-white text-navy font-semibold"
-                        >
-                          <option value="servidor">Servidor</option>
-                          <option value="lider">Líder</option>
-                          <option value="pastor">Pastor(a)</option>
-                        </select>
+                      {!isReadOnly && (
+                        <div className="flex items-center gap-2 shrink-0">
+                          <select
+                            value={a.role}
+                            disabled={teamBusy}
+                            onChange={(e) =>
+                              handleChangeMemberRole(
+                                a.id,
+                                e.target.value as "pastor" | "lider" | "servidor"
+                              )
+                            }
+                            className="px-2.5 py-1.5 rounded-lg border border-gray-200 text-xs bg-white text-navy font-semibold"
+                          >
+                            <option value="servidor">Servidor</option>
+                            <option value="lider">Líder</option>
+                            <option value="pastor">Pastor(a)</option>
+                          </select>
 
-                        <button
-                          onClick={() => handleRemoveMember(a.id)}
-                          disabled={teamBusy}
-                          className="p-1.5 text-gray-400 hover:text-red-600 rounded-lg hover:bg-red-50 transition-colors"
-                          title="Quitar del ministerio"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      </div>
+                          <button
+                            onClick={() => handleRemoveMember(a.id)}
+                            disabled={teamBusy}
+                            className="p-1.5 text-gray-400 hover:text-red-600 rounded-lg hover:bg-red-50 transition-colors"
+                            title="Quitar del ministerio"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>

@@ -15,6 +15,8 @@ import {
   AlertCircle,
   Layers,
   CalendarRange,
+  BookMarked,
+  Cake,
 } from "lucide-react";
 import { Card, Badge } from "@/components/ui";
 import { db } from "@/db";
@@ -28,9 +30,11 @@ import {
   ministries,
   ministryMembers,
   planningEvents,
+  preachingSchedules,
 } from "@/db/schema";
 import { eq, count, desc, asc, inArray } from "drizzle-orm";
 import { getCurrentAdminUser, getAccessibleMinistryIds } from "@/lib/admin-auth";
+import { isFullAdminRole, canManagePreachingsUser } from "@/lib/roles";
 import {
   DashboardHeaderActions,
   DashboardQuickModeration,
@@ -237,7 +241,155 @@ export default async function AdminDashboardPage() {
     );
   }
 
-  // ── Vista completa para Super Admin, Admin y Pastor ─────────────────────
+  // ── Vista para Pastores (Lectura general + Predicaciones si autorizado) ─
+  if (user.role === "pastor") {
+    const canManagePreachings = canManagePreachingsUser(user);
+    const [upcomingEvents, upcomingPlanning, upcomingPreachings] = await Promise.all([
+      db.select().from(events).where(eq(events.isPublished, true)).orderBy(desc(events.startDate)).limit(4),
+      db.select().from(planningEvents).orderBy(asc(planningEvents.date)),
+      db.select().from(preachingSchedules).orderBy(asc(preachingSchedules.date)),
+    ]);
+
+    const nowStart = new Date();
+    nowStart.setHours(0, 0, 0, 0);
+    const nextPlanning = upcomingPlanning
+      .filter((ev) => new Date(ev.date).getTime() >= nowStart.getTime() && ev.status === "scheduled")
+      .slice(0, 5);
+    const nextPreachings = upcomingPreachings
+      .filter((p) => new Date(p.date).getTime() >= nowStart.getTime())
+      .slice(0, 5);
+
+    return (
+      <div className="space-y-8">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-2xl border border-gray-200/80 shadow-xs">
+          <div>
+            <p className="text-xs font-bold uppercase tracking-wider text-gold mb-1 capitalize">
+              {todayFormatted}
+            </p>
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-navy">
+              Panel Pastoral
+            </h1>
+            <p className="text-gray-500 text-sm mt-0.5">
+              Bienvenido, <span className="font-semibold text-navy">{user.name}</span>
+              {" "}• Modo consulta pastoral{canManagePreachings ? " (con gestión de Predicaciones)" : ""}
+            </p>
+          </div>
+          <Link
+            href="/admin/predicaciones"
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-navy text-white text-xs font-bold hover:bg-navy/90 transition-colors"
+          >
+            <BookMarked className="w-4 h-4 text-gold" />
+            {canManagePreachings ? "Gestionar Predicaciones" : "Ver Rol de Predicaciones"}
+          </Link>
+        </div>
+
+        <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-4">
+          {[
+            { href: "/admin/eventos", label: "Eventos Web", desc: "Consulta de eventos publicados", icon: Calendar, color: "bg-purple-50 text-purple-600" },
+            { href: "/admin/planeacion", label: "Planeación", desc: "Calendario por mes y ministerio", icon: CalendarRange, color: "bg-blue-50 text-blue-600" },
+            { href: "/admin/predicaciones", label: "Predicaciones", desc: canManagePreachings ? "Asignar predicaciones del mes" : "Ver rol de predicaciones", icon: BookMarked, color: "bg-amber-50 text-amber-700" },
+            { href: "/admin/ministerios", label: "Ministerios", desc: "Ver líderes y equipos", icon: Layers, color: "bg-emerald-50 text-emerald-600" },
+            { href: "/admin/cumpleanos", label: "Cumpleaños", desc: "Directorio de cumpleaños", icon: Cake, color: "bg-pink-50 text-pink-600" },
+          ].map((item) => (
+            <Link key={item.href} href={item.href} className="group block">
+              <Card className="p-5 h-full border border-gray-200/80 hover:border-gold/60 hover:shadow-md transition-all">
+                <div className="flex items-center justify-between mb-3">
+                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${item.color}`}>
+                    <item.icon className="w-5 h-5" />
+                  </div>
+                  <ArrowRight className="w-4 h-4 text-gray-300 group-hover:text-gold transition-colors" />
+                </div>
+                <p className="font-bold text-navy text-sm">{item.label}</p>
+                <p className="text-xs text-gray-500 mt-1">{item.desc}</p>
+              </Card>
+            </Link>
+          ))}
+        </div>
+
+        <div className="grid lg:grid-cols-2 gap-6">
+          <Card className="p-6 border border-gray-200/80 shadow-xs">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="font-bold text-navy text-base flex items-center gap-2">
+                <BookMarked className="w-4 h-4 text-gold" /> Próximas Predicaciones
+              </h2>
+              <Link href="/admin/predicaciones" className="text-xs font-bold text-navy hover:text-gold flex items-center gap-1">
+                Ver rol completo <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
+            {nextPreachings.length === 0 ? (
+              <p className="text-xs text-gray-400 py-6 text-center">No hay predicaciones programadas próximamente.</p>
+            ) : (
+              <div className="space-y-2.5">
+                {nextPreachings.map((p) => (
+                  <div key={p.id} className="p-3 rounded-xl border border-gray-100 bg-gray-50/70 flex items-center justify-between gap-3">
+                    <div className="min-w-0">
+                      <p className="font-bold text-navy text-sm truncate">{p.preacherName}</p>
+                      <p className="text-xs text-gray-500 truncate">{p.serviceName}{p.topic ? ` • ${p.topic}` : ""}</p>
+                    </div>
+                    <span className="text-xs font-bold text-navy shrink-0">
+                      {new Date(p.date).toLocaleDateString("es-MX", { day: "numeric", month: "short", timeZone: "UTC" })}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </Card>
+
+          <Card className="p-6 border border-gray-200/80 shadow-xs">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="font-bold text-navy text-base flex items-center gap-2">
+                <CalendarRange className="w-4 h-4 text-blue-600" /> Agenda Próxima
+              </h2>
+              <Link href="/admin/planeacion" className="text-xs font-bold text-navy hover:text-gold flex items-center gap-1">
+                Ver calendario <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
+            {nextPlanning.length === 0 ? (
+              <p className="text-xs text-gray-400 py-6 text-center">No hay actividades próximas en planeación.</p>
+            ) : (
+              <div className="space-y-2.5">
+                {nextPlanning.map((ev) => (
+                  <div key={ev.id} className="p-3 rounded-xl border border-gray-100 bg-gray-50/70 flex items-center justify-between gap-3">
+                    <div className="min-w-0">
+                      <p className="font-bold text-navy text-sm truncate">{ev.title}</p>
+                      <p className="text-xs text-gray-500 truncate">{ev.timeStr || "Todo el día"}{ev.responsible ? ` • ${ev.responsible}` : ""}</p>
+                    </div>
+                    <span className="text-xs font-bold text-navy shrink-0">
+                      {new Date(ev.date).toLocaleDateString("es-MX", { day: "numeric", month: "short", timeZone: "UTC" })}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </Card>
+        </div>
+
+        <Card className="p-6 border border-gray-200/80 shadow-xs">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="font-bold text-navy text-base flex items-center gap-2">
+              <Calendar className="w-4 h-4 text-purple-600" /> Eventos Web Publicados
+            </h2>
+            <Link href="/admin/eventos" className="text-xs font-bold text-navy hover:text-gold flex items-center gap-1">
+              Ver todos <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            {upcomingEvents.map((ev) => (
+              <div key={ev.id} className="p-3 rounded-xl border border-gray-100 bg-gray-50/60">
+                <p className="text-[10px] font-bold uppercase text-gold-dark mb-1">{ev.category}</p>
+                <p className="font-bold text-navy text-sm truncate">{ev.title}</p>
+                <p className="text-xs text-gray-500 mt-1">
+                  {new Date(ev.startDate).toLocaleDateString("es-MX", { day: "numeric", month: "short", timeZone: "UTC" })} • {ev.timeStr}
+                </p>
+              </div>
+            ))}
+          </div>
+        </Card>
+      </div>
+    );
+  }
+
+  // ── Vista completa para Super Admin, Admin, Pastor General y Pastor de Campus ──
   const session = { user };
 
   const [
@@ -370,12 +522,12 @@ export default async function AdminDashboardPage() {
       color: "text-pink-600 bg-pink-50",
       badge: pendingTestimoniesCount.count,
     },
-    ...(["superadmin", "admin", "pastor"].includes(session.user.role)
+    ...(isFullAdminRole(session.user.role)
       ? [
           {
             href: "/admin/usuarios",
             label: "Gestionar Usuarios",
-            desc: "Asignar permisos de administrador, pastor o líder",
+            desc: "Asignar permisos de administrador, pastores o líder",
             icon: Users,
             color: "text-emerald-600 bg-emerald-50",
           },
@@ -599,7 +751,7 @@ export default async function AdminDashboardPage() {
             <h2 className="font-bold text-navy text-base flex items-center gap-2">
               <Users className="w-4 h-4 text-emerald-600" /> Miembros Recientes
             </h2>
-            {session.user.role === "superadmin" && (
+            {isFullAdminRole(session.user.role) && (
               <Link
                 href="/admin/usuarios"
                 className="text-xs font-semibold text-navy hover:text-gold flex items-center gap-1"

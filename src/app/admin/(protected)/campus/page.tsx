@@ -1,15 +1,19 @@
 import { db } from "@/db";
 import { campuses, campusSchedules } from "@/db/schema";
 import { CampusClient } from "./CampusClient";
-import { desc, asc } from "drizzle-orm";
+import { desc, asc, eq } from "drizzle-orm";
 import { requireRole } from "@/lib/admin-auth";
+import { EVENT_WRITER_ROLES } from "@/lib/roles";
 
 export const metadata = { title: "Gestión de Campus | ICCI Admin" };
 
 export default async function AdminCampusPage() {
-  await requireRole(["superadmin", "admin", "pastor"], "/admin");
+  const user = await requireRole(EVENT_WRITER_ROLES, "/admin");
+  const filterByCampus = user.role === "pastor_campus" && user.campusId ? user.campusId : null;
   const [campusesList, schedulesList] = await Promise.all([
-    db.select().from(campuses).orderBy(desc(campuses.isMain), asc(campuses.name)),
+    filterByCampus
+      ? db.select().from(campuses).where(eq(campuses.id, filterByCampus))
+      : db.select().from(campuses).orderBy(desc(campuses.isMain), asc(campuses.name)),
     db.select().from(campusSchedules).orderBy(asc(campusSchedules.sortOrder)),
   ]);
 
