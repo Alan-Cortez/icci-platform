@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState, useRef, useEffect } from "react";
 import { Menu, X, ChevronDown, LogIn, Calendar, Church, LogOut, BookOpen, Heart, Shield } from "lucide-react";
 import { signIn, signOut } from "next-auth/react";
+import { ADMIN_PANEL_ROLES, getRoleLabel } from "@/lib/roles";
 import { cn } from "@/lib/utils";
 
 // ─── Nav structure ───────────────────────────────────────────────────────────
@@ -118,13 +119,13 @@ export function Header({ session }: { session?: any }) {
           <div className="hidden lg:flex items-center gap-4">
             {session?.user ? (
               <div className="flex items-center gap-3">
-                {((session.user as any).role === "admin" || (session.user as any).role === "superadmin") && (
+                {ADMIN_PANEL_ROLES.includes((session.user as any).role) && (
                   <Link
                     href="/admin"
                     className="flex items-center gap-1.5 px-3 py-1.5 bg-gold/15 text-gold-dark hover:bg-gold/25 transition-all text-xs font-bold rounded-xl border border-gold/20"
                   >
                     <Shield className="w-3.5 h-3.5" />
-                    Admin
+                    Panel Admin
                   </Link>
                 )}
                 <span className="text-sm font-medium text-gray-700">
@@ -216,14 +217,14 @@ export function Header({ session }: { session?: any }) {
                     Salir
                   </button>
                 </div>
-                {((session.user as any).role === "admin" || (session.user as any).role === "superadmin") && (
+                {ADMIN_PANEL_ROLES.includes((session.user as any).role) && (
                   <Link
                     href="/admin"
                     onClick={() => setMobileOpen(false)}
-                    className="flex items-center justify-center gap-2 w-full mt-2 bg-gold/20 text-gold-dark text-xs font-bold py-2.5 rounded-xl border border-gold/25"
+                    className="flex items-center justify-center gap-2 w-full mt-2 bg-navy text-gold hover:bg-navy/95 text-xs font-bold py-2.5 rounded-xl border border-gold/30 shadow-xs transition-colors"
                   >
                     <Shield className="w-3.5 h-3.5" />
-                    Panel de Administración
+                    Panel de Administración ({getRoleLabel((session.user as any).role)})
                   </Link>
                 )}
               </div>
