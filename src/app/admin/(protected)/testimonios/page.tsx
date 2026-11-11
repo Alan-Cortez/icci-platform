@@ -1,22 +1,13 @@
-import { auth } from "@/auth";
-import { redirect } from "next/navigation";
 import { getAllTestimonies } from "@/actions/testimonies";
 import { TestimoniosListClient } from "./TestimoniosListClient";
+import { requireRole } from "@/lib/admin-auth";
 
 export const metadata = {
   title: "Gestión de Testimonios | ICCI Admin",
 };
 
 export default async function AdminTestimoniosPage() {
-  const session = await auth();
-  if (!session) {
-    redirect("/admin/login");
-  }
-
-  const role = (session.user as any)?.role || "user";
-  if (role !== "admin" && role !== "superadmin") {
-    redirect("/");
-  }
+  await requireRole(["superadmin", "admin", "pastor"], "/admin");
 
   const list = await getAllTestimonies();
 

@@ -5,7 +5,7 @@ import { Calendar, Clock, MapPin, Users, X, ChevronRight } from "lucide-react";
 import { Badge, Button, Card, SectionHeading } from "@/components/ui";
 import { cn } from "@/lib/utils";
 
-const CATEGORIES = ["Todo", "Jóvenes", "Niños", "Femenil", "Varones", "General"];
+const DEFAULT_CATEGORIES = ["Jóvenes", "Niños", "Femenil", "Varones", "Danza", "General"];
 const MONTHS_ES = ["Todos los meses", "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
 
 function formatDate(ts: number | Date | null): string {
@@ -39,6 +39,14 @@ export function EventosClient({ initialEvents }: { initialEvents: any[] }) {
   const [activeCategory, setActiveCategory] = useState("Todo");
   const [activeMonth, setActiveMonth] = useState("Todos los meses");
   const [selectedEvent, setSelectedEvent] = useState<EventData | null>(null);
+
+  const eventCategories = Array.from(
+    new Set(initialEvents.map((e) => e.category).filter(Boolean))
+  );
+  const categories = [
+    "Todo",
+    ...(eventCategories.length > 0 ? eventCategories : DEFAULT_CATEGORIES),
+  ];
 
   // Filter events
   const filteredEvents = initialEvents.filter((evt) => {
@@ -79,7 +87,7 @@ export function EventosClient({ initialEvents }: { initialEvents: any[] }) {
           
           {/* Categories */}
           <div className="flex items-center gap-1 min-w-max px-2">
-            {CATEGORIES.map((cat) => (
+            {categories.map((cat) => (
               <button
                 key={cat}
                 onClick={() => setActiveCategory(cat)}

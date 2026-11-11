@@ -121,8 +121,32 @@ export const ministries = sqliteTable("ministry", {
   schedule: text("schedule"),
   leader: text("leader"),
   leaderId: text("leaderId"),
+  leaderEmail: text("leaderEmail"),
+  leaderPhone: text("leaderPhone"),
+  pastor: text("pastor"),
+  pastorEmail: text("pastorEmail"),
+  pastorPhone: text("pastorPhone"),
   image: text("image"),
   isActive: integer("isActive", { mode: "boolean" }).default(true).notNull(),
+  createdAt: integer("createdAt", { mode: "timestamp_ms" }).$defaultFn(() => new Date()),
+});
+
+export const ministryMembers = sqliteTable("ministry_member", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  ministryId: text("ministryId")
+    .notNull()
+    .references(() => ministries.id, { onDelete: "cascade" }),
+  memberId: integer("memberId")
+    .notNull()
+    .references(() => members.id, { onDelete: "cascade" }),
+  role: text("role")
+    .$type<"pastor" | "lider" | "servidor">()
+    .default("servidor")
+    .notNull(),
+  email: text("email"),
+  phone: text("phone"),
   createdAt: integer("createdAt", { mode: "timestamp_ms" }).$defaultFn(() => new Date()),
 });
 
@@ -423,6 +447,8 @@ export type NewCampus = typeof campuses.$inferInsert;
 export type CampusSchedule = typeof campusSchedules.$inferSelect;
 export type Ministry = typeof ministries.$inferSelect;
 export type NewMinistry = typeof ministries.$inferInsert;
+export type MinistryMember = typeof ministryMembers.$inferSelect;
+export type NewMinistryMember = typeof ministryMembers.$inferInsert;
 export type Event = typeof events.$inferSelect;
 export type NewEvent = typeof events.$inferInsert;
 export type EventRegistration = typeof eventRegistrations.$inferSelect;

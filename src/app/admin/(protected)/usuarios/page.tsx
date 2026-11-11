@@ -1,19 +1,14 @@
 import { db } from "@/db";
 import { users, ministries } from "@/db/schema";
 import { UsuariosClient } from "./UsuariosClient";
-import { auth } from "@/auth";
-import { redirect } from "next/navigation";
 import { asc } from "drizzle-orm";
+import { requireRole } from "@/lib/admin-auth";
 
 export const metadata = { title: "Gestión de Usuarios | ICCI Admin" };
 
 export default async function AdminUsuariosPage() {
-  const session = await auth();
-  const role = session?.user.role;
-
-  if (role !== "superadmin" && role !== "admin" && role !== "pastor") {
-    redirect("/admin");
-  }
+  const currentUser = await requireRole(["superadmin", "admin", "pastor"], "/admin");
+  const role = currentUser.role;
 
   const [allUsers, allMinistries] = await Promise.all([
     db.select().from(users).orderBy(asc(users.name)),

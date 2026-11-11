@@ -55,13 +55,15 @@ export async function updateUserRole(
       })
       .where(eq(users.id, userId));
 
-    // If assigned as leader of a ministry, update the ministry's leader field
+    // If assigned as leader of a ministry, update the ministry's leader fields
     if (role === "leader" && assignedMinistryId) {
       await db
         .update(ministries)
         .set({
           leaderId: userId,
           leader: target.name || "Líder Asignado",
+          ...(target.email ? { leaderEmail: target.email } : {}),
+          ...(target.phone ? { leaderPhone: target.phone } : {}),
         })
         .where(eq(ministries.id, assignedMinistryId));
     }

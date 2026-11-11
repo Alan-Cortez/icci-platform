@@ -384,17 +384,17 @@ export function UsuariosClient({
                     {
                       val: "pastor" as UserRole,
                       title: "Pastor",
-                      desc: "Gestión pastoral, miembros, eventos, devocionales y ministerios",
+                      desc: "Acceso completo a todos los módulos, ministerios, calendario y miembros",
                     },
                     {
                       val: "admin" as UserRole,
                       title: "Administrador General",
-                      desc: "Gestión de contenidos, eventos y galería de la plataforma",
+                      desc: "Acceso completo a gestión de contenidos, ministerios, eventos y usuarios",
                     },
                     {
                       val: "leader" as UserRole,
                       title: "Líder de Ministerio",
-                      desc: "Control de eventos y avisos de su ministerio asignado",
+                      desc: "Acceso exclusivo a su ministerio asignado (equipo/detalles) y calendario de planeación",
                     },
                     {
                       val: "user" as UserRole,

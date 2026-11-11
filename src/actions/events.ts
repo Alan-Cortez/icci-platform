@@ -1,11 +1,31 @@
 "use server";
 
 import { db } from "@/db";
-import { events } from "@/db/schema";
+import { events, ministries } from "@/db/schema";
 import type { NewEvent } from "@/db/schema";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { uploadImage } from "@/lib/upload";
+import { getCurrentAdminUser } from "@/lib/admin-auth";
+
+async function requireEventAdmin() {
+  const user = await getCurrentAdminUser();
+  if (!user || !["superadmin", "admin", "pastor"].includes(user.role)) {
+    throw new Error("No autorizado");
+  }
+  return user;
+}
+
+async function resolveMinistryId(category: string, explicitMinistryId?: string | null): Promise<string | null> {
+  if (explicitMinistryId) return explicitMinistryId;
+  if (!category || category.toLowerCase() === "general") return null;
+  const matched = await db
+    .select({ id: ministries.id })
+    .from(ministries)
+    .where(sql`lower(trim(${ministries.name})) = ${category.trim().toLowerCase()}`)
+    .limit(1);
+  return matched[0]?.id || null;
+}
 
 function generateSlug(title: string): string {
   return title
@@ -22,8 +42,11 @@ function buildStartDate(dateStr: string): Date {
 
 export async function createEvent(formData: FormData) {
   try {
+    await requireEventAdmin();
     const title = formData.get("title") as string;
     const category = formData.get("category") as string;
+    const explicitMinistryId = formData.get("ministryId") as string | null;
+    const ministryId = await resolveMinistryId(category, explicitMinistryId);
     const description = formData.get("description") as string;
     const timeStr = formData.get("timeStr") as string;
     const location = formData.get("location") as string;
@@ -48,6 +71,7 @@ export async function createEvent(formData: FormData) {
       title,
       slug,
       category,
+      ministryId,
       description,
       timeStr,
       location,
@@ -75,8 +99,11 @@ export async function createEvent(formData: FormData) {
 
 export async function updateEvent(id: string, formData: FormData) {
   try {
+    await requireEventAdmin();
     const title = formData.get("title") as string;
     const category = formData.get("category") as string;
+    const explicitMinistryId = formData.get("ministryId") as string | null;
+    const ministryId = await resolveMinistryId(category, explicitMinistryId);
     const description = formData.get("description") as string;
     const timeStr = formData.get("timeStr") as string;
     const location = formData.get("location") as string;
@@ -100,6 +127,7 @@ export async function updateEvent(id: string, formData: FormData) {
       .set({
         title,
         category,
+        ministryId,
         description,
         timeStr,
         location,
@@ -127,6 +155,7 @@ export async function updateEvent(id: string, formData: FormData) {
 
 export async function deleteEvent(id: string) {
   try {
+    await requireEventAdmin();
     await db.delete(events).where(eq(events.id, id));
     revalidatePath("/admin");
     revalidatePath("/admin/eventos");

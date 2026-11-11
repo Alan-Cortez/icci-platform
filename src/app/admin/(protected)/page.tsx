@@ -13,8 +13,9 @@ import {
   User as UserIcon,
   CheckCircle2,
   AlertCircle,
+  Layers,
+  CalendarRange,
 } from "lucide-react";
-import { auth } from "@/auth";
 import { Card, Badge } from "@/components/ui";
 import { db } from "@/db";
 import {
@@ -24,8 +25,12 @@ import {
   devotionals,
   testimonies,
   comments,
+  ministries,
+  ministryMembers,
+  planningEvents,
 } from "@/db/schema";
-import { eq, count, desc } from "drizzle-orm";
+import { eq, count, desc, asc, inArray } from "drizzle-orm";
+import { getCurrentAdminUser, getAccessibleMinistryIds } from "@/lib/admin-auth";
 import {
   DashboardHeaderActions,
   DashboardQuickModeration,
@@ -34,10 +39,206 @@ import {
 export const metadata = { title: "Dashboard | ICCI Admin" };
 
 export default async function AdminDashboardPage() {
-  const session = await auth();
-  if (!session || (session.user.role !== "admin" && session.user.role !== "superadmin")) {
+  const user = await getCurrentAdminUser();
+  if (!user) {
     redirect("/");
   }
+
+  const todayFormatted = new Date().toLocaleDateString("es-MX", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+
+  // ── Vista exclusiva para Líderes de Ministerio ──────────────────────────
+  if (user.role === "leader") {
+    const accessibleIds = (await getAccessibleMinistryIds(user)) || [];
+
+    const [allMinistries, upcomingPlanning, teamCounts] = await Promise.all([
+      db.select().from(ministries).orderBy(asc(ministries.name)),
+      db.select().from(planningEvents).orderBy(asc(planningEvents.date)),
+      accessibleIds.length > 0
+        ? db
+            .select({ count: count() })
+            .from(ministryMembers)
+            .where(inArray(ministryMembers.ministryId, accessibleIds))
+        : Promise.resolve([{ count: 0 }]),
+    ]);
+
+    const myMinistries = allMinistries.filter((m) => accessibleIds.includes(m.id));
+    const ministryMap = new Map(allMinistries.map((m) => [m.id, m.name]));
+    const nowStart = new Date();
+    nowStart.setHours(0, 0, 0, 0);
+
+    const nextEvents = upcomingPlanning
+      .filter((ev) => new Date(ev.date).getTime() >= nowStart.getTime() && ev.status === "scheduled")
+      .slice(0, 6);
+
+    const myEventsCount = upcomingPlanning.filter(
+      (ev) => ev.ministryId && accessibleIds.includes(ev.ministryId)
+    ).length;
+
+    return (
+      <div className="space-y-8">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-2xl border border-gray-200/80 shadow-xs">
+          <div>
+            <p className="text-xs font-bold uppercase tracking-wider text-gold mb-1 capitalize">
+              {todayFormatted}
+            </p>
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-navy">
+              Panel de Liderazgo
+            </h1>
+            <p className="text-gray-500 text-sm mt-0.5">
+              Bienvenido, <span className="font-semibold text-navy">{user.name}</span>
+              {myMinistries.length > 0 && (
+                <>
+                  {" "}•{" "}
+                  <span className="font-bold text-gold-dark">
+                    {myMinistries.map((m) => m.name).join(", ")}
+                  </span>
+                </>
+              )}
+            </p>
+          </div>
+          <Link
+            href="/admin/planeacion"
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-navy text-white text-xs font-bold hover:bg-navy/90 transition-colors"
+          >
+            <CalendarRange className="w-4 h-4 text-gold" />
+            Abrir Calendario de Planeación
+          </Link>
+        </div>
+
+        {myMinistries.length === 0 && (
+          <Card className="p-6 border border-amber-200 bg-amber-50/70">
+            <p className="text-sm font-bold text-amber-900">
+              Ministerio pendiente de asignar
+            </p>
+            <p className="text-xs text-amber-800 mt-1">
+              Tu cuenta tiene rol de Líder, pero aún no está vinculada a un ministerio específico. Pide al Pastor o Administrador que te asigne en la sección de Ministerios.
+            </p>
+          </Card>
+        )}
+
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <Link href="/admin/ministerios" className="group block">
+            <Card className="p-6 h-full border border-gray-200/80 hover:border-gold/60 hover:shadow-md transition-all">
+              <div className="flex items-start justify-between mb-3">
+                <div className="w-11 h-11 rounded-xl border bg-amber-50 border-amber-200/60 flex items-center justify-center">
+                  <Layers className="w-5 h-5 text-amber-700" />
+                </div>
+                <ArrowRight className="w-4 h-4 text-gray-300 group-hover:text-gold group-hover:translate-x-0.5 transition-all" />
+              </div>
+              <p className="text-2xl font-black text-navy leading-none mb-1">
+                {myMinistries.length > 0 ? myMinistries[0].name : "Sin asignar"}
+              </p>
+              <p className="text-sm font-bold text-gray-800">Mi Ministerio</p>
+              <p className="text-xs text-gray-500 mt-1">
+                {teamCounts[0]?.count || 0} miembros registrados en servicio
+              </p>
+            </Card>
+          </Link>
+
+          <Link href="/admin/planeacion" className="group block">
+            <Card className="p-6 h-full border border-gray-200/80 hover:border-gold/60 hover:shadow-md transition-all">
+              <div className="flex items-start justify-between mb-3">
+                <div className="w-11 h-11 rounded-xl border bg-purple-50 border-purple-200/60 flex items-center justify-center">
+                  <CalendarRange className="w-5 h-5 text-purple-600" />
+                </div>
+                <ArrowRight className="w-4 h-4 text-gray-300 group-hover:text-gold group-hover:translate-x-0.5 transition-all" />
+              </div>
+              <p className="text-2xl font-black text-navy leading-none mb-1">
+                {myEventsCount}
+              </p>
+              <p className="text-sm font-bold text-gray-800">Actividades de mi Ministerio</p>
+              <p className="text-xs text-gray-500 mt-1">
+                Ver calendario general para evitar choques de fechas
+              </p>
+            </Card>
+          </Link>
+
+          <Card className="p-6 h-full border border-gray-200/80 bg-navy text-white">
+            <p className="text-[11px] font-bold uppercase tracking-wider text-gold mb-2">
+              Acceso de Rol
+            </p>
+            <p className="text-base font-bold mb-1">Líder de Ministerio</p>
+            <p className="text-xs text-white/75 leading-relaxed">
+              Puedes gestionar el equipo y detalles de tu ministerio, y consultar el calendario general de planeación para programar actividades sin empalmes con otros ministerios.
+            </p>
+          </Card>
+        </div>
+
+        <Card className="p-6 border border-gray-200/80 shadow-xs">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h2 className="font-bold text-navy text-base flex items-center gap-2">
+                <Calendar className="w-4 h-4 text-gold" /> Próximas Fechas en el Calendario General
+              </h2>
+              <p className="text-xs text-gray-500">
+                Revisa las fechas ocupadas por todos los ministerios antes de agendar
+              </p>
+            </div>
+            <Link
+              href="/admin/planeacion"
+              className="text-xs font-bold text-navy hover:text-gold flex items-center gap-1"
+            >
+              Ir al Calendario <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+
+          {nextEvents.length === 0 ? (
+            <p className="text-xs text-gray-400 py-6 text-center">
+              No hay actividades próximas programadas en el calendario.
+            </p>
+          ) : (
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              {nextEvents.map((ev) => {
+                const isMine = ev.ministryId ? accessibleIds.includes(ev.ministryId) : false;
+                const minName = ev.ministryId ? ministryMap.get(ev.ministryId) || "General" : "General";
+                return (
+                  <div
+                    key={ev.id}
+                    className={`p-3.5 rounded-xl border ${
+                      isMine
+                        ? "border-gold/60 bg-gold/5"
+                        : "border-gray-100 bg-gray-50/70"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between gap-2 mb-1">
+                      <span
+                        className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full ${
+                          isMine
+                            ? "bg-gold text-navy"
+                            : "bg-navy/10 text-navy"
+                        }`}
+                      >
+                        {minName}
+                      </span>
+                      <span className="text-[11px] font-semibold text-gray-500">
+                        {new Date(ev.date).toLocaleDateString("es-MX", {
+                          day: "numeric",
+                          month: "short",
+                          timeZone: "UTC",
+                        })}
+                      </span>
+                    </div>
+                    <p className="font-bold text-navy text-sm truncate">{ev.title}</p>
+                    {ev.timeStr && (
+                      <p className="text-[11px] text-gray-500 mt-0.5">{ev.timeStr}</p>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </Card>
+      </div>
+    );
+  }
+
+  // ── Vista completa para Super Admin, Admin y Pastor ─────────────────────
+  const session = { user };
 
   const [
     [totalUsers],
@@ -169,25 +370,18 @@ export default async function AdminDashboardPage() {
       color: "text-pink-600 bg-pink-50",
       badge: pendingTestimoniesCount.count,
     },
-    ...(session.user.role === "superadmin"
+    ...(["superadmin", "admin", "pastor"].includes(session.user.role)
       ? [
           {
             href: "/admin/usuarios",
             label: "Gestionar Usuarios",
-            desc: "Asignar permisos de administrador y roles",
+            desc: "Asignar permisos de administrador, pastor o líder",
             icon: Users,
             color: "text-emerald-600 bg-emerald-50",
           },
         ]
       : []),
   ];
-
-  const todayFormatted = new Date().toLocaleDateString("es-MX", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
 
   return (
     <div className="space-y-8">

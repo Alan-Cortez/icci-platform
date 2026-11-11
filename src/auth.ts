@@ -4,6 +4,7 @@ import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import { db } from "@/db";
 import { eq } from "drizzle-orm";
 import { users } from "@/db/schema";
+import { syncUserRoleFromMinistries } from "@/lib/role-sync";
 import type { UserRole } from "@/types/next-auth";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
@@ -27,9 +28,15 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           where: eq(users.email, user.email),
         });
         if (dbUser) {
-          token.role = dbUser.role as UserRole;
+          const synced = await syncUserRoleFromMinistries({
+            id: dbUser.id,
+            email: dbUser.email,
+            role: dbUser.role,
+            ministryId: dbUser.ministryId,
+          });
+          token.role = synced.role;
           token.id = dbUser.id;
-          token.ministryId = dbUser.ministryId;
+          token.ministryId = synced.ministryId;
         }
       }
 
@@ -39,8 +46,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           where: eq(users.email, token.email as string),
         });
         if (dbUser) {
-          token.role = dbUser.role as UserRole;
-          token.ministryId = dbUser.ministryId;
+          const synced = await syncUserRoleFromMinistries({
+            id: dbUser.id,
+            email: dbUser.email,
+            role: dbUser.role,
+            ministryId: dbUser.ministryId,
+          });
+          token.role = synced.role;
+          token.ministryId = synced.ministryId;
         }
       }
 

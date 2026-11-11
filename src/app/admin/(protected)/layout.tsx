@@ -1,70 +1,69 @@
 import { redirect } from "next/navigation";
-import { auth } from "@/auth";
 import { db } from "@/db";
 import { prayerRequests, testimonies } from "@/db/schema";
 import { eq, count } from "drizzle-orm";
 import { AdminSidebar, type NavModule } from "@/components/admin/AdminSidebar";
+import { getCurrentAdminUser } from "@/lib/admin-auth";
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
-  const session = await auth();
+  const user = await getCurrentAdminUser();
 
-  if (!session) {
+  if (!user) {
     redirect("/");
   }
 
-  const role = session.user.role;
-  const adminRoles = ["admin", "superadmin", "pastor", "leader"];
+  const role = user.role;
+  const isLeader = role === "leader";
 
-  if (!adminRoles.includes(role)) {
-    redirect("/");
+  let visibleModules: NavModule[];
+
+  if (isLeader) {
+    visibleModules = [
+      { href: "/admin", label: "Mi Panel", icon: "LayoutDashboard" },
+      { href: "/admin/planeacion", label: "Planeación / Calendario", icon: "CalendarRange" },
+      { href: "/admin/ministerios", label: "Mi Ministerio", icon: "Layers" },
+    ];
+  } else {
+    const [[pendingPrayers], [pendingTestimonies]] = await Promise.all([
+      db.select({ count: count() }).from(prayerRequests).where(eq(prayerRequests.status, "pending")),
+      db.select({ count: count() }).from(testimonies).where(eq(testimonies.status, "pending")),
+    ]);
+
+    visibleModules = [
+      { href: "/admin", label: "Dashboard", icon: "LayoutDashboard" },
+      { href: "/admin/eventos", label: "Eventos Web", icon: "Calendar" },
+      { href: "/admin/planeacion", label: "Planeación", icon: "CalendarRange" },
+      { href: "/admin/cumpleanos", label: "Cumpleaños", icon: "Cake" },
+      { href: "/admin/ministerios", label: "Ministerios", icon: "Layers" },
+      { href: "/admin/campus", label: "Campus", icon: "MapPin" },
+      { href: "/admin/devocionales", label: "Devocionales", icon: "BookOpen" },
+      { href: "/admin/galeria", label: "Banco de Fotos", icon: "Camera" },
+      {
+        href: "/admin/oracion",
+        label: "Solicitudes de Oración",
+        icon: "MessageCircle",
+        badge: pendingPrayers?.count || 0,
+      },
+      {
+        href: "/admin/testimonios",
+        label: "Testimonios",
+        icon: "Heart",
+        badge: pendingTestimonies?.count || 0,
+      },
+      { href: "/admin/usuarios", label: "Usuarios", icon: "Users" },
+      { href: "/admin/configuracion", label: "Configuración", icon: "Settings" },
+    ];
   }
-
-  const [[pendingPrayers], [pendingTestimonies]] = await Promise.all([
-    db.select({ count: count() }).from(prayerRequests).where(eq(prayerRequests.status, "pending")),
-    db.select({ count: count() }).from(testimonies).where(eq(testimonies.status, "pending")),
-  ]);
-
-  const allModules: NavModule[] = [
-    { href: "/admin", label: "Dashboard", icon: "LayoutDashboard" },
-    { href: "/admin/eventos", label: "Eventos Web", icon: "Calendar" },
-    { href: "/admin/planeacion", label: "Planeación", icon: "CalendarRange" },
-    { href: "/admin/cumpleanos", label: "Cumpleaños", icon: "Cake" },
-    { href: "/admin/ministerios", label: "Ministerios", icon: "Layers" },
-    { href: "/admin/campus", label: "Campus", icon: "MapPin" },
-    { href: "/admin/devocionales", label: "Devocionales", icon: "BookOpen" },
-    { href: "/admin/galeria", label: "Banco de Fotos", icon: "Camera" },
-    {
-      href: "/admin/oracion",
-      label: "Solicitudes de Oración",
-      icon: "MessageCircle",
-      badge: pendingPrayers?.count || 0,
-    },
-    {
-      href: "/admin/testimonios",
-      label: "Testimonios",
-      icon: "Heart",
-      badge: pendingTestimonies?.count || 0,
-    },
-    { href: "/admin/usuarios", label: "Usuarios", icon: "Users" },
-    { href: "/admin/configuracion", label: "Configuración", icon: "Settings" },
-  ];
-
-  const visibleModules =
-    role === "superadmin" || role === "pastor" || role === "admin"
-      ? allModules
-      : allModules.filter(
-          (m) => m.href !== "/admin/usuarios" && m.href !== "/admin/configuracion"
-        );
 
   return (
     <div className="min-h-screen bg-[#f4f6f9] flex flex-col lg:flex-row">
       <AdminSidebar
         modules={visibleModules}
         user={{
-          name: session.user?.name,
-          email: session.user?.email,
-          image: session.user?.image,
-          role: session.user?.role,
+          name: user.name,
+          email: user.email,
+          image: user.image,
+          role: user.role,
         }}
       />
 

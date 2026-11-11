@@ -2,10 +2,12 @@ import { db } from "@/db";
 import { members, ministries } from "@/db/schema";
 import { CumpleanosClient } from "./CumpleanosClient";
 import { asc } from "drizzle-orm";
+import { requireRole } from "@/lib/admin-auth";
 
 export const metadata = { title: "Cumpleaños y Directorio de Miembros | ICCI Admin" };
 
 export default async function AdminCumpleanosPage() {
+  await requireRole(["superadmin", "admin", "pastor"], "/admin");
   const [allMembers, allMinistries] = await Promise.all([
     db
       .select({

@@ -32,10 +32,32 @@ function to24h(value: string): string {
   return `${String(h).padStart(2, "0")}:${m}`;
 }
 
-export function EventForm({ event, onCancel }: { event?: any, onCancel: () => void }) {
+export function EventForm({
+  event,
+  ministriesList = [],
+  onCancel,
+}: {
+  event?: any;
+  ministriesList?: { id: string; name: string }[];
+  onCancel: () => void;
+}) {
   const [loading, setLoading] = useState(false);
   const timeRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
+
+  const categoryOptions = Array.from(
+    new Set([
+      ...ministriesList.map((m) => m.name),
+      "Jóvenes",
+      "Niños",
+      "Varones",
+      "Femenil",
+      "Danza",
+      "Alabanza",
+      "General",
+      ...(event?.category ? [event.category] : []),
+    ])
+  );
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -87,13 +109,20 @@ export function EventForm({ event, onCancel }: { event?: any, onCancel: () => vo
           <Input label="Título del Evento" name="title" defaultValue={event?.title} required />
           
             <div>
-              <label className="block text-sm font-semibold text-navy mb-2">Categoría</label>
-              <select name="category" defaultValue={event?.category || "Jóvenes"} className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white transition-colors" required>
-                <option value="Jóvenes">Jóvenes</option>
-                <option value="Niños">Niños</option>
-                <option value="Varones">Varones</option>
-                <option value="Femenil">Femenil</option>
-                <option value="General">General</option>
+              <label className="block text-sm font-semibold text-navy mb-2">
+                Categoría / Ministerio
+              </label>
+              <select
+                name="category"
+                defaultValue={event?.category || "General"}
+                className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white transition-colors"
+                required
+              >
+                {categoryOptions.map((cat) => (
+                  <option key={cat} value={cat}>
+                    {cat}
+                  </option>
+                ))}
               </select>
             </div>
 
